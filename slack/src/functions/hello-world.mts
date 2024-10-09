@@ -2,11 +2,15 @@
 import crypto from "node:crypto";
 import axios from "axios";
 export default async (req: Request): Promise<Response> => {
-  console.log("request received", req.headers.keys());
-  console.log("slack req body", JSON.stringify(req), req);
+  console.log("request received", JSON.stringify(req.headers.keys()));
+  console.log("slack request body", req);
+  if (!req.body) {
+    return new Response("Event body is undefined", { status: 200 });
+  }
+
   if (!validateSlackRequest(req)) {
     console.log("slack request not validated");
-    return new Response("slack request not validated", { status: 200 });
+    return new Response("Slack request not validated", { status: 200 });
   }
   return new Response("Hello, world!");
 };
