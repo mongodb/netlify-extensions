@@ -1,5 +1,7 @@
 // Documentation: https://sdk.netlify.com
 
-export default async () => {
+const handler = async () => {
 	return new Response('Hello, world!');
 };
+
+export default handler;
