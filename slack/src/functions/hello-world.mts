@@ -11,14 +11,14 @@ export default async (req: Request): Promise<Response> => {
   const key_val = getQSString(slackPayload);
   const trigger_id = key_val["trigger_id"];
   console.log("trigger_id:", trigger_id);
-
-  displayRepoOptions(["repo1", "repo2"], trigger_id);
-
   if (!validateSlackRequest(req)) {
     console.log("slack request not validated");
     return new Response("Slack request not validated", { status: 200 });
   }
-  return new Response("Hello, world!");
+
+  const response = displayRepoOptions(["repo1", "repo2"], trigger_id);
+  console.log("Response is:", response);
+  return new Response("Model requested", { status: 200 });
 };
 
 function getDropDownView(triggerId: string, repos: Array<unknown>) {
