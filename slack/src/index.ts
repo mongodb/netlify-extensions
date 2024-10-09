@@ -4,7 +4,7 @@ import { NetlifyExtension } from '@netlify/sdk';
 const extension = new NetlifyExtension();
 
 extension.addFunctions('./src/functions', {
-	prefix: 'my_unique_prefix',
+	prefix: 'test',
 	shouldInjectFunction: ({ name }) => {
 		console.log(name);
 		// If the function is not enabled, return early
