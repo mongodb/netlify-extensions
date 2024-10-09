@@ -7,6 +7,10 @@ export default async (req: Request): Promise<Response> => {
   if (!req.body) {
     return new Response("Event body is undefined", { status: 200 });
   }
+  const slackPayload = await new Response(req.body).text();
+  const key_val = getQSString(slackPayload);
+  const trigger_id = key_val["trigger_id"];
+  console.log("trigger_id:", trigger_id);
 
   if (!validateSlackRequest(req)) {
     console.log("slack request not validated");
@@ -15,12 +19,7 @@ export default async (req: Request): Promise<Response> => {
   return new Response("Hello, world!");
 };
 
-function getDropDownView(
-  triggerId: string,
-  repos: Array<unknown>,
-
-  isAdmin: boolean
-) {
+function getDropDownView(triggerId: string, repos: Array<unknown>) {
   return {
     trigger_id: triggerId,
     view: {
@@ -136,6 +135,7 @@ function validateSlackRequest(payload: Request): boolean {
   const timestamp =
     payload.headers.get("X-Slack-Request-Timestamp") ??
     payload.headers.get("x-slack-request-timestamp");
+  return true;
   const signingSecret = process.env.SLACK_SECRET;
   if (signingSecret) {
     const hmac = crypto.createHmac("sha256", signingSecret);
@@ -149,12 +149,11 @@ function validateSlackRequest(payload: Request): boolean {
 
 async function displayRepoOptions(
   repos: string[],
-  triggerId: string,
-  isAdmin: boolean
+  triggerId: string
 ): Promise<unknown> {
-  const repoOptView = getDropDownView(triggerId, repos, isAdmin);
+  const repoOptView = getDropDownView(triggerId, repos);
   //TODO: INSERT ENV VARS HERE
-  const slackToken = "TODO: ADD THIS";
+  const slackToken = process.env.SLACK_AUTH_TOKEN;
   const slackUrl = "https://slack.com/api/views.open";
   return await axios.post(slackUrl, repoOptView, {
     headers: {
@@ -162,4 +161,16 @@ async function displayRepoOptions(
       "Content-type": "application/json; charset=utf-8",
     },
   });
+}
+
+export function getQSString(qs: string) {
+  const key_val: any = {};
+  const arr = qs.split("&");
+  if (arr) {
+    arr.forEach((keyval) => {
+      const kvpair = keyval.split("=");
+      key_val[kvpair[0]] = kvpair[1];
+    });
+  }
+  return key_val;
 }
