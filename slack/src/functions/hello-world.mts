@@ -12,6 +12,8 @@ export default async (req: Request): Promise<Response> => {
   const trigger_id = key_val["trigger_id"];
   console.log("trigger_id:", trigger_id);
 
+  displayRepoOptions(["repo1", "repo2"], trigger_id);
+
   if (!validateSlackRequest(req)) {
     console.log("slack request not validated");
     return new Response("Slack request not validated", { status: 200 });
