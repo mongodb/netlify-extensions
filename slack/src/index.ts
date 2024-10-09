@@ -5,7 +5,8 @@ const extension = new NetlifyExtension();
 
 extension.addFunctions('./src/functions', {
 	prefix: 'my_unique_prefix',
-	shouldInjectFunction: () => {
+	shouldInjectFunction: ({ name }) => {
+		console.log(name);
 		// If the function is not enabled, return early
 		return !!process.env.SLACK_ENABLED;
 	},
