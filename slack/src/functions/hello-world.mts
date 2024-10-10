@@ -36,14 +36,16 @@ export default async (req: Request): Promise<Response> => {
     console.log("slack request not validated");
     return new Response("Slack request not validated", { status: 400 });
   }
-  const response: any = await displayRepoOptions([repos], trigger_id);
+
+  const reposBranchesCollection = await getReposBranchesCollection();
+
+  const displayableRepos = await getDeployableRepos(reposBranchesCollection);
+
+  const response: any = await displayRepoOptions(displayableRepos, trigger_id);
   console.log("Response is:", response);
   if (!response.data.ok) {
     console.log("Response metadata:", response?.data?.response_metadata);
   }
 
-  const reposBranchesColl = await getReposBranchesCollection();
-
-  console.log(await getDeployableRepos(reposBranchesColl));
   return new Response("Model requested", { status: 200 });
 };
