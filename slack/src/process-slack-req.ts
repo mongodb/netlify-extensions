@@ -1,3 +1,5 @@
+import crypto from "node:crypto";
+
 export function getQSString(qs: string) {
   const key_val: any = {};
   const arr = qs.split("&");
@@ -18,8 +20,7 @@ export function validateSlackRequest(payload: Request): boolean {
   const timestamp =
     payload.headers.get("X-Slack-Request-Timestamp") ??
     payload.headers.get("x-slack-request-timestamp");
-  return true;
-  const signingSecret = process.env.SLACK_SECRET;
+  const signingSecret = process.env.SLACK_SIGNING_SECRET;
   if (signingSecret) {
     const hmac = crypto.createHmac("sha256", signingSecret);
     const [version, hash] = headerSlackSignature?.split("=") ?? [];
