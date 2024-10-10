@@ -18,6 +18,7 @@ export default async (req: Request): Promise<Response> => {
 
   const response = await displayRepoOptions(["repo1", "repo2"], trigger_id);
   console.log("Response is:", response);
+  console.log("Response metadata:", response?.data?.response_metadata);
   return new Response("Model requested", { status: 200 });
 };
 
