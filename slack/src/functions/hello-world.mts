@@ -41,7 +41,8 @@ export default async (req: Request): Promise<Response> => {
     console.log("Response metadata:", response?.data?.response_metadata);
   }
 
-  const reposBranchesColl = getReposBranchesCollection();
-  console.log(reposBranchesColl);
+  const reposBranchesColl = await getReposBranchesCollection();
+  const one = await reposBranchesColl.findOne();
+  console.log(one);
   return new Response("Model requested", { status: 200 });
 };
