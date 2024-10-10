@@ -1,6 +1,14 @@
 import * as mongodb from "mongodb";
 import type { ReposBranchesDocument } from "../../search-manifest/src/types.js";
 
+export type branchOption = {
+  text: {
+    type: string;
+    text: string;
+  };
+  value: string;
+};
+
 export async function getDeployableRepos(
   reposBranchesColl: mongodb.Collection<ReposBranchesDocument>
 ) {
@@ -22,20 +30,14 @@ export const buildGroups = async (cursor: any) => {
 
         if (buildWithSnooty) {
           const active = branch["active"];
-          const branchName = branch["gitBranchName"];
-          const repoPath = `${repoName}/${branchName}`;
-          let txt: string;
-          if (!active) {
-            txt = `(!inactive) ${repoPath}`;
-          } else {
-            txt = repoPath;
-          }
+          const branchName = normalizeName(branch["gitBranchName"]);
+
           options.push({
             text: {
               type: "plain_text",
-              text: txt,
+              text: active ? branchName : `(!inactive) ${branchName}`,
             },
-            value: repoPath,
+            value: branchName,
           });
         }
       }
@@ -43,7 +45,7 @@ export const buildGroups = async (cursor: any) => {
       const repoOption = {
         label: {
           type: "plain_text",
-          text: repoName,
+          text: normalizeName(repoName),
         },
         //sort the options by version number
         options: sortedOptions,
@@ -54,14 +56,6 @@ export const buildGroups = async (cursor: any) => {
   return repoOptions.sort((repoOne, repoTwo) =>
     repoOne.label.text.localeCompare(repoTwo.label.text)
   );
-};
-
-export type branchOption = {
-  text: {
-    type: string;
-    text: string;
-  };
-  value: string;
 };
 
 export const sortOptions = (options: Array<branchOption>) => {
@@ -76,4 +70,8 @@ export const sortOptions = (options: Array<branchOption>) => {
       )
   );
   return sortedOptions;
+};
+
+export const normalizeName = (name: string) => {
+  return name[0].toUpperCase() + name.slice(1);
 };
