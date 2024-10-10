@@ -2,7 +2,7 @@
 import crypto from "node:crypto";
 import axios from "axios";
 export default async (req: Request): Promise<Response> => {
-  console.log("request received", JSON.stringify(req.headers.keys()));
+  console.log("request received", req.headers.keys());
   console.log("slack request body", req);
   if (!req.body) {
     return new Response("Event body is undefined", { status: 200 });
@@ -15,8 +15,22 @@ export default async (req: Request): Promise<Response> => {
     console.log("slack request not validated");
     return new Response("Slack request not validated", { status: 200 });
   }
-
-  const response = await displayRepoOptions(["repo1", "repo2"], trigger_id);
+  const repos = {
+    label: {
+      type: "plain_text",
+      text: "repoName",
+    },
+    options: [
+      {
+        text: {
+          type: "plain_text",
+          text: "repo Name",
+        },
+        value: "repo Name",
+      },
+    ],
+  };
+  const response = await displayRepoOptions([repos], trigger_id);
   console.log("Response is:", response);
   console.log("Response metadata:", response?.data?.response_metadata);
   return new Response("Model requested", { status: 200 });
@@ -39,6 +53,25 @@ function getDropDownView(triggerId: string, repos: Array<unknown>) {
         type: "plain_text",
         text: "Cancel",
       },
+      blocks: [
+        {
+          type: "input",
+          block_id: "block_repo_option",
+          label: {
+            type: "plain_text",
+            text: "Select Repo",
+          },
+          element: {
+            type: "multi_static_select",
+            action_id: "repo_option",
+            placeholder: {
+              type: "plain_text",
+              text: "Select a repo to deploy",
+            },
+            option_groups: repos,
+          },
+        },
+      ],
       // blocks: [
       //   {
       //     type: "input",
@@ -151,7 +184,7 @@ function validateSlackRequest(payload: Request): boolean {
 }
 
 async function displayRepoOptions(
-  repos: string[],
+  repos: Array<any>,
   triggerId: string
 ): Promise<unknown> {
   const repoOptView = getDropDownView(triggerId, repos);
