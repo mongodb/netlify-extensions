@@ -14,7 +14,7 @@ export const buildRepoGroups = async (cursor: any) => {
 
         if (buildWithSnooty) {
           const active = branch["active"];
-          const branchName = capitalizeFirstLetter(branch["gitBranchName"]);
+          const branchName = branch["gitBranchName"];
 
           options.push({
             text: {
