@@ -1,10 +1,10 @@
 // Documentation: https://sdk.netlify.com
 import crypto from "node:crypto";
-import axios from "axios";
+import axios, { type AxiosResponse } from "axios";
 import { getQSString, validateSlackRequest } from "../process-slack-req.js";
-import { displayRepoOptions } from "../build-modal.js";
 import { getReposBranchesCollection } from "../dbConnector.js";
 import { getDeployableRepos } from "../getRepos.js";
+import { getDropDownView } from "../build-modal.js";
 
 const repos = {
   label: {
@@ -39,13 +39,32 @@ export default async (req: Request): Promise<Response> => {
 
   const reposBranchesCollection = await getReposBranchesCollection();
 
-  const displayableRepos = await getDeployableRepos(reposBranchesCollection);
+  const deployableRepos = await getDeployableRepos(reposBranchesCollection);
 
-  const response: any = await displayRepoOptions(displayableRepos, trigger_id);
+  const response = await displayRepoOptions(deployableRepos, trigger_id);
   console.log("Response is:", response);
   if (!response.data.ok) {
     console.log("Response metadata:", response?.data?.response_metadata);
   }
 
   return new Response("Model requested", { status: 200 });
+};
+
+export const displayRepoOptions = async (
+  repos: Array<any>,
+  triggerId: string
+): Promise<AxiosResponse> => {
+  const repoOptView = getDropDownView(triggerId, repos);
+  //TODO: INSERT ENV VARS HERE
+  const slackToken = process.env.SLACK_AUTH_TOKEN;
+  if (!slackToken) {
+    throw new Error("No Slack token provided");
+  }
+  const slackUrl = "https://slack.com/api/views.open";
+  return await axios.post(slackUrl, repoOptView, {
+    headers: {
+      Authorization: [`Bearer ${slackToken}`],
+      "Content-type": "application/json; charset=utf-8",
+    },
+  });
 };
