@@ -4,6 +4,7 @@ import axios from "axios";
 import { getQSString, validateSlackRequest } from "../process-slack-req.js";
 import { displayRepoOptions } from "../build-modal.js";
 import { getReposBranchesCollection } from "../dbConnector.js";
+import { getDeployableRepos } from "../getRepos.js";
 
 const repos = {
   label: {
@@ -42,7 +43,7 @@ export default async (req: Request): Promise<Response> => {
   }
 
   const reposBranchesColl = await getReposBranchesCollection();
-  const one = await reposBranchesColl.findOne();
-  console.log(one);
+
+  console.log(await getDeployableRepos(reposBranchesColl));
   return new Response("Model requested", { status: 200 });
 };

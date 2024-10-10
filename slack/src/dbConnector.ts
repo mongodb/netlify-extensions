@@ -1,5 +1,5 @@
 import * as mongodb from "mongodb";
-import { type SearchDocument } from "../../search-manifest/src/types.js";
+import { type ReposBranchesDocument } from "../../search-manifest/src/types.js";
 import { getEnvVars } from "../../search-manifest/src/assertEnvVars.js";
 
 const ENV_VARS = getEnvVars();
@@ -43,7 +43,7 @@ export const closeSnootyDb = async () => {
 
 export const getReposBranchesCollection = async () => {
   const dbSession = await getSnootyDb();
-  return dbSession.collection<SearchDocument>(
+  return dbSession.collection<ReposBranchesDocument>(
     ENV_VARS.REPOS_BRANCHES_COLLECTION
   );
 };
