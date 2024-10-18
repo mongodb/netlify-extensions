@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://sdk.netlify.com/sdk/config-schema.json
+config:
+  slug: vzez3d56-populate-metadata-extension
+  name: populate-metadata-extension
+  description: Retrieve and make available Atlas metadata for current build
+  scopes:
+    site: ["read", "write"]
+
+  # set this to true to add a global require shim to esbuild. Workaround for https://github.com/evanw/esbuild/issues/1921
+  use_cjs_shims: true
+
+  ui:
+    surfaces:
+      - extension-team-configuration
+      - extension-top-level-site-configuration
+
