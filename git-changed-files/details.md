@@ -1,6 +1,4 @@
 # View and install the git-changed-files extension.
-name: git-changed-files-ext
+Makes a netlify comment of the changed content files found.
 
-slug: git-changed-files-ext
-
-summary: makes a netlify comment of the changed content files found.
+TODO: add more documentaion

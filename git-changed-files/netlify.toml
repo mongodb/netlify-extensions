@@ -1,5 +1,6 @@
 [build]
 command = "netlify-extension build -a"
+publish = ".ntli/site/static"
 
 [functions]
 directory = "src/endpoints"
