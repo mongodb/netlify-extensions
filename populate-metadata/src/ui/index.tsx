@@ -1,6 +1,6 @@
 import './index.css';
-import { createRoot } from 'react-dom/client';
 import { NetlifyExtensionUI } from '@netlify/sdk/ui/react/components';
+import { createRoot } from 'react-dom/client';
 import { App } from './App.jsx';
 
 const rootNodeId = 'root';

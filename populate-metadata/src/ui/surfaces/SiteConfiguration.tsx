@@ -1,3 +1,4 @@
+import { useNetlifySDK } from '@netlify/sdk/ui/react';
 import {
   Button,
   Card,
@@ -6,7 +7,6 @@ import {
   SiteConfigurationSurface,
 } from '@netlify/sdk/ui/react/components';
 import { trpc } from '../trpc';
-import { useNetlifySDK } from '@netlify/sdk/ui/react';
 
 export const SiteConfiguration = () => {
   const sdk = useNetlifySDK();
