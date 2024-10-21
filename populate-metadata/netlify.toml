@@ -7,7 +7,4 @@ command = "netlify-extension dev"
 
 [functions]
 directory = "src/endpoints"
-node_bundler = "esbuild"
 
-[[plugins]]
-package = "@netlify/netlify-plugin-netlify-extension"
