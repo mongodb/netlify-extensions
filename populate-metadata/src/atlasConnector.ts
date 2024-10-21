@@ -25,9 +25,7 @@ export const dbClient = async (uri: string) => {
 
 export const getPoolDb = async () => {
   if (clusterZeroClient) {
-    console.info('Cluster Zero client already exists, using existing instance');
   } else {
-    console.info('Creating new instance of Cluster Zero client');
     clusterZeroClient = await dbClient(ENV_VARS.ATLAS_CLUSTER0_URI);
   }
   return clusterZeroClient.db(ENV_VARS.POOL_DB_NAME);
