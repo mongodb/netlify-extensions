@@ -24,7 +24,7 @@ export class Extension<
   z.ZodUnknown,
   z.ZodUnknown,
   BuildContext,
-  // In case of issues, double check that BuildConfigSchema is in correct spot in order of type params
+  // In case of issues, double check that BuildConfigSchema is in correct spot within the order of type params
   BuildConfigSchema,
   z.ZodUnknown
 > {

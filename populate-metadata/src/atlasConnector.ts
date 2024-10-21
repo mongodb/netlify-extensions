@@ -23,18 +23,17 @@ export const dbClient = async (uri: string) => {
   }
 };
 
-//TODO: change names from snooty
-export const getSnootyDb = async () => {
+export const getPoolDb = async () => {
   if (clusterZeroClient) {
     console.info('Cluster Zero client already exists, using existing instance');
   } else {
     console.info('Creating new instance of Cluster Zero client');
     clusterZeroClient = await dbClient(ENV_VARS.ATLAS_CLUSTER0_URI);
   }
-  return clusterZeroClient.db(ENV_VARS.SNOOTY_DB_NAME);
+  return clusterZeroClient.db(ENV_VARS.POOL_DB_NAME);
 };
 
-export const closeSnootyDb = async () => {
+export const closePoolDb = async () => {
   if (clusterZeroClient) await teardown(clusterZeroClient);
   else {
     console.info('No client connection open to Snooty Db');
@@ -42,12 +41,12 @@ export const closeSnootyDb = async () => {
 };
 
 export const getDocsetsCollection = async () => {
-  const dbSession = await getSnootyDb();
+  const dbSession = await getPoolDb();
   return dbSession.collection<DocsetsDocument>(ENV_VARS.DOCSETS_COLLECTION);
 };
 
 export const getReposBranchesCollection = async () => {
-  const dbSession = await getSnootyDb();
+  const dbSession = await getPoolDb();
   return dbSession.collection<ReposBranchesDocument>(
     ENV_VARS.REPOS_BRANCHES_COLLECTION,
   );

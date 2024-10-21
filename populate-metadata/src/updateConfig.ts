@@ -7,7 +7,7 @@ export const updateConfig = async (config: DocsConfig) => {
   const repoName = process.env.REPO_NAME ?? config.build?.environment.SITE_NAME;
 
   if (!branchName || !repoName) {
-    throw new Error('RepoName or branch name missing from deploy');
+    throw new Error('Repo name or branch name missing from deploy');
   }
 
   //check if build was triggered by a webhook (If so, it was a prod deploy);

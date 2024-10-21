@@ -37,7 +37,7 @@ export interface ReposBranchesDocument {
 
 export type EnvVars = {
   ATLAS_CLUSTER0_URI: string;
-  SNOOTY_DB_NAME: string;
+  POOL_DB_NAME: string;
   ATLAS_SEARCH_URI: string;
   SEARCH_DB_NAME: string;
   REPOS_BRANCHES_COLLECTION: string;

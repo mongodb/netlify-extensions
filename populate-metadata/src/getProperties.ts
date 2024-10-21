@@ -1,6 +1,6 @@
 import type { Collection, WithId } from 'mongodb';
 import {
-  closeSnootyDb,
+  closePoolDb,
   getDocsetsCollection,
   getReposBranchesCollection,
 } from './atlasConnector';
@@ -8,10 +8,10 @@ import type { DocsetsDocument, ReposBranchesDocument } from './types';
 
 export const getDocsetEntry = async ({
   docsets,
-  project,
+  projectName,
 }: {
   docsets: Collection<DocsetsDocument>;
-  project: string;
+  projectName: string;
 }): Promise<WithId<DocsetsDocument>> => {
   let envProjection: Record<string, number>;
 
@@ -20,7 +20,7 @@ export const getDocsetEntry = async ({
   } else
     envProjection =
       process.env.ENV === 'dotcomprd' ? { dotcomprd: 1 } : { prd: 1 };
-  const docsetsQuery = { project: { $eq: project } };
+  const docsetsQuery = { project: { $eq: projectName } };
   const projection = {
     projection: {
       project: 1,
@@ -43,11 +43,11 @@ export const getDocsetEntry = async ({
 export const getRepoEntry = async ({
   repoName,
   branchName,
-  repos_branches,
+  reposBranches,
 }: {
   repoName: string;
   branchName: string;
-  repos_branches: Collection<ReposBranchesDocument>;
+  reposBranches: Collection<ReposBranchesDocument>;
 }) => {
   const query = {
     repoName: repoName,
@@ -62,7 +62,7 @@ export const getRepoEntry = async ({
       prodDeployable: 1,
     },
   };
-  const repo = await repos_branches.findOne<ReposBranchesDocument>(
+  const repo = await reposBranches.findOne<ReposBranchesDocument>(
     query,
     projection,
   );
@@ -84,17 +84,21 @@ export const getProperties = async ({
   repoName: string;
 }) => {
   //connect to database and get repos_branches, docsets collections
-  const repos_branches = await getReposBranchesCollection();
+  const reposBranches = await getReposBranchesCollection();
   const docsets = await getDocsetsCollection();
 
   const repo = await getRepoEntry({
     repoName,
     branchName,
-    repos_branches,
+    reposBranches,
   });
 
-  const docsetEntry = await getDocsetEntry({ docsets, project: repo.project });
-  closeSnootyDb();
+  const docsetEntry = await getDocsetEntry({
+    docsets,
+    projectName: repo.project,
+  });
+
+  closePoolDb();
 
   return { repo, docsetEntry };
 };
