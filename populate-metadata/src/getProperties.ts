@@ -6,6 +6,21 @@ import {
 } from './atlasConnector';
 import type { DocsetsDocument, ReposBranchesDocument } from './types';
 
+const getEnvProjection = (env?: string) => {
+  switch (env) {
+    case 'stg':
+      return { stg: 1 };
+    case 'dotcomstg':
+      return { dotcomstg: 1 };
+    case 'prd':
+      return { prd: 1 };
+    case 'dotcomprd':
+      return { dotcomprd: 1 };
+    default:
+      return { prd: 1 };
+  }
+};
+
 export const getDocsetEntry = async ({
   docsets,
   projectName,
@@ -13,21 +28,16 @@ export const getDocsetEntry = async ({
   docsets: Collection<DocsetsDocument>;
   projectName: string;
 }): Promise<WithId<DocsetsDocument>> => {
-  let envProjection: Record<string, number>;
-
-  if (process.env.ENV === 'dotcomstg') {
-    envProjection = { dotcomstg: 1 };
-  } else
-    envProjection =
-      process.env.ENV === 'dotcomprd' ? { dotcomprd: 1 } : { prd: 1 };
+  const env = process.env.ENV;
+  const docsetEnvironmentProjection = getEnvProjection(env);
   const docsetsQuery = { project: { $eq: projectName } };
   const projection = {
     projection: {
       project: 1,
       _id: 0,
-      bucket: envProjection,
-      prefix: envProjection,
-      url: envProjection,
+      bucket: docsetEnvironmentProjection,
+      prefix: docsetEnvironmentProjection,
+      url: docsetEnvironmentProjection,
     },
   };
   const docset = await docsets.findOne<DocsetsDocument>(

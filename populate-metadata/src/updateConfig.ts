@@ -10,16 +10,23 @@ export const updateConfig = async (config: DocsConfig) => {
     throw new Error('Repo name or branch name missing from deploy');
   }
 
-  //check if build was triggered by a webhook (If so, it was a prod deploy);
-  const isProdDeploy = !!(
+  // Check if build was triggered by a webhook
+  // TODO: add more specific logic dependent on hook title, url, body, etc. once Slack deploy apps have been implemented
+  const isWebhookDeploy = !!(
     config.build.environment?.INCOMING_HOOK_URL &&
     config.build.environment?.INCOMING_HOOK_TITLE &&
     config.build.environment?.INCOMING_HOOK_BODY
   );
-  config.build.environment.PRODUCTION = isProdDeploy;
-  //set environment to dotcomprd or prd if it is a writer build, only the Mongodb-Snooty site name is pre-configured (to dotcomstg)
-  process.env.ENV ??= isProdDeploy ? 'dotcomprd' : 'prd';
 
+  // Check if this was an engineering build or writer's build; writer's builds by default are all builds not built on the "mongodb-snooty" site
+  // Environment is either dotcomprd or prd if it is a writer build
+  if (config.build.environment.SITE_NAME !== 'mongodb-snooty') {
+    config.build.environment.PRODUCTION = isWebhookDeploy;
+    process.env.ENV = isWebhookDeploy ? 'dotcomprd' : 'prd';
+  } else {
+    config.build.environment.PRODUCTION = false;
+    process.env.ENV = isWebhookDeploy ? 'dotcomstg' : 'stg';
+  }
   const { repo, docsetEntry } = await getProperties({
     branchName: branchName,
     repoName: repoName,
