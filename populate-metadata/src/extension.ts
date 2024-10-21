@@ -33,7 +33,6 @@ export class Extension<
   constructor({ isEnabled }: ExtensionOptions) {
     super();
     this.isEnabled = isEnabled;
-    console.log('Extension enabled:', this.isEnabled);
   }
 
   addBuildEventHandler = async (

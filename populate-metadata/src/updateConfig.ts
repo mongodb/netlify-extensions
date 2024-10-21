@@ -37,10 +37,10 @@ export const updateConfig = async (config: DocsConfig) => {
   config.build.environment.DOCSET_ENTRY = docsetEntry;
   config.build.environment.BRANCH_ENTRY = branch;
 
-  console.log(
-    config.build.environment.PRODUCTION,
-    config.build.environment.REPO_ENTRY,
-    config.build.environment.DOCSET_ENTRY,
-    config.build.environment.BRANCH_ENTRY,
+  console.info(
+    `PRODUCTION value: ${config.build.environment.PRODUCTION} \n,
+    REPO ENTRY: ${config.build.environment.REPO_ENTRY} \n,
+    DOCSET ENTRY: ${config.build.environment.DOCSET_ENTRY} \n,
+    BRANCH ENTRY: ${config.build.environment.BRANCH_ENTRY}`,
   );
 };
