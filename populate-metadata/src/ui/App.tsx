@@ -1,13 +1,12 @@
-import { httpBatchLink } from "@trpc/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Surfaces, useNetlifyExtensionUIFetch } from "@netlify/sdk/ui/react";
-import { SurfaceRouter, SurfaceRoute } from "@netlify/sdk/ui/react/components";
-import { useState } from "react";
-import { SiteConfiguration } from "./surfaces/SiteConfiguration.jsx";
-import { TeamConfiguration } from "./surfaces/TeamConfiguration.jsx";
+import { httpBatchLink } from '@trpc/client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Surfaces, useNetlifyExtensionUIFetch } from '@netlify/sdk/ui/react';
+import { SurfaceRouter, SurfaceRoute } from '@netlify/sdk/ui/react/components';
+import { useState } from 'react';
+import { SiteConfiguration } from './surfaces/SiteConfiguration.jsx';
+import { TeamConfiguration } from './surfaces/TeamConfiguration.jsx';
 
-
-import { trpc } from "./trpc.js";
+import { trpc } from './trpc.js';
 
 export const App = () => {
   const fetch = useNetlifyExtensionUIFetch();
@@ -16,7 +15,7 @@ export const App = () => {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "/api/trpc",
+          url: '/api/trpc',
           fetch,
         }),
       ],
@@ -34,8 +33,6 @@ export const App = () => {
           <SurfaceRoute surface={Surfaces.TeamConfiguration}>
             <TeamConfiguration />
           </SurfaceRoute>
-          
-          
         </SurfaceRouter>
       </QueryClientProvider>
     </trpc.Provider>

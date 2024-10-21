@@ -4,9 +4,9 @@ import {
   CardLoader,
   CardTitle,
   SiteConfigurationSurface,
-} from "@netlify/sdk/ui/react/components";
-import { trpc } from "../trpc";
-import { useNetlifySDK } from "@netlify/sdk/ui/react";
+} from '@netlify/sdk/ui/react/components';
+import { trpc } from '../trpc';
+import { useNetlifySDK } from '@netlify/sdk/ui/react';
 
 export const SiteConfiguration = () => {
   const sdk = useNetlifySDK();

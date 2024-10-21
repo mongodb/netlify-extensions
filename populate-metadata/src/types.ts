@@ -1,5 +1,5 @@
-import type { Document, WithId } from 'mongodb';
 import type { NetlifyConfig } from '@netlify/build';
+import type { Document, WithId } from 'mongodb';
 
 type EnvironmentConfig = {
   dev?: string;

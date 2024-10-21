@@ -1,9 +1,9 @@
 // Documentation: https://sdk.netlify.com
 import {
-  NetlifyExtension,
   type BuildHookOptions,
   type BuildHookType,
   type BuildHookWithContext,
+  NetlifyExtension,
 } from '@netlify/sdk';
 import type z from 'zod';
 
