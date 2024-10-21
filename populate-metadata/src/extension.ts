@@ -52,7 +52,6 @@ export class Extension<
       {
         ...options,
         if: (buildConfig) => {
-          console.log(this.isEnabled);
           if (!this.isEnabled) {
             return false;
           }

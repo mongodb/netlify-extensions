@@ -25,7 +25,6 @@ export const updateConfig = async (config: DocsConfig) => {
     repoName: repoName,
   });
 
-  console.log(repo, docsetEntry);
   const { branches: branch, ...repoEntry } = repo;
   config.build.environment.REPO_ENTRY = repoEntry;
   config.build.environment.DOCSET_ENTRY = docsetEntry;
