@@ -1,25 +1,25 @@
 {
-	"name": "chatbot-netlify-integration",
-	"version": "0.0.1",
-	"main": "src/index.ts",
-	"type": "module",
-	"scripts": {
-		"build": "netlify-extension build",
-    	"dev": "netlify-extension dev --open",
-		"test": "vitest"
-	},
-	"dependencies": {
-		"@netlify/netlify-plugin-netlify-extension": "^1.0.3",
-		"@netlify/sdk": "^2.6.1",
-		"bson": "^6.8.0",
-		"mongodb": "^6.8.0",
-		"typescript": "^5.5.2"
-	},
-	"devDependencies": {
-		"@netlify/build": "^29.50.2",
-		"@types/node": "^20.14.9",
-		"execa": "^6.1.0",
-		"mongodb-memory-server": "^9.4.0",
-		"vitest": "^2.0.2"
-	}
+  "name": "chatbot-netlify-integration",
+  "version": "0.0.1",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "netlify-extension build",
+    "dev": "netlify-extension dev --open",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@netlify/netlify-plugin-netlify-extension": "^1.0.3",
+    "@netlify/sdk": "^2.6.1",
+    "bson": "^6.8.0",
+    "mongodb": "^6.8.0",
+    "typescript": "^5.5.2"
+  },
+  "devDependencies": {
+    "@netlify/build": "^29.50.2",
+    "@types/node": "^20.14.9",
+    "execa": "^6.1.0",
+    "mongodb-memory-server": "^9.4.0",
+    "vitest": "^2.0.2"
+  }
 }
