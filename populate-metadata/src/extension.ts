@@ -51,15 +51,14 @@ export class Extension<
         await func({ envVars, ...args });
       },
       {
-        ...options,
-        if: (buildConfig) => {
+        if: () => {
           if (!this.isEnabled) {
             return false;
           }
-          console.log(JSON.stringify(options));
           // If an "if" function has been passed as an option to the third addBuildEventHandler, execute that conditional
           // return options?.if === undefined || options.if(buildConfig);
         },
+        ...options,
       },
     );
   };
