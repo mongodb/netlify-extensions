@@ -3,4 +3,4 @@ name: snooty-cache-extension
 
 slug: ci09jy73-snooty-cache-extension
 
-summary: for internal use
+summary: caches the most recent snooty version
