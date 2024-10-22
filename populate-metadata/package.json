@@ -8,6 +8,7 @@
     "dev": "netlify-extension dev --open"
   },
   "dependencies": {
+    "@netlify/netlify-plugin-netlify-extension": "^1.0.3",
     "@netlify/build": "^29.55.2",
     "@netlify/functions": "^2.8.2",
     "@netlify/sdk": "^2.6.1",
@@ -21,7 +22,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@netlify/netlify-plugin-netlify-extension": "^1.0.3",
     "@tsconfig/node18": "^18.2.4",
     "@tsconfig/recommended": "^1.0.7",
     "@tsconfig/strictest": "^2.0.5",
