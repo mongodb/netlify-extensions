@@ -18,12 +18,12 @@ export type OASPagesMetadata = Record<string, OASPageMetadata>;
 
 // handle installing redoc cli if it's not already installed
 extension.addBuildEventHandler(
-	'onPreBuild',
-	async ({ utils: { run, cache } }) => {
-		if (!process.env.REDOC_ENABLED) return;
-		
-		console.log('Running redoc prebuild');
-		const hasRedoc = await cache.has('redoc');
+  'onPreBuild',
+  async ({ utils: { run, cache } }) => {
+    if (!process.env.REDOC_ENABLED) return;
+
+    console.log('Running redoc prebuild');
+    const hasRedoc = await cache.has('redoc');
 
     if (hasRedoc) {
       console.log('Restoring redoc from cache');
@@ -45,9 +45,9 @@ extension.addBuildEventHandler(
 
 // handle building the redoc pages
 extension.addBuildEventHandler('onPostBuild', async ({ utils: { run } }) => {
-	if (!process.env.REDOC_ENABLED) return;
-	console.log('=========== Redoc Extension Begin ================');
-	await run.command('unzip -o bundle.zip -d bundle');
+  if (!process.env.REDOC_ENABLED) return;
+  console.log('=========== Redoc Extension Begin ================');
+  await run.command('unzip -o bundle.zip -d bundle');
 
   const siteBson = await readFileAsync(`${BUNDLE_PATH}/site.bson`);
 
@@ -71,14 +71,12 @@ extension.addBuildEventHandler('onPostBuild', async ({ utils: { run } }) => {
 
 // cache redoc
 extension.addBuildEventHandler('onSuccess', async ({ utils: { cache } }) => {
-	if (!process.env.REDOC_ENABLED) return;
-	const hasRedoc = await cache.has('redoc');
-	if (!hasRedoc) {
-		console.log('saving redoc to cache');
-		await cache.save('redoc');
-	}
+  if (!process.env.REDOC_ENABLED) return;
+  const hasRedoc = await cache.has('redoc');
+  if (!hasRedoc) {
+    console.log('saving redoc to cache');
+    await cache.save('redoc');
+  }
 });
-
-
 
 export { extension };

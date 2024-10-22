@@ -1,6 +1,6 @@
 # View and install the git-changed-files extension.
-name: redoc-ext
+name: redoc-extension
 
-slug: redoc-ext
+slug: v5-29x7u-redoc-extension
 
 summary: reates redoc pages  from OpenAPI spec
