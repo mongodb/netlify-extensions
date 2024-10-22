@@ -1,8 +1,8 @@
 config:
-  name: snooty-cache-plugin
+  name: snooty-cache-extension
   use_cjs_shims: true
   description: for internal use
-  slug: 5i534w69--f82apan-snooty-cache-plugin
+  slug: ci09jy73-snooty-cache-extension
   scopes:
     site:
       - read

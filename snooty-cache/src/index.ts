@@ -86,41 +86,38 @@ extension.addBuildEventHandler(
   },
 );
 
-extension.addBuildEventHandler(
-  'onEnd',
-  async ({ utils: { run, status } }) => {
-    if (!process.env.SNOOTY_CACHE_ENABLED) return;
-    
-    console.log('Creating cache files...');
-    const { all, stderr, stdout } = await run.command(
-      './snooty-parser/snooty/snooty create-cache .',
-      { all: true },
-    );
+extension.addBuildEventHandler('onEnd', async ({ utils: { run, status } }) => {
+  if (!process.env.SNOOTY_CACHE_ENABLED) return;
 
-    const logs = all ?? stdout + stderr;
+  console.log('Creating cache files...');
+  const { all, stderr, stdout } = await run.command(
+    './snooty-parser/snooty/snooty create-cache .',
+    { all: true },
+  );
 
-    const logsSplit =
-      logs
-        .split('\n')
-        .filter(
-          (row) =>
-            !row.includes('INFO:snooty.gizaparser.domain') &&
-            !row.includes('INFO:snooty.parser:cache'),
-        ) || [];
+  const logs = all ?? stdout + stderr;
 
-    let errorCount = 0;
-    let warningCount = 0;
+  const logsSplit =
+    logs
+      .split('\n')
+      .filter(
+        (row) =>
+          !row.includes('INFO:snooty.gizaparser.domain') &&
+          !row.includes('INFO:snooty.parser:cache'),
+      ) || [];
 
-    for (const row of logsSplit) {
-      if (row.includes('ERROR')) errorCount += 1;
-      if (row.includes('WARNING')) warningCount += 1;
-    }
+  let errorCount = 0;
+  let warningCount = 0;
 
-    status.show({
-      title: `Snooty Parser Logs - Errors: ${errorCount} | Warnings: ${warningCount}`,
-      summary: logsSplit.join('\n'),
-    });
-  },
-);
+  for (const row of logsSplit) {
+    if (row.includes('ERROR')) errorCount += 1;
+    if (row.includes('WARNING')) warningCount += 1;
+  }
+
+  status.show({
+    title: `Snooty Parser Logs - Errors: ${errorCount} | Warnings: ${warningCount}`,
+    summary: logsSplit.join('\n'),
+  });
+});
 
 export { extension };

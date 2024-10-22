@@ -1,6 +1,6 @@
 # View and install the persistence-module extension.
-name: snooty-cache-plugin
+name: snooty-cache-extension
 
-slug: snooty-cache-plugin
+slug: ci09jy73-snooty-cache-extension
 
 summary: for internal use
