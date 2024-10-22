@@ -1,6 +1,6 @@
 config:
   name: git-changed-files-extension
-  description: integration that prints the changed files from git when a pr is created
+  description: Makes a netlify comment of the changed content files found.
   slug: az9wghzy-git-changed-files-extension
   scopes:
     site:
