@@ -42,7 +42,7 @@ export const updateConfig = async (
   config.build.environment.BRANCH_ENTRY = branch;
 
   console.info(
-    'ENV value: ',
+    'BUILD ENVIRONMENT: ',
     config.build.environment.ENV,
     '\n REPO ENTRY: ',
     config.build.environment.REPO_ENTRY,

@@ -17,7 +17,7 @@ export interface BranchEntry {
   active: boolean;
 }
 
-export interface DocsetsDocument extends WithId<Document> {
+export interface DocsetsDocument {
   project: string;
   url: EnvironmentConfig;
   prefix: EnvironmentConfig;

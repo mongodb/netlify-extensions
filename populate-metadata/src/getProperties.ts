@@ -27,7 +27,7 @@ export const getDocsetEntry = async ({
 }: {
   docsets: Collection<DocsetsDocument>;
   projectName: string;
-}): Promise<WithId<DocsetsDocument>> => {
+}): Promise<DocsetsDocument> => {
   const env = process.env.ENV;
   const docsetEnvironmentProjection = getEnvProjection(env);
   const query = { project: { $eq: projectName } };
@@ -57,7 +57,7 @@ export const getRepoEntry = async ({
   repoName: string;
   branchName: string;
   reposBranches: Collection<ReposBranchesDocument>;
-}) => {
+}): Promise<ReposBranchesDocument> => {
   const query = {
     repoName: repoName,
   };
@@ -91,7 +91,7 @@ export const getProperties = async ({
 }: {
   branchName: string;
   repoName: string;
-}) => {
+}): Promise<{ repo: ReposBranchesDocument; docsetEntry: DocsetsDocument }> => {
   //connect to database and get repos_branches, docsets collections
   const reposBranches = await getReposBranchesCollection();
   const docsets = await getDocsetsCollection();
