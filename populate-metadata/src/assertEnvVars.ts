@@ -14,7 +14,6 @@ export const getEnvVars = () => {
   const environmentVariables = assertEnvVars({
     ATLAS_CLUSTER0_URI: `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@${process.env.MONGO_ATLAS_CLUSTER0_HOST}/?retryWrites=true&w=majority`,
     ATLAS_SEARCH_URI: `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@${process.env.MONGO_ATLAS_SEARCH_HOST}/?retryWrites=true&w=majority`,
-    SEARCH_DB_NAME: `${process.env.MONGO_ATLAS_SEARCH_DB_NAME}`,
     POOL_DB_NAME: `${process.env.MONGO_ATLAS_POOL_DB_NAME}`,
     REPOS_BRANCHES_COLLECTION: `${process.env.REPOS_BRANCHES_COLLECTION}`,
     DOCSETS_COLLECTION: `${process.env.DOCSETS_COLLECTION}`,

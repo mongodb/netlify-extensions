@@ -39,7 +39,6 @@ export type EnvVars = {
   ATLAS_CLUSTER0_URI: string;
   POOL_DB_NAME: string;
   ATLAS_SEARCH_URI: string;
-  SEARCH_DB_NAME: string;
   REPOS_BRANCHES_COLLECTION: string;
   DOCSETS_COLLECTION: string;
   DOCUMENTS_COLLECTION: string;
@@ -51,7 +50,7 @@ type configEnvironmentVariables = Partial<{
   INCOMING_HOOK_URL: string;
   INCOMING_HOOK_TITLE: string;
   INCOMING_HOOK_BODY: string;
-  PRODUCTION: boolean;
+  ENV: string;
   REPO_ENTRY: ReposBranchesDocument;
   DOCSET_ENTRY: DocsetsDocument;
   BRANCH_ENTRY: BranchEntry[];

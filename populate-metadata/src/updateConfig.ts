@@ -21,12 +21,11 @@ export const updateConfig = async (config: DocsConfig) => {
   // Check if this was an engineering build or writer's build; writer's builds by default are all builds not built on the "mongodb-snooty" site
   // Environment is either dotcomprd or prd if it is a writer build
   if (config.build.environment.SITE_NAME !== 'mongodb-snooty') {
-    config.build.environment.PRODUCTION = isWebhookDeploy;
     process.env.ENV = isWebhookDeploy ? 'dotcomprd' : 'prd';
   } else {
-    config.build.environment.PRODUCTION = false;
     process.env.ENV = isWebhookDeploy ? 'dotcomstg' : 'stg';
   }
+
   const { repo, docsetEntry } = await getProperties({
     branchName: branchName,
     repoName: repoName,
@@ -38,13 +37,13 @@ export const updateConfig = async (config: DocsConfig) => {
   config.build.environment.BRANCH_ENTRY = branch;
 
   console.info(
-    'PRODUCTION value: ',
-    config.build.environment.PRODUCTION,
+    'ENV value: ',
+    config.build.environment.ENV,
     '\n REPO ENTRY: ',
-    JSON.stringify(config.build.environment.REPO_ENTRY),
+    config.build.environment.REPO_ENTRY,
     '\n DOCSET ENTRY: ',
-    JSON.stringify(config.build.environment.DOCSET_ENTRY),
+    config.build.environment.DOCSET_ENTRY,
     '\n BRANCH ENTRY: ',
-    JSON.stringify(config.build.environment.BRANCH_ENTRY),
+    config.build.environment.BRANCH_ENTRY,
   );
 };
