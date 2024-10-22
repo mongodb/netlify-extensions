@@ -1,10 +1,10 @@
 import * as mongodb from 'mongodb';
+import { getEnvVars } from '../assertEnvVars';
 import type {
   DocsetsDocument,
   ReposBranchesDocument,
   SearchDocument,
 } from '../types';
-import { getEnvVars } from '../assertEnvVars';
 
 const ENV_VARS = getEnvVars();
 
