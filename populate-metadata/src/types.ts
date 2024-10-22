@@ -1,5 +1,5 @@
-import type { NetlifyConfig } from '@netlify/build';
-import type { Document, WithId } from 'mongodb';
+import type { NetlifyConfig, NetlifyPluginOptions } from '@netlify/build';
+import type { z } from 'zod';
 
 type EnvironmentConfig = {
   dev?: string;
@@ -86,3 +86,19 @@ export interface Build {
 export interface DocsConfig extends Omit<NetlifyConfig, 'build'> {
   build: Build;
 }
+
+export type ExtensionOptions = {
+  isEnabled: boolean;
+};
+
+export type BuildHookWithEnvVars<
+  EnvVars,
+  BuildContext extends z.ZodSchema,
+  BuildConfigSchema extends z.ZodSchema,
+> = (
+  options: {
+    envVars: EnvVars;
+    buildContext?: BuildContext;
+    buildConfig?: BuildConfigSchema;
+  } & Omit<NetlifyPluginOptions, 'inputs'>,
+) => void | Promise<void>;

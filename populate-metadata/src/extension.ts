@@ -2,36 +2,18 @@
 import {
   type BuildHookOptions,
   type BuildHookType,
-  type BuildHookWithContext,
   NetlifyExtension,
 } from '@netlify/sdk';
 import type z from 'zod';
 import { getEnvVars } from './assertEnvVars';
-import type { EnvVars } from './types';
-import type { NetlifyPluginOptions } from '@netlify/build';
+import type { BuildHookWithEnvVars, EnvVars, ExtensionOptions } from './types';
 
 export const envVarToBool = (envVar: boolean | string = 'false'): boolean => {
   if (typeof envVar === 'boolean') {
     return envVar;
   }
-  return JSON.parse(envVar) as boolean;
+  return JSON.parse(envVar);
 };
-
-export type ExtensionOptions = {
-  isEnabled: boolean;
-};
-
-export type BuildHookWithEnvVars<
-  EnvVars,
-  BuildContext extends z.ZodSchema,
-  BuildConfigSchema extends z.ZodSchema,
-> = (
-  options: {
-    envVars: EnvVars;
-    buildContext?: BuildContext;
-    buildConfig?: BuildConfigSchema;
-  } & Omit<NetlifyPluginOptions, 'inputs'>,
-) => void | Promise<void>;
 
 export class Extension<
   BuildContext extends z.ZodSchema = z.ZodUnknown,
@@ -74,6 +56,8 @@ export class Extension<
           if (!this.isEnabled) {
             return false;
           }
+          console.log(options);
+          // If an "if" function has been passed as an option to the third addBuildEventHandler, execute that conditional
           return options?.if === undefined || options.if(buildConfig);
         },
       },

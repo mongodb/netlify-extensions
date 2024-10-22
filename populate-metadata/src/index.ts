@@ -11,6 +11,11 @@ extension.addBuildEventHandler(
   async ({ netlifyConfig, envVars }) => {
     await updateConfig(netlifyConfig, envVars);
   },
+  {
+    if: () => {
+      return true;
+    },
+  },
 );
 
 export { extension };
