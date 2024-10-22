@@ -6,8 +6,6 @@ import {
 } from './atlasConnector';
 import type { DocsetsDocument, ReposBranchesDocument } from './types';
 
-getEnv;
-
 const getEnvProjection = (env?: string) => {
   return Object.fromEntries([[env ?? 'prd', 1]]);
 };
