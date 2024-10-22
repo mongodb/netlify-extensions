@@ -6,19 +6,10 @@ import {
 } from './atlasConnector';
 import type { DocsetsDocument, ReposBranchesDocument } from './types';
 
+getEnv;
+
 const getEnvProjection = (env?: string) => {
-  switch (env) {
-    case 'stg':
-      return { stg: 1 };
-    case 'dotcomstg':
-      return { dotcomstg: 1 };
-    case 'prd':
-      return { prd: 1 };
-    case 'dotcomprd':
-      return { dotcomprd: 1 };
-    default:
-      return { prd: 1 };
-  }
+  return Object.fromEntries([[env ?? 'prd', 1]]);
 };
 
 export const getDocsetEntry = async ({

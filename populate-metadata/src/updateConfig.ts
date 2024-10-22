@@ -25,11 +25,17 @@ export const updateConfig = async (
 
   // Check if this was an engineering build or writer's build; writer's builds by default are all builds not built on the "mongodb-snooty" site
   // Environment is either dotcomprd or prd if it is a writer build
-  if (config.build.environment.SITE_NAME === 'mongodb-snooty') {
-    config.build.environment.ENV = isWebhookDeploy ? 'dotcomstg' : 'stg';
-  } else {
-    config.build.environment.ENV = isWebhookDeploy ? 'dotcomprd' : 'prd';
-  }
+  config.build.environment.ENV =
+    config.build.environment.SITE_NAME === 'mongodb-snooty'
+      ? isWebhookDeploy
+        ? 'dotcomstg'
+        : 'stg'
+      : isWebhookDeploy
+        ? 'dotcomprd'
+        : 'prd';
+
+  // TODO: remove this when we have a way to set the environment
+  process.env.ENV = config.build.environment.ENV;
 
   const { repo, docsetEntry } = await getProperties({
     branchName: branchName,

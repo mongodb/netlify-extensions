@@ -56,9 +56,9 @@ export class Extension<
           if (!this.isEnabled) {
             return false;
           }
-          console.log(options);
+          console.log(JSON.stringify(options));
           // If an "if" function has been passed as an option to the third addBuildEventHandler, execute that conditional
-          return options?.if === undefined || options.if(buildConfig);
+          // return options?.if === undefined || options.if(buildConfig);
         },
       },
     );

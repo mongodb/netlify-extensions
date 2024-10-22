@@ -13,7 +13,7 @@ extension.addBuildEventHandler(
   },
   {
     if: () => {
-      return true;
+      return false;
     },
   },
 );
