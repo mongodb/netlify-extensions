@@ -30,7 +30,7 @@ export const getDocsetEntry = async ({
 }): Promise<WithId<DocsetsDocument>> => {
   const env = process.env.ENV;
   const docsetEnvironmentProjection = getEnvProjection(env);
-  const docsetsQuery = { project: { $eq: projectName } };
+  const query = { project: { $eq: projectName } };
   const projection = {
     projection: {
       project: 1,
@@ -40,12 +40,11 @@ export const getDocsetEntry = async ({
       url: docsetEnvironmentProjection,
     },
   };
-  const docset = await docsets.findOne<DocsetsDocument>(
-    docsetsQuery,
-    projection,
-  );
+  const docset = await docsets.findOne<DocsetsDocument>(query, projection);
   if (!docset) {
-    throw new Error('Error while getting docsets entry in Atlas');
+    throw new Error(
+      `Could not retrieve docset entry from docsets collection for ${projectName} with query ${JSON.stringify(query)}`,
+    );
   }
   return docset;
 };
@@ -78,7 +77,7 @@ export const getRepoEntry = async ({
   );
   if (!repo) {
     throw new Error(
-      `Could not get repos_branches entry for repo ${repoName}, ${JSON.stringify(
+      `Could not get repos_branches entry for repo ${repoName} with query ${JSON.stringify(
         query,
       )}`,
     );

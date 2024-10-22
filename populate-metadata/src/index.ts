@@ -9,8 +9,7 @@ const extension = new Extension({
 extension.addBuildEventHandler(
   'onPreBuild',
   async ({ netlifyConfig, envVars }) => {
-    console.log('ENV VARS in index', envVars);
-    await updateConfig(netlifyConfig);
+    await updateConfig(netlifyConfig, envVars);
   },
 );
 

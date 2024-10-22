@@ -17,9 +17,7 @@ export const dbClient = async (uri: string) => {
     await client.connect();
     return client;
   } catch (error) {
-    const err = `Error at client connection: ${error} `;
-    console.error(err);
-    throw err;
+    throw new Error(`Error at client connection: ${error} `);
   }
 };
 
@@ -34,7 +32,7 @@ export const getPoolDb = async () => {
 export const closePoolDb = async () => {
   if (clusterZeroClient) await teardown(clusterZeroClient);
   else {
-    console.info('No client connection open to Snooty Db');
+    console.info('No client connection open to Cluster Zero client');
   }
 };
 

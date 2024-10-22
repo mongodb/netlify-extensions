@@ -10,7 +10,7 @@ import { getEnvVars } from './assertEnvVars';
 import type { EnvVars } from './types';
 import type { NetlifyPluginOptions } from '@netlify/build';
 
-export const envVarToBool = (envVar: boolean | string = 'false') => {
+export const envVarToBool = (envVar: boolean | string = 'false'): boolean => {
   if (typeof envVar === 'boolean') {
     return envVar;
   }
@@ -23,13 +23,13 @@ export type ExtensionOptions = {
 
 export type BuildHookWithEnvVars<
   EnvVars,
-  Context extends Record<string, any> = Record<string, never>,
-  Config extends Record<string, any> = Record<string, never>,
+  BuildContext extends z.ZodSchema,
+  BuildConfigSchema extends z.ZodSchema,
 > = (
   options: {
     envVars: EnvVars;
-    buildContext?: Context;
-    buildConfig?: Config;
+    buildContext?: BuildContext;
+    buildConfig?: BuildConfigSchema;
   } & Omit<NetlifyPluginOptions, 'inputs'>,
 ) => void | Promise<void>;
 
@@ -39,8 +39,8 @@ export class Extension<
 > extends NetlifyExtension<
   z.ZodUnknown,
   z.ZodUnknown,
+  // In case of issues, double check that BuildContext, BuildConfigSchema are in correct spots within the order of type params
   BuildContext,
-  // In case of issues, double check that BuildConfigSchema is in correct spot within the order of type params
   BuildConfigSchema,
   z.ZodUnknown
 > {
