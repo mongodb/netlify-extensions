@@ -1,6 +1,6 @@
 # View and install the persistence-module extension.
-name: snooty-cache-extension
+Name: snooty-cache-extension
 
-slug: ci09jy73-snooty-cache-extension
+Slug: ci09jy73-snooty-cache-extension
 
-summary: caches the most recent snooty version
+Summary: Caches the most recent snooty version
