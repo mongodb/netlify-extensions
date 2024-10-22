@@ -10,4 +10,3 @@ config:
       - read
     user:
       - read
-  integrationLevel: site
