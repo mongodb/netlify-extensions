@@ -1,7 +1,7 @@
 config:
   name: git-changed-files-extension
   description: integration that prints the changed files from git when a pr is created
-  slug: rh8r1deq-git-changed-files-extension
+  slug: rh8r1deq-git-changed-files-ext
   scopes:
     site:
       - read
