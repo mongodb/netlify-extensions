@@ -6,6 +6,9 @@ import {
   NetlifyExtension,
 } from '@netlify/sdk';
 import type z from 'zod';
+import { getEnvVars } from './assertEnvVars';
+import type { EnvVars } from './types';
+import type { NetlifyPluginOptions } from '@netlify/build';
 
 export const envVarToBool = (envVar: boolean | string = 'false') => {
   if (typeof envVar === 'boolean') {
@@ -17,6 +20,19 @@ export const envVarToBool = (envVar: boolean | string = 'false') => {
 export type ExtensionOptions = {
   isEnabled: boolean;
 };
+
+export type BuildHookWithEnvVars<
+  EnvVars,
+  Context extends Record<string, any> = Record<string, never>,
+  Config extends Record<string, any> = Record<string, never>,
+> = (
+  options: {
+    envVars: EnvVars;
+    buildContext?: Context;
+    buildConfig?: Config;
+  } & Omit<NetlifyPluginOptions, 'inputs'>,
+) => void | Promise<void>;
+
 export class Extension<
   BuildContext extends z.ZodSchema = z.ZodUnknown,
   BuildConfigSchema extends z.ZodSchema = z.ZodUnknown,
@@ -29,15 +45,18 @@ export class Extension<
   z.ZodUnknown
 > {
   isEnabled: boolean;
+  envVars: EnvVars;
 
   constructor({ isEnabled }: ExtensionOptions) {
     super();
     this.isEnabled = isEnabled;
+    this.envVars = getEnvVars();
   }
 
   addBuildEventHandler = async (
     type: BuildHookType,
-    func: BuildHookWithContext<
+    func: BuildHookWithEnvVars<
+      EnvVars,
       Zod.infer<BuildContext>,
       Zod.infer<BuildConfigSchema>
     >,
@@ -46,7 +65,8 @@ export class Extension<
     super.addBuildEventHandler(
       type,
       async (args) => {
-        await func(args);
+        const envVars = this.envVars;
+        await func({ envVars, ...args });
       },
       {
         ...options,
