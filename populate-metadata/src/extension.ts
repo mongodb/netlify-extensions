@@ -52,11 +52,10 @@ export class Extension<
       },
       {
         if: () => {
-          return true;
-          // if (!this.isEnabled) {
-          //   console.log('Build event handler not enabled', this.isEnabled);
-          //   return false;
-          // }
+          if (!this.isEnabled) {
+            console.log('Build event handler not enabled', this.isEnabled);
+            return false;
+          }
           // If an "if" function has been passed as an option to the third addBuildEventHandler, execute that conditional
           // return options?.if === undefined || options.if(buildConfig);
         },
