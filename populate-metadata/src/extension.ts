@@ -52,6 +52,7 @@ export class Extension<
       },
       {
         if: () => {
+          console.log('Build event handler', this.isEnabled);
           if (!this.isEnabled) {
             return false;
           }

@@ -9,6 +9,7 @@ const extension = new Extension({
 extension.addBuildEventHandler(
   'onPreBuild',
   async ({ netlifyConfig, dbEnvVars }) => {
+    console.log('adding updateConfig build event handler');
     await updateConfig(netlifyConfig, dbEnvVars);
   },
 );
