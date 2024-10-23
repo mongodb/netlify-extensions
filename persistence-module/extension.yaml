@@ -1,10 +1,9 @@
 config:
   use_cjs_shims: true
-  name: chatbot-netlify-integration
+  name: netlify-persistence-extension
   description: uploads site ast for chatbot rag ingestion
-  slug: 6s0rri6w-chatbot-netlify-integration
+  slug: 6s0rri6w-chatbot-netlify-extension
   scopes:
     site:
       - read
       - write
-  integrationLevel: site
