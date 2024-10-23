@@ -1,6 +1,6 @@
 import { promisify } from 'node:util';
 // Documentation: https://sdk.netlify.com
-import { NetlifyIntegration } from '@netlify/sdk';
+import { NetlifyExtension } from '@netlify/sdk';
 import { BSON } from 'bson';
 import { Document } from './generateManifest/document';
 import { Manifest } from './generateManifest/manifest';
@@ -14,7 +14,7 @@ import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
 
 const readdirAsync = promisify(readdir);
 
-const integration = new NetlifyIntegration();
+const extension = new NetlifyExtension();
 
 export const generateManifest = async () => {
   const manifest = new Manifest();
@@ -42,11 +42,12 @@ export const generateManifest = async () => {
   return manifest;
 };
 //Return indexing data from a page's AST for search purposes.
-integration.addBuildEventHandler(
+extension.addBuildEventHandler(
   'onSuccess',
   async ({ utils: { run }, netlifyConfig }) => {
-    // Get content repo zipfile as AST representation
+    if (!process.env.SEARCH_MANIFEST_ENABLED) return;
 
+    // Get content repo zipfile as AST representation
     await run.command('unzip -o bundle.zip');
 
     const branchName = netlifyConfig.build?.environment.BRANCH;
@@ -105,4 +106,4 @@ integration.addBuildEventHandler(
   },
 );
 
-export { integration };
+export { extension };
