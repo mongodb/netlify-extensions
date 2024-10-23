@@ -7,7 +7,7 @@ const extension = new Extension({
 });
 console.log('testing log for populate metadata extension');
 
-await extension.addBuildEventHandler(
+extension.addBuildEventHandler(
   'onPreBuild',
   async ({ netlifyConfig, dbEnvVars }) => {
     console.log('adding updateConfig build event handler');
