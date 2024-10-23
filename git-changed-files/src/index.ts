@@ -1,8 +1,10 @@
-import { NetlifyIntegration } from '@netlify/sdk';
+import { NetlifyExtension } from '@netlify/sdk';
 
-const integration = new NetlifyIntegration();
+const extension = new NetlifyExtension();
 
-integration.addBuildEventHandler('onSuccess', ({ utils: { status, git } }) => {
+extension.addBuildEventHandler('onSuccess', ({ utils: { status, git } }) => {
+  if (!process.env.GIT_CHANGED_FILES_ENABLED) return;
+
   console.log('Checking if any files changed on git -----');
   console.log('Modified files:', git.modifiedFiles);
 
@@ -56,5 +58,4 @@ export function createMarkdown(
 
   return markdownList;
 }
-
-export { integration };
+export { extension };

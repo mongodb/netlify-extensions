@@ -1,0 +1,12 @@
+config:
+  name: git-changed-files-extension
+  description: Makes a netlify comment of the changed content files found.
+  slug: az9wghzy-git-changed-files-extension
+  scopes:
+    site:
+      - read
+      - write
+    env:
+      - read
+    user:
+      - read

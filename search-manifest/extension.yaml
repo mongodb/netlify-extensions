@@ -1,10 +1,9 @@
 # yaml-language-server: $schema=https://sdk.netlify.com/sdk/config-schema.json
 config:
   use_cjs_shims: true
-  slug: netlify-search-integration
-  name: netlify-search-integration
+  slug: pvs5ndh6-search-manifest
+  name: netlify-search-extension
   description:  Generate and upload search manifests to Atlas from an AST
-  integrationLevel: team-and-site
   scopes:
     site: ["read", "write"]
     env: 

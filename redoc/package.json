@@ -4,12 +4,12 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "build": "netlify-integration build -a",
-    "dev": "netlify-integration dev -a",
-    "preview": "netlify-integration preview"
+    "build": "netlify-extension build",
+    "dev": "netlify-extension dev --open"
   },
   "dependencies": {
-    "@netlify/sdk": "^1.60.2-pr-1468.3",
+    "@netlify/netlify-plugin-netlify-extension": "^1.0.3",
+    "@netlify/sdk": "^2.7.1",
     "bson": "^6.8.0",
     "mongodb": "^6.8.0",
     "node-fetch": "^3.3.2",
