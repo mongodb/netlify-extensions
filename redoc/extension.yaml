@@ -1,9 +1,9 @@
 config:
-  name: redoc-integration
+  use_cjs_shims: true
+  name: redoc-extension
   description: creates redoc pages  from OpenAPI spec
-  slug: '-spg1kfd-redoc-integration'
+  slug: v5-29x7u-redoc-extension
   scopes:
     site:
       - read
       - write
-  integrationLevel: site
