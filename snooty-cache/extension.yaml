@@ -1,0 +1,9 @@
+config:
+  name: snooty-cache-extension
+  use_cjs_shims: true
+  description: caches the most recent snooty version
+  slug: ci09jy73-snooty-cache-extension
+  scopes:
+    site:
+      - read
+      - write
