@@ -5,8 +5,9 @@ import { updateConfig } from './updateConfig';
 const extension = new Extension({
   isEnabled: envVarToBool(process.env.POPULATE_METADATA_ENABLED),
 });
+console.log('testing log for populate metadata extension');
 
-extension.addBuildEventHandler(
+await extension.addBuildEventHandler(
   'onPreBuild',
   async ({ netlifyConfig, dbEnvVars }) => {
     console.log('adding updateConfig build event handler');
