@@ -1,9 +1,9 @@
 import { getProperties } from './getProperties';
-import type { DocsConfig, EnvVars } from './types';
+import type { DocsConfig, DbConfig, Environments } from './types';
 
 export const updateConfig = async (
   config: DocsConfig,
-  envVars: EnvVars,
+  dbEnvVars: DbConfig,
 ): Promise<void> => {
   const branchName =
     process.env.BRANCH_NAME ?? config.build?.environment?.BRANCH;
@@ -33,12 +33,11 @@ export const updateConfig = async (
         ? 'dotcomprd'
         : 'prd';
 
-  // TODO: remove this when we have a way to set the environment
-  process.env.ENV = config.build.environment.ENV;
-
   const { repo, docsetEntry } = await getProperties({
     branchName: branchName,
     repoName: repoName,
+    dbEnvVars: dbEnvVars,
+    environment: config.build.environment.ENV,
   });
 
   const { branches: branch, ...repoEntry } = repo;

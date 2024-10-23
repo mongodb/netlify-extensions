@@ -5,9 +5,11 @@ type EnvironmentConfig = {
   dev?: string;
   stg: string;
   dotcomstg: string;
-  dotcomprd: string;
   prd: string;
+  dotcomprd: string;
 };
+
+export type Environments = 'dev' | 'stg' | 'dotcomstg' | 'prd' | 'dotcomprd';
 
 export interface BranchEntry {
   name?: string;
@@ -35,22 +37,22 @@ export interface ReposBranchesDocument {
   internalOnly: boolean;
 }
 
-export type EnvVars = {
+export type DbConfig = {
   ATLAS_CLUSTER0_URI: string;
-  POOL_DB_NAME: string;
   ATLAS_SEARCH_URI: string;
-  REPOS_BRANCHES_COLLECTION: string;
-  DOCSETS_COLLECTION: string;
+  POOL_DB_NAME: PoolDbName;
+  REPOS_BRANCHES_COLLECTION: CollectionNames;
+  DOCSETS_COLLECTION: CollectionNames;
   DOCUMENTS_COLLECTION: string;
 };
 
-type configEnvironmentVariables = Partial<{
+type ConfigEnvironmentVariables = Partial<{
   BRANCH: string;
   SITE_NAME: string;
   INCOMING_HOOK_URL: string;
   INCOMING_HOOK_TITLE: string;
   INCOMING_HOOK_BODY: string;
-  ENV: string;
+  ENV: Environments;
   REPO_ENTRY: ReposBranchesDocument;
   DOCSET_ENTRY: DocsetsDocument;
   BRANCH_ENTRY: BranchEntry[];
@@ -64,7 +66,7 @@ export interface Build {
   ignore?: string;
   edge_handlers?: string;
   edge_functions?: string;
-  environment: configEnvironmentVariables;
+  environment: ConfigEnvironmentVariables;
   processing: {
     skip_processing?: boolean;
     css: {
@@ -92,13 +94,23 @@ export type ExtensionOptions = {
 };
 
 export type BuildHookWithEnvVars<
-  EnvVars,
+  DbConfig,
   BuildContext extends z.ZodSchema,
   BuildConfigSchema extends z.ZodSchema,
 > = (
   options: {
-    envVars: EnvVars;
+    dbEnvVars: DbConfig;
     buildContext?: BuildContext;
     buildConfig?: BuildConfigSchema;
   } & Omit<NetlifyPluginOptions, 'inputs'>,
 ) => void | Promise<void>;
+
+export type PoolDbName = 'pool' | 'pool_test';
+
+export type CollectionNames = 'repos_branches' | 'docsets';
+
+export type CollectionConnectionInfo = {
+  clusterZeroURI: string;
+  databaseName: PoolDbName;
+  collectionName: CollectionNames;
+};

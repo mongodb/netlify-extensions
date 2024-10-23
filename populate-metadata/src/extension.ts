@@ -5,8 +5,8 @@ import {
   NetlifyExtension,
 } from '@netlify/sdk';
 import type z from 'zod';
-import { getEnvVars } from './assertEnvVars';
-import type { BuildHookWithEnvVars, EnvVars, ExtensionOptions } from './types';
+import { getDbConfig } from './assertDbEnvVars';
+import type { BuildHookWithEnvVars, DbConfig, ExtensionOptions } from './types';
 
 export const envVarToBool = (envVar: boolean | string = 'false'): boolean => {
   if (typeof envVar === 'boolean') {
@@ -27,18 +27,18 @@ export class Extension<
   z.ZodUnknown
 > {
   isEnabled: boolean;
-  envVars: EnvVars;
+  dbEnvVars: DbConfig;
 
   constructor({ isEnabled }: ExtensionOptions) {
     super();
     this.isEnabled = isEnabled;
-    this.envVars = getEnvVars();
+    this.dbEnvVars = getDbConfig();
   }
 
   addBuildEventHandler = async (
     type: BuildHookType,
     func: BuildHookWithEnvVars<
-      EnvVars,
+      DbConfig,
       Zod.infer<BuildContext>,
       Zod.infer<BuildConfigSchema>
     >,
@@ -47,8 +47,8 @@ export class Extension<
     super.addBuildEventHandler(
       type,
       async (args) => {
-        const envVars = this.envVars;
-        await func({ envVars, ...args });
+        const dbEnvVars = this.dbEnvVars;
+        await func({ dbEnvVars, ...args });
       },
       {
         if: () => {

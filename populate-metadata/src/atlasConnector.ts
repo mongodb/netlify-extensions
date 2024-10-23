@@ -1,8 +1,5 @@
 import * as mongodb from 'mongodb';
-import { getEnvVars } from './assertEnvVars';
 import type { DocsetsDocument, ReposBranchesDocument } from './types';
-
-const ENV_VARS = getEnvVars();
 
 let clusterZeroClient: mongodb.MongoClient;
 
@@ -21,12 +18,15 @@ export const dbClient = async (uri: string): Promise<mongodb.MongoClient> => {
   }
 };
 
-export const getPoolDb = async (): Promise<mongodb.Db> => {
+export const getPoolDb = async ({
+  clusterZeroURI,
+  databaseName,
+}: { clusterZeroURI: string; databaseName: string }): Promise<mongodb.Db> => {
   if (!clusterZeroClient) {
     console.info('Creating new instance of Cluster Zero client');
-    clusterZeroClient = await dbClient(ENV_VARS.ATLAS_CLUSTER0_URI);
+    clusterZeroClient = await dbClient(clusterZeroURI);
   }
-  return clusterZeroClient.db(ENV_VARS.POOL_DB_NAME);
+  return clusterZeroClient.db(databaseName);
 };
 
 export const closePoolDb = async () => {
@@ -36,18 +36,28 @@ export const closePoolDb = async () => {
   }
 };
 
-export const getDocsetsCollection = async (): Promise<
-  mongodb.Collection<DocsetsDocument>
-> => {
-  const dbSession = await getPoolDb();
-  return dbSession.collection<DocsetsDocument>(ENV_VARS.DOCSETS_COLLECTION);
+export const getDocsetsCollection = async ({
+  clusterZeroURI,
+  databaseName,
+  collectionName,
+}: {
+  clusterZeroURI: string;
+  databaseName: string;
+  collectionName: string;
+}): Promise<mongodb.Collection<DocsetsDocument>> => {
+  const dbSession = await getPoolDb({ clusterZeroURI, databaseName });
+  return dbSession.collection<DocsetsDocument>(collectionName);
 };
 
-export const getReposBranchesCollection = async (): Promise<
-  mongodb.Collection<ReposBranchesDocument>
-> => {
-  const dbSession = await getPoolDb();
-  return dbSession.collection<ReposBranchesDocument>(
-    ENV_VARS.REPOS_BRANCHES_COLLECTION,
-  );
+export const getReposBranchesCollection = async ({
+  clusterZeroURI,
+  databaseName,
+  collectionName,
+}: {
+  clusterZeroURI: string;
+  databaseName: string;
+  collectionName: string;
+}): Promise<mongodb.Collection<ReposBranchesDocument>> => {
+  const dbSession = await getPoolDb({ clusterZeroURI, databaseName });
+  return dbSession.collection<ReposBranchesDocument>(collectionName);
 };

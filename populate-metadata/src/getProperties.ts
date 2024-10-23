@@ -4,21 +4,29 @@ import {
   getDocsetsCollection,
   getReposBranchesCollection,
 } from './atlasConnector';
-import type { DocsetsDocument, ReposBranchesDocument } from './types';
+import type {
+  CollectionConnectionInfo,
+  DbConfig,
+  DocsetsDocument,
+  Environments,
+  ReposBranchesDocument,
+} from './types';
 
-const getEnvProjection = (env?: string) => {
+const getEnvProjection = (env?: Environments) => {
   return Object.fromEntries([[env ?? 'prd', 1]]);
 };
 
 export const getDocsetEntry = async ({
-  docsets,
+  docsetsConnectionInfo,
   projectName,
+  environment,
 }: {
-  docsets: Collection<DocsetsDocument>;
+  docsetsConnectionInfo: CollectionConnectionInfo;
   projectName: string;
+  environment: Environments;
 }): Promise<DocsetsDocument> => {
-  const env = process.env.ENV;
-  const docsetEnvironmentProjection = getEnvProjection(env);
+  const docsets = await getDocsetsCollection(docsetsConnectionInfo);
+  const docsetEnvironmentProjection = getEnvProjection(environment);
   const query = { project: { $eq: projectName } };
   const projection = {
     projection: {
@@ -29,6 +37,7 @@ export const getDocsetEntry = async ({
       url: docsetEnvironmentProjection,
     },
   };
+
   const docset = await docsets.findOne<DocsetsDocument>(query, projection);
   if (!docset) {
     throw new Error(
@@ -41,12 +50,14 @@ export const getDocsetEntry = async ({
 export const getRepoEntry = async ({
   repoName,
   branchName,
-  reposBranches,
+  connectionInfo,
 }: {
   repoName: string;
   branchName: string;
-  reposBranches: Collection<ReposBranchesDocument>;
+  connectionInfo: CollectionConnectionInfo;
 }): Promise<ReposBranchesDocument> => {
+  const reposBranches = await getReposBranchesCollection(connectionInfo);
+
   const query = {
     repoName: repoName,
   };
@@ -77,23 +88,36 @@ export const getRepoEntry = async ({
 export const getProperties = async ({
   branchName,
   repoName,
+  dbEnvVars,
+  environment,
 }: {
   branchName: string;
   repoName: string;
+  dbEnvVars: DbConfig;
+  environment: Environments;
 }): Promise<{ repo: ReposBranchesDocument; docsetEntry: DocsetsDocument }> => {
-  //connect to database and get repos_branches, docsets collections
-  const reposBranches = await getReposBranchesCollection();
-  const docsets = await getDocsetsCollection();
+  const repoBranchesConnectionInfo = {
+    clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
+    databaseName: dbEnvVars.POOL_DB_NAME,
+    collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
+  };
 
   const repo = await getRepoEntry({
     repoName,
     branchName,
-    reposBranches,
+    connectionInfo: repoBranchesConnectionInfo,
   });
 
+  const docsetsConnectionInfo = {
+    clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
+    databaseName: dbEnvVars.POOL_DB_NAME,
+    collectionName: dbEnvVars.DOCSETS_COLLECTION,
+  };
+
   const docsetEntry = await getDocsetEntry({
-    docsets,
+    docsetsConnectionInfo,
     projectName: repo.project,
+    environment,
   });
 
   closePoolDb();
