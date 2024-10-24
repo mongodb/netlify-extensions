@@ -5,9 +5,10 @@ export const COLLECTION_NAME = 'oas_files';
 const getAtlasURL = () => {
   const isHostLocal = process.env.DB_HOST?.includes('localhost');
   if (isHostLocal) {
-    return `mongodb://${process.env.MONGO_ATLAS_HOST}/?retryWrites=true&w=majority`;
+    console.log('On local host');
+    return `mongodb://${process.env.MONGO_ATLAS_CLUSTER0_HOST}/?retryWrites=true&w=majority`;
   }
-  return `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@${process.env.MONGO_ATLAS_HOST}/?retryWrites=true&w=majority`;
+  return `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@${process.env.MONGO_ATLAS_CLUSTER0_HOST}/?retryWrites=true&w=majority`;
 };
 
 const atlasURL = getAtlasURL();
