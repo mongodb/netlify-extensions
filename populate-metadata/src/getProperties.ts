@@ -1,16 +1,16 @@
-import type { Collection, WithId } from 'mongodb';
+import type { DbConfig, Environments } from './assertDbEnvVars';
 import {
   closePoolDb,
+  type CollectionConnectionInfo,
+} from './databaseConnection/atlasConnector';
+import {
+  type DocsetsDocument,
   getDocsetsCollection,
+} from './databaseConnection/fetchDocsetsData';
+import {
+  type ReposBranchesDocument,
   getReposBranchesCollection,
-} from './atlasConnector';
-import type {
-  CollectionConnectionInfo,
-  DbConfig,
-  DocsetsDocument,
-  Environments,
-  ReposBranchesDocument,
-} from './types';
+} from './databaseConnection/fetchReposBranchesData';
 
 const getEnvProjection = (env?: Environments) => {
   return Object.fromEntries([[env ?? 'prd', 1]]);

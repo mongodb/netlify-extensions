@@ -1,7 +1,13 @@
 import * as mongodb from 'mongodb';
-import type { DocsetsDocument, ReposBranchesDocument } from './types';
+import type { CollectionName, PoolDbName } from '../assertDbEnvVars';
 
 let clusterZeroClient: mongodb.MongoClient;
+
+export type CollectionConnectionInfo = {
+  clusterZeroURI: string;
+  databaseName: PoolDbName;
+  collectionName: CollectionName;
+};
 
 export const teardown = async (client: mongodb.MongoClient): Promise<void> => {
   await client.close();
@@ -34,30 +40,4 @@ export const closePoolDb = async () => {
   else {
     console.info('No client connection open to Cluster Zero client');
   }
-};
-
-export const getDocsetsCollection = async ({
-  clusterZeroURI,
-  databaseName,
-  collectionName,
-}: {
-  clusterZeroURI: string;
-  databaseName: string;
-  collectionName: string;
-}): Promise<mongodb.Collection<DocsetsDocument>> => {
-  const dbSession = await getPoolDb({ clusterZeroURI, databaseName });
-  return dbSession.collection<DocsetsDocument>(collectionName);
-};
-
-export const getReposBranchesCollection = async ({
-  clusterZeroURI,
-  databaseName,
-  collectionName,
-}: {
-  clusterZeroURI: string;
-  databaseName: string;
-  collectionName: string;
-}): Promise<mongodb.Collection<ReposBranchesDocument>> => {
-  const dbSession = await getPoolDb({ clusterZeroURI, databaseName });
-  return dbSession.collection<ReposBranchesDocument>(collectionName);
 };

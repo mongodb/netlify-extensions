@@ -5,8 +5,24 @@ import {
   NetlifyExtension,
 } from '@netlify/sdk';
 import type z from 'zod';
-import { getDbConfig } from './assertDbEnvVars';
-import type { BuildHookWithEnvVars, DbConfig, ExtensionOptions } from './types';
+import { getDbConfig, type DbConfig } from './assertDbEnvVars';
+import type { NetlifyPluginOptions } from '@netlify/build';
+
+export type BuildHookWithEnvVars<
+  DbConfig,
+  BuildContext extends z.ZodSchema,
+  BuildConfigSchema extends z.ZodSchema,
+> = (
+  options: {
+    dbEnvVars: DbConfig;
+    buildContext?: BuildContext;
+    buildConfig?: BuildConfigSchema;
+  } & Omit<NetlifyPluginOptions, 'inputs'>,
+) => void | Promise<void>;
+
+export type ExtensionOptions = {
+  isEnabled: boolean;
+};
 
 export const envVarToBool = (envVar: boolean | string = 'false'): boolean => {
   if (typeof envVar === 'boolean') {
