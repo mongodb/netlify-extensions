@@ -1,3 +1,4 @@
+import type { NetlifyPluginOptions } from '@netlify/build';
 // Documentation: https://sdk.netlify.com
 import {
   type BuildHookOptions,
@@ -5,8 +6,7 @@ import {
   NetlifyExtension,
 } from '@netlify/sdk';
 import type z from 'zod';
-import { getDbConfig, type DbConfig } from './assertDbEnvVars';
-import type { NetlifyPluginOptions } from '@netlify/build';
+import { type DbConfig, getDbConfig } from './assertDbEnvVars';
 
 export type BuildHookWithEnvVars<
   DbConfig,

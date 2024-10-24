@@ -2,8 +2,8 @@ import type { NetlifyConfig } from '@netlify/build';
 import type { DbConfig, Environments } from './assertDbEnvVars';
 import type { DocsetsDocument } from './databaseConnection/fetchDocsetsData';
 import type {
-  ReposBranchesDocument,
   BranchEntry,
+  ReposBranchesDocument,
 } from './databaseConnection/fetchReposBranchesData';
 import { getProperties } from './getProperties';
 

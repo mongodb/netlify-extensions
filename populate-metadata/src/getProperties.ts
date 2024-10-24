@@ -1,7 +1,7 @@
 import type { DbConfig, Environments } from './assertDbEnvVars';
 import {
-  closePoolDb,
   type CollectionConnectionInfo,
+  closePoolDb,
 } from './databaseConnection/atlasConnector';
 import {
   type DocsetsDocument,

@@ -1,5 +1,5 @@
-import { getPoolDb } from './atlasConnector';
 import type * as mongodb from 'mongodb';
+import { getPoolDb } from './atlasConnector';
 
 export interface DocsetsDocument {
   project: string;
