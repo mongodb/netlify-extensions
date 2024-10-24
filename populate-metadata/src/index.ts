@@ -14,7 +14,7 @@ extension.addBuildEventHandler(
   {
     if: () => {
       console.log('first if statement');
-      return true;
+      return false;
     },
   },
 );

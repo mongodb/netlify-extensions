@@ -70,7 +70,7 @@ export class Extension<
         ...options,
         if: () => {
           console.log('second if statement');
-          return false;
+          return true;
         },
       },
     );
