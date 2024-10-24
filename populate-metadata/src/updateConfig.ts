@@ -5,7 +5,7 @@ export const updateConfig = async (
   config: DocsConfig,
   dbEnvVars: DbConfig,
 ): Promise<void> => {
-  console.log(config);
+  console.log('config object:', config.build);
 
   const branchName =
     process.env.BRANCH_NAME ?? config.build?.environment?.BRANCH;
