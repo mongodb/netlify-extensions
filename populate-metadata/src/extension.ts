@@ -67,10 +67,11 @@ export class Extension<
         await func({ dbEnvVars, ...args });
       },
       {
-        if: () => {
-          return this.isEnabled;
-        },
         ...options,
+        if: () => {
+          console.log('second if statement');
+          return false;
+        },
       },
     );
   };

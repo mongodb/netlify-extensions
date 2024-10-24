@@ -11,6 +11,12 @@ extension.addBuildEventHandler(
   async ({ netlifyConfig, dbEnvVars }) => {
     await updateConfig(netlifyConfig?.build?.environment, dbEnvVars);
   },
+  {
+    if: () => {
+      console.log('first if statement');
+      return true;
+    },
+  },
 );
 
 export { extension };
