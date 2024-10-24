@@ -73,7 +73,7 @@ export class Extension<
           if (!this.isEnabled) {
             return false;
           }
-          //Ensure if option is not overwritten if passed into build event handler
+          // Ensure if option is not overwritten if passed into build event handler
           return options?.if === undefined || options.if(buildConfig);
         },
       },

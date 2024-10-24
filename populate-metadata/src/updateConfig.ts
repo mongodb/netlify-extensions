@@ -52,7 +52,6 @@ export interface Build {
 }
 
 export const updateConfig = async (
-  //TODO: make this more specific to just environment
   configEnvironment: ConfigEnvironmentVariables,
   dbEnvVars: DbConfig,
 ): Promise<void> => {
