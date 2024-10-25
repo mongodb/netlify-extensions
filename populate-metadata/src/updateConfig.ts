@@ -11,6 +11,12 @@ export interface DocsConfig extends Omit<NetlifyConfig, 'build'> {
   build: Build;
 }
 
+export type PoolDbName = 'pool' | 'pool_test';
+
+export type SearchDbName = 'search' | 'search-test';
+
+export type SnootyDbName = 'snootydotcomstg' | 'snootydotcomprd';
+
 type ConfigEnvironmentVariables = Partial<{
   BRANCH: string;
   SITE_NAME: string;
@@ -21,6 +27,9 @@ type ConfigEnvironmentVariables = Partial<{
   REPO_ENTRY: ReposBranchesDocument;
   DOCSET_ENTRY: DocsetsDocument;
   BRANCH_ENTRY: BranchEntry[];
+  POOL_DB_NAME: PoolDbName;
+  SEARCH_DB_NAME: SearchDbName;
+  SNOOTY_DB_NAME: SnootyDbName;
 }>;
 
 interface Build {
@@ -72,7 +81,7 @@ export const updateConfig = async (
 
   // Check if this was an engineering build or writer's build; writer's builds by default are all builds not built on the "mongodb-snooty" site
   // Environment is either dotcomprd or prd if it is a writer build
-  configEnvironment.ENV =
+  const env =
     (process.env.ENV as Environments) ??
     (configEnvironment.SITE_NAME === 'mongodb-snooty'
       ? isWebhookDeploy
@@ -82,11 +91,26 @@ export const updateConfig = async (
         ? 'dotcomprd'
         : 'prd');
 
+  configEnvironment.ENV = env;
+
+  // SET POOL DB NAME, SEARCH DB NAME here, SNOOTY db name
+  configEnvironment.POOL_DB_NAME = dbEnvVars.POOL_DB_NAME =
+    (dbEnvVars.POOL_DB_NAME as PoolDbName) ??
+    (env === 'stg' || env === 'dotcomstg' ? 'pool_test' : 'pool');
+
+  configEnvironment.SEARCH_DB_NAME = dbEnvVars.SEARCH_DB_NAME =
+    (process.env.SEARCH_DB_NAME as SearchDbName) ??
+    (env === 'dotcomstg' ? 'search-staging' : 'search');
+
+  configEnvironment.SNOOTY_DB_NAME = dbEnvVars.SNOOTY_DB_NAME =
+    (process.env.SNOOTY_DB_NAME as SnootyDbName) ??
+    (env === 'stg' || env === 'dotcomstg' ? '' : 'search');
+
   const { repo, docsetEntry } = await getProperties({
     branchName,
     repoName,
     dbEnvVars,
-    environment: configEnvironment.ENV,
+    environment: env,
   });
 
   const { branches: branch, ...repoEntry } = repo;

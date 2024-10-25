@@ -2,7 +2,7 @@ import type { DbConfig, Environments } from './assertDbEnvVars';
 import {
   type CollectionConnectionInfo,
   closePoolDb,
-} from './databaseConnection/atlasConnector';
+} from './databaseConnection/clusterZeroConnector';
 import {
   type DocsetsDocument,
   getDocsetsCollection,

@@ -1,5 +1,5 @@
 import type * as mongodb from 'mongodb';
-import { getPoolDb } from './atlasConnector';
+import { getPoolDb } from './clusterZeroConnector';
 
 export interface BranchEntry {
   name?: string;

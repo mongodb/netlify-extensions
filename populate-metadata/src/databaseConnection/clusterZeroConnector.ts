@@ -1,5 +1,6 @@
 import * as mongodb from 'mongodb';
-import type { CollectionName, PoolDbName } from '../assertDbEnvVars';
+import type { CollectionName } from '../assertDbEnvVars';
+import type { PoolDbName } from '../updateConfig';
 
 let clusterZeroClient: mongodb.MongoClient;
 
