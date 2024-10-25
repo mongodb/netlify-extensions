@@ -1,4 +1,3 @@
-import type { NetlifyConfig } from '@netlify/build';
 import type { DbConfig, Environments } from './assertDbEnvVars';
 import type { DocsetsDocument } from './databaseConnection/fetchDocsetsData';
 import type {
@@ -7,15 +6,50 @@ import type {
 } from './databaseConnection/fetchReposBranchesData';
 import { getProperties } from './getProperties';
 
-export interface DocsConfig extends Omit<NetlifyConfig, 'build'> {
-  build: Build;
-}
-
 export type PoolDbName = 'pool' | 'pool_test';
 
-export type SearchDbName = 'search' | 'search-test';
+export type SearchDbName = 'search' | 'search-test' | 'search-stage';
 
-export type SnootyDbName = 'snootydotcomstg' | 'snootydotcomprd';
+export type SnootyDbName =
+  | 'snooty_dev'
+  | 'snooty_stage'
+  | 'snooty_dotcomstg'
+  | 'snooty_prod'
+  | 'snooty_dotcomprd';
+
+const getDbNames = (
+  env: Environments,
+): { snootyDb: SnootyDbName; searchDb: SearchDbName; poolDb: PoolDbName } => {
+  switch (env) {
+    case 'dotcomstg':
+      return {
+        snootyDb: 'snooty_dotcomstg',
+        searchDb: 'search-stage',
+        poolDb: 'pool_test',
+      };
+
+    case 'prd':
+      return {
+        snootyDb: 'snooty_prod',
+        searchDb: 'search-stage',
+        poolDb: 'pool',
+      };
+
+    case 'dotcomprd':
+      return {
+        snootyDb: 'snooty_dotcomprd',
+        searchDb: 'search',
+        poolDb: 'pool',
+      };
+
+    default:
+      return {
+        snootyDb: 'snooty_stage',
+        searchDb: 'search-test',
+        poolDb: 'pool_test',
+      };
+  }
+};
 
 type ConfigEnvironmentVariables = Partial<{
   BRANCH: string;
@@ -32,34 +66,6 @@ type ConfigEnvironmentVariables = Partial<{
   SNOOTY_DB_NAME: SnootyDbName;
 }>;
 
-interface Build {
-  command?: string;
-  publish: string;
-  base: string;
-  services: Record<string, unknown>;
-  ignore?: string;
-  edge_handlers?: string;
-  edge_functions?: string;
-  environment: ConfigEnvironmentVariables;
-  processing: {
-    skip_processing?: boolean;
-    css: {
-      bundle?: boolean;
-      minify?: boolean;
-    };
-    js: {
-      bundle?: boolean;
-      minify?: boolean;
-    };
-    html: {
-      pretty_url?: boolean;
-    };
-    images: {
-      compress?: boolean;
-    };
-  };
-}
-
 export const updateConfig = async (
   configEnvironment: ConfigEnvironmentVariables,
   dbEnvVars: DbConfig,
@@ -71,7 +77,7 @@ export const updateConfig = async (
     throw new Error('Repo name or branch name missing from deploy');
   }
 
-  // Check if build was triggered by a webhook
+  // Checks if build was triggered by a webhook
   // TODO: add more specific logic dependent on hook title, url, body, etc. once Slack deploy apps have been implemented
   const isWebhookDeploy = !!(
     configEnvironment.INCOMING_HOOK_URL &&
@@ -93,23 +99,22 @@ export const updateConfig = async (
 
   configEnvironment.ENV = env;
 
-  // SET POOL DB NAME, SEARCH DB NAME here, SNOOTY db name
-  configEnvironment.POOL_DB_NAME = dbEnvVars.POOL_DB_NAME =
-    (dbEnvVars.POOL_DB_NAME as PoolDbName) ??
-    (env === 'stg' || env === 'dotcomstg' ? 'pool_test' : 'pool');
+  const { snootyDb, searchDb, poolDb } = getDbNames(env);
 
-  configEnvironment.SEARCH_DB_NAME = dbEnvVars.SEARCH_DB_NAME =
-    (process.env.SEARCH_DB_NAME as SearchDbName) ??
-    (env === 'dotcomstg' ? 'search-staging' : 'search');
+  configEnvironment.POOL_DB_NAME =
+    (process.env.POOL_DB_NAME as PoolDbName) ?? poolDb;
 
-  configEnvironment.SNOOTY_DB_NAME = dbEnvVars.SNOOTY_DB_NAME =
-    (process.env.SNOOTY_DB_NAME as SnootyDbName) ??
-    (env === 'stg' || env === 'dotcomstg' ? '' : 'search');
+  configEnvironment.SEARCH_DB_NAME =
+    (process.env.SEARCH_DB_NAME as SearchDbName) ?? searchDb;
+
+  configEnvironment.SNOOTY_DB_NAME =
+    (process.env.SNOOTY_DB_NAME as SnootyDbName) ?? snootyDb;
 
   const { repo, docsetEntry } = await getProperties({
     branchName,
     repoName,
     dbEnvVars,
+    poolDbName: configEnvironment.POOL_DB_NAME,
     environment: env,
   });
 

@@ -11,6 +11,7 @@ import {
   type ReposBranchesDocument,
   getReposBranchesCollection,
 } from './databaseConnection/fetchReposBranchesData';
+import type { PoolDbName } from './updateConfig';
 
 const getEnvProjection = (env?: Environments) => {
   return Object.fromEntries([[env ?? 'prd', 1]]);
@@ -47,7 +48,7 @@ const getDocsetEntry = async ({
   return docset;
 };
 
-export const getRepoEntry = async ({
+const getRepoEntry = async ({
   repoName,
   branchName,
   connectionInfo,
@@ -89,16 +90,18 @@ export const getProperties = async ({
   branchName,
   repoName,
   dbEnvVars,
+  poolDbName,
   environment,
 }: {
   branchName: string;
   repoName: string;
   dbEnvVars: DbConfig;
+  poolDbName: PoolDbName;
   environment: Environments;
 }): Promise<{ repo: ReposBranchesDocument; docsetEntry: DocsetsDocument }> => {
   const repoBranchesConnectionInfo = {
     clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
-    databaseName: dbEnvVars.POOL_DB_NAME,
+    databaseName: poolDbName,
     collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
   };
 
@@ -110,7 +113,7 @@ export const getProperties = async ({
 
   const docsetsConnectionInfo = {
     clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
-    databaseName: dbEnvVars.POOL_DB_NAME,
+    databaseName: poolDbName,
     collectionName: dbEnvVars.DOCSETS_COLLECTION,
   };
 

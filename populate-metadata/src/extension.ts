@@ -8,7 +8,7 @@ import {
 import type z from 'zod';
 import { type DbConfig, getDbConfig } from './assertDbEnvVars';
 
-export type BuildHookWithEnvVars<
+type BuildHookWithEnvVars<
   DbConfig,
   BuildContext extends z.ZodSchema,
   BuildConfigSchema extends z.ZodSchema,
@@ -20,7 +20,7 @@ export type BuildHookWithEnvVars<
   } & Omit<NetlifyPluginOptions, 'inputs'>,
 ) => void | Promise<void>;
 
-export type ExtensionOptions = {
+type ExtensionOptions = {
   isEnabled: boolean;
 };
 
@@ -31,6 +31,7 @@ export const envVarToBool = (envVar: boolean | string = 'false'): boolean => {
   return JSON.parse(envVar);
 };
 
+// TODO: Move this out of the populate-metadata module with npx
 export class Extension<
   BuildContext extends z.ZodSchema = z.ZodUnknown,
   BuildConfigSchema extends z.ZodSchema = z.ZodUnknown,

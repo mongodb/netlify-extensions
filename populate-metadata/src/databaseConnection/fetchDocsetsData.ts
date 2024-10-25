@@ -1,12 +1,6 @@
 import type * as mongodb from 'mongodb';
 import { getPoolDb } from './clusterZeroConnector';
 
-export interface DocsetsDocument {
-  project: string;
-  url: EnvironmentConfig;
-  prefix: EnvironmentConfig;
-}
-
 type EnvironmentConfig = {
   dev?: string;
   stg: string;
@@ -14,6 +8,11 @@ type EnvironmentConfig = {
   prd: string;
   dotcomprd: string;
 };
+export interface DocsetsDocument {
+  project: string;
+  url: EnvironmentConfig;
+  prefix: EnvironmentConfig;
+}
 
 export const getDocsetsCollection = async ({
   clusterZeroURI,

@@ -1,5 +1,3 @@
-import type { PoolDbName, SearchDbName, SnootyDbName } from './updateConfig';
-
 export type Environments = 'dev' | 'stg' | 'dotcomstg' | 'prd' | 'dotcomprd';
 
 export type CollectionName = 'repos_branches' | 'docsets' | 'documents';
@@ -7,9 +5,6 @@ export type CollectionName = 'repos_branches' | 'docsets' | 'documents';
 export type DbConfig = {
   ATLAS_CLUSTER0_URI: string;
   ATLAS_SEARCH_URI: string;
-  POOL_DB_NAME?: PoolDbName;
-  SEARCH_DB_NAME?: SearchDbName;
-  SNOOTY_DB_NAME?: SnootyDbName;
   REPOS_BRANCHES_COLLECTION: CollectionName;
   DOCSETS_COLLECTION: CollectionName;
   DOCUMENTS_COLLECTION: CollectionName;
