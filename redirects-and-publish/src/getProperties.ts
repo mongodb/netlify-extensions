@@ -1,10 +1,10 @@
+import type { Collection } from 'mongodb';
+import { getCollection, getSnootyDb } from './searchConnector';
 import type {
   DatabaseDocument,
   DocsetsDocument,
   ReposBranchesDocument,
 } from './types';
-import { getCollection, getSnootyDb } from './searchConnector';
-import type { Collection } from 'mongodb';
 
 export const getProperties = async (repoName: string) => {
   //connect to database and get reposBranches, docsets collections

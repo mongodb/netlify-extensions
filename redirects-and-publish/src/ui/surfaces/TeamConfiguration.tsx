@@ -1,3 +1,4 @@
+import { useNetlifySDK } from '@netlify/sdk/ui/react';
 import {
   Card,
   CardLoader,
@@ -8,9 +9,8 @@ import {
   FormFieldSecret,
   TeamConfigurationSurface,
 } from '@netlify/sdk/ui/react/components';
-import { useNetlifySDK } from '@netlify/sdk/ui/react';
-import { trpc } from '../trpc';
 import { teamSettingsSchema } from '../../schema/team-settings-schema';
+import { trpc } from '../trpc';
 
 export const TeamConfiguration = () => {
   const sdk = useNetlifySDK();

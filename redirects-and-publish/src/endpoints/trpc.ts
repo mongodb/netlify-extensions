@@ -1,4 +1,4 @@
-import { type Config } from '@netlify/functions';
+import type { Config } from '@netlify/functions';
 import { createNetlifyTRPCHandler } from '@netlify/sdk/ui/functions/trpc';
 import { appRouter } from '../server/router.js';
 
