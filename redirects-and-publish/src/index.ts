@@ -35,6 +35,10 @@ extension.addBuildEventHandler(
     process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY;
     process.env.AWS_ACCESS_KEY_ID = process.env.AWS_S3_ACCESS_KEY_ID;
 
+    if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+      throw new Error('credentials not found');
+    }
+
     console.log('start of the mut-publish plugin -----------');
 
     const repoName =
