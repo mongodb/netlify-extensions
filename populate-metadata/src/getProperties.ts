@@ -16,7 +16,7 @@ const getEnvProjection = (env?: Environments) => {
   return Object.fromEntries([[env ?? 'prd', 1]]);
 };
 
-export const getDocsetEntry = async ({
+const getDocsetEntry = async ({
   docsetsConnectionInfo,
   projectName,
   environment,

@@ -23,7 +23,7 @@ type ConfigEnvironmentVariables = Partial<{
   BRANCH_ENTRY: BranchEntry[];
 }>;
 
-export interface Build {
+interface Build {
   command?: string;
   publish: string;
   base: string;
@@ -73,18 +73,19 @@ export const updateConfig = async (
   // Check if this was an engineering build or writer's build; writer's builds by default are all builds not built on the "mongodb-snooty" site
   // Environment is either dotcomprd or prd if it is a writer build
   configEnvironment.ENV =
-    configEnvironment.SITE_NAME === 'mongodb-snooty'
+    (process.env.ENV as Environments) ??
+    (configEnvironment.SITE_NAME === 'mongodb-snooty'
       ? isWebhookDeploy
         ? 'dotcomstg'
         : 'stg'
       : isWebhookDeploy
         ? 'dotcomprd'
-        : 'prd';
+        : 'prd');
 
   const { repo, docsetEntry } = await getProperties({
-    branchName: branchName,
-    repoName: repoName,
-    dbEnvVars: dbEnvVars,
+    branchName,
+    repoName,
+    dbEnvVars,
     environment: configEnvironment.ENV,
   });
 
