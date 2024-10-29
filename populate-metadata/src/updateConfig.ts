@@ -41,7 +41,7 @@ const getDbNames = (
         searchDb: 'search',
         poolDb: 'pool',
       };
-    // Default to 'stg' database values if env = 'stg' or any invalid env value
+    // Default to 'stg' databases
     default:
       return {
         snootyDb: 'snooty_stage',
@@ -98,6 +98,8 @@ export const updateConfig = async (
         : 'prd');
 
   configEnvironment.ENV = env;
+  // Set process.env SNOOTY_ENV environment variable for Snooty frontend to retrieve at build time
+  process.env.SNOOTY_ENV = env;
 
   const { snootyDb, searchDb, poolDb } = getDbNames(env);
 
