@@ -41,7 +41,7 @@ const getDbNames = (
         searchDb: 'search',
         poolDb: 'pool',
       };
-
+    // Default to 'stg' database values if env = 'stg' or any invalid env value
     default:
       return {
         snootyDb: 'snooty_stage',
@@ -101,6 +101,8 @@ export const updateConfig = async (
 
   const { snootyDb, searchDb, poolDb } = getDbNames(env);
 
+  // Check if values for the database names have been set as environment variables through Netlify UI
+  // Allows overwriting of database name values for testing
   configEnvironment.POOL_DB_NAME =
     (process.env.POOL_DB_NAME as PoolDbName) ?? poolDb;
 
