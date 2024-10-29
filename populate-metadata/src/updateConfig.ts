@@ -70,7 +70,7 @@ export const updateConfig = async (
   configEnvironment: ConfigEnvironmentVariables,
   dbEnvVars: DbConfig,
 ): Promise<void> => {
-  console.log('REPO URL:', configEnvironment.REPOSITORY_URL);
+  console.log('REPO URL:', process.env.REPOSITORY_URL);
   const branchName = process.env.BRANCH_NAME ?? configEnvironment.BRANCH;
   const repoName = process.env.REPO_NAME ?? configEnvironment.SITE_NAME;
 
