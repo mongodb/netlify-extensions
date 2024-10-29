@@ -70,9 +70,10 @@ export const updateConfig = async (
   configEnvironment: ConfigEnvironmentVariables,
   dbEnvVars: DbConfig,
 ): Promise<void> => {
-  console.log('REPO URL:', process.env.REPOSITORY_URL);
+  console.log('REPO URL:', process.env.REPOSITORY_URL?.split('/').pop());
   const branchName = process.env.BRANCH_NAME ?? configEnvironment.BRANCH;
-  const repoName = process.env.REPO_NAME ?? configEnvironment.SITE_NAME;
+  const repoName =
+    process.env.REPO_NAME ?? process.env.REPOSITORY_URL?.split('/').pop();
 
   if (!branchName || !repoName) {
     throw new Error('Repo name or branch name missing from deploy');
