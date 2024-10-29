@@ -1,4 +1,5 @@
 Running Netlify Extensions Locally
+
 Testing an extension locally is a great way to ensure your changes work as intended without needing to deploy directly to production. By default, Netlify Extensions will be deployed automatically to production when merged to main. This makes testing locally important.
 
 First, you’ll want to use a content repository to test the extension, if the extension you’re working with uses build handlers. Right now, all of our extensions, except for the Slack deploy extension, use build handlers.
@@ -7,7 +8,7 @@ If you haven’t already, make sure you have the Netlify CLI installed:
 
 `npm install netlify-cli -g`
 
-Once installed, clone the content repository. You'll want to the the `build.sh`. By default, the `build.sh` cURLs the `build-site.sh` script and executes that shell file.
+Once installed, clone the content repository. You'll want to modify the `build.sh`. By default, the `build.sh` cURLs the `build-site.sh` script and executes that shell file.
 
 This is to allow us to centrally locate the script, and make modifications in a single place. In our case, we have to make a small modification because most of us are using a Mac, and the script downloads a Linux version of the parser.
 Netlify doesn't support using Docker, unfortunately, but it could be a good option for us as a way to develop locally.
@@ -82,7 +83,7 @@ For more information, the docs on local extension development can be found [here
 
 ### Site has incorrect or no netlify.toml file
 
-The way this manifests is the Netlify build failing with the following error in the deploy stage:
+In this case, the Netlify build will fail with the following error in the deploy stage:
 
 ```
 2:06:05 PM: Starting to deploy site from '/'
@@ -91,9 +92,9 @@ The way this manifests is the Netlify build failing with the following error in 
 2:06:11 PM: Failing build: Failed to build site
 ```
 
-This stems from Netlify uploading all files within the directory, but not uploading the snooty/public output. In the case of not having a netlify.toml, make sure their branch is up-to-date with their master branch.
+This stems from Netlify uploading all files within the directory, but not uploading the snooty/public output. In the case of not having a netlify.toml, make sure the checked out branch is up-to-date with the main branch.
 
-Although less likely, writers may have an incorrectly configured netlify.toml. Namely, there were some instances where the netlify.toml was out-of-date. Instead of containing the `[build]` section to specify the publish directory and build command, I instead used the `[context.production]` section. This meant that the build script was never run in deploy previews or branch deploys.
+Although less likely, writers may have an incorrectly configured netlify.toml. Namely, there were some instances where the netlify.toml was outdated. Initial versions of the toml didn't contain `[build]` section to specify the publish directory and build command, but instead set those fields only in the `[context.production]` section. This meant that the build script was never run in deploy previews or branch deploys.
 
 [An example of updating an out-of-date netlify.toml](https://github.com/10gen/docs-mongodb-internal/pull/9148/commits/e6c2ed359e3ef9cd36b280019986569f709b70ec)
 
@@ -107,7 +108,7 @@ This error stems from the Netlify workers running out of memory. This is usually
 
 ### Builds not starting even when writers create a PR
 
-This occurs when the branch they are creating a PR against is not added as a deployable branch in Netlify. To resolve this, go to the content repository's corresponding Netlify site, view the site configuration, go to `Build and Deploy`, and add the branch that they want to merge their PR into as a branch deploy in the `Branches and Deploy Contexts` section:
+This occurs when the branch they are creating a PR against is not added as a deployable branch in Netlify. To resolve this, go to the content repository's corresponding Netlify site, view the site configuration, go to `Build and Deploy`, and add the branch that they want to merge their PR into as a branch deploy in the `Branches and Deploy Contexts` section or select all branches as Branch Deploys
 
 ![branches and deploy context section in Netlify](image.png)
 
