@@ -26,7 +26,6 @@ export const mutRedirectsAndPublish = async (
 
     // running mut-publish ----------------------------------------------------------
     //TODO: change these teamwide env vars in Netlify UI when ready to move to prod
-    //TODO: we only want to run mut publish for dotcomprod and dotcomstg
     process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY;
     process.env.AWS_ACCESS_KEY_ID = process.env.AWS_S3_ACCESS_KEY_ID;
 
@@ -49,6 +48,7 @@ export const mutRedirectsAndPublish = async (
     // connect to mongodb and pool.docsets to get bucket
     const docsetEntry = configEnvironment?.DOCSET_ENTRY;
 
+    //TODO: we only want to run mut publish for dotcomprod and dotcomstg
     console.log('Succesfully got docsets entry:', docsetEntry);
 
     /*Usage: mut-publish <source> <bucket> --prefix=prefix
@@ -60,27 +60,29 @@ export const mutRedirectsAndPublish = async (
                     [--dry-run] [--verbose] [--json] */
     try {
       console.log('Running mut-publish...');
-      if (!docsetEntry?.bucket || !docsetEntry?.prefix) {
+      if (!docsetEntry?.bucket || !docsetEntry?.prefix || !docsetEntry?.url) {
         throw new Error;
       }
 
-      console.log('In the bucket of', docsetEntry?.bucket);
-      console.log('With a prefix of', docsetEntry?.prefix)
-      // TODO: do I need to log this command below
-      // TODO: the prefix 'netlify/docs-qa' is hard coded right now but it should be a variable
-    //   await run(
-    //     `${process.cwd()}/mut/mut-publish`,
-    //     [
-    //       'snooty/public',
-    //       docsetEntry.bucket,
-    //       '--prefix=/netlify/docs-qa',
-    //       '--deploy',
-    //       `--deployed-url-prefix=${docsetEntry?.url.dotcomstg}`,
-    //       '--json',
-    //       '--all-subdirectories',
-    //     ],
-    //     { input: 'y' },
-    //   );
+      // TODO: sub in the temporary values for the real values (this values from docs-landing staging)
+      console.log('In the bucket of', docsetEntry?.bucket); // subbed in docs-mongodb-org-dotcomstg
+      console.log('With a prefix of', docsetEntry?.prefix); // subbed in /netlify/docs-qa
+      console.log('And a URL of: ',  docsetEntry?.url); // https://mongodbcom-cdn.website.staging.corp.mongodb.com/
+      
+      // TODO: do I need to log this command below ?
+      await run(
+        `${process.cwd()}/mut/mut-publish`,
+        [
+          'snooty/public',
+          'docs-mongodb-org-dotcomstg',
+          '--prefix=/netlify/docs-qa',
+          '--deploy',
+          '--deployed-url-prefix=https://mongodbcom-cdn.website.staging.corp.mongodb.com/',
+          '--json',
+          '--all-subdirectories',
+        ],
+        { input: 'y' },
+      );
     } catch (e) {
       console.log(`Error occurred while running mut-publish: ${e}`);
     }
