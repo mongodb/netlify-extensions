@@ -5,8 +5,8 @@ import { NetlifyExtension } from '@netlify/sdk';
 import { readdir } from 'node:fs';
 
 import { promisify } from 'node:util';
-import { checkForNewSnootyVersion } from './snooty-frontend-version-check';
 import { envVarToBool } from './extension';
+import { checkForNewSnootyVersion } from './snooty-frontend-version-check';
 
 const readdirAsync = promisify(readdir);
 
