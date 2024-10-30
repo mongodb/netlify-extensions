@@ -7,7 +7,6 @@ export const mutRedirectsAndPublish = async (
     run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
     // running mut-redirects -------------------------------------------------------
-    const redirectErrs = '';
     console.log('Downloading Mut...');
     await run('curl', [
       '-L',
@@ -27,7 +26,7 @@ export const mutRedirectsAndPublish = async (
 
     // running mut-publish ----------------------------------------------------------
     //TODO: change these teamwide env vars in Netlify UI when ready to move to prod
-    //TODO: we only want to run mut publish for dotcomprof and dotcomstg
+    //TODO: we only want to run mut publish for dotcomprod and dotcomstg
     process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY;
     process.env.AWS_ACCESS_KEY_ID = process.env.AWS_S3_ACCESS_KEY_ID;
 
@@ -61,11 +60,12 @@ export const mutRedirectsAndPublish = async (
                     [--dry-run] [--verbose] [--json] */
     try {
       console.log('Running mut-publish...');
-      if (!docsetEntry?.bucket) {
+      if (!docsetEntry?.bucket || !docsetEntry?.prefix) {
         throw new Error;
       }
 
       console.log('In the bucket of', docsetEntry?.bucket);
+      console.log('With a prefix of', docsetEntry?.prefix)
       // TODO: do I need to log this command below
       // TODO: the prefix 'netlify/docs-qa' is hard coded right now but it should be a variable
     //   await run(

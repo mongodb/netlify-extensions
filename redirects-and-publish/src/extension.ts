@@ -31,7 +31,7 @@ export const envVarToBool = (envVar: boolean | string = 'false'): boolean => {
   return JSON.parse(envVar);
 };
 
-// TODO: Move this out of the populate-metadata module with nx with DOP-5009
+// TODO: Move this out of the populate-metadata and redirects-and-publish module with nx with DOP-5009
 export class Extension<
   BuildContext extends z.ZodSchema = z.ZodUnknown,
   BuildConfigSchema extends z.ZodSchema = z.ZodUnknown,
@@ -70,7 +70,6 @@ export class Extension<
       {
         ...options,
         if: (buildConfig) => {
-          console.log("WE MADE IT");
           console.log(this.isEnabled);
           if (!this.isEnabled) {
             return false;
