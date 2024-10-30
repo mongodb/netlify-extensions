@@ -8,18 +8,18 @@ import type {
 
 export const getProperties = async (repoName: string) => {
   //connect to database and get reposBranches, docsets collections
-  console.log('connectiong to mongodb...');
+  console.log('Connecting to mongodb...');
   const dbSession = await getSnootyDb();
   const reposBranches = getCollection(dbSession, 'repos_branches');
   const docsets = getCollection(dbSession, 'docsets');
 
-  console.log('querying repobranches...');
+  console.log('Querying repobranches...');
   const repo: ReposBranchesDocument = await getRepoEntry({
     repoName: repoName,
     reposBranches,
   });
 
-  console.log('querying docsets...');
+  console.log('Querying docsets...');
   const { project } = repo;
   const docsetEntry: DocsetsDocument = await getDocsetEntry(docsets, project);
 

@@ -31,7 +31,7 @@ export const db = async ({ uri, dbName }: { uri: string; dbName: string }) => {
 };
 
 export const getSearchDb = async () => {
-  console.log('getting search db');
+  console.log('Getting search db');
   const uri = ATLAS_SEARCH_URI;
   const dbName = SEARCH_DB_NAME;
   const searchDbClient = await db({ uri, dbName });
@@ -39,7 +39,7 @@ export const getSearchDb = async () => {
 };
 
 export const getSnootyDb = async () => {
-  console.log('getting snooty db');
+  console.log('Getting snooty db');
   const uri = ATLAS_CLUSTER0_URI;
   const dbName = SNOOTY_DB_NAME;
   const snootyDbClient = await db({ uri, dbName });
