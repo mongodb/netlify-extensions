@@ -10,6 +10,7 @@ type EnvironmentConfig = {
 };
 export interface DocsetsDocument {
   project: string;
+  bucket: string;
   url: EnvironmentConfig;
   prefix: EnvironmentConfig;
 }
