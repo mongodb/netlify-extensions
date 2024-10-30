@@ -1,3 +1,5 @@
+// TODO: Move this out of individual extensions with nx with DOP-5009
+
 import type { NetlifyPluginOptions } from '@netlify/build';
 // Documentation: https://sdk.netlify.com
 import {
@@ -31,7 +33,6 @@ export const envVarToBool = (envVar: boolean | string = 'false'): boolean => {
   return JSON.parse(envVar);
 };
 
-// TODO: Move this out of the populate-metadata module with nx with DOP-5009
 export class Extension<
   BuildContext extends z.ZodSchema = z.ZodUnknown,
   BuildConfigSchema extends z.ZodSchema = z.ZodUnknown,
@@ -69,7 +70,7 @@ export class Extension<
       },
       {
         ...options,
-        if: (buildConfig) => {
+        if: (buildConfig: Zod.infer<BuildConfigSchema>) => {
           console.log(this.isEnabled);
           if (!this.isEnabled) {
             return false;

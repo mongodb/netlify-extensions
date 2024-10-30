@@ -24,10 +24,13 @@ export const getDbConfig = (): DbConfig => {
   const environmentVariables = assertEnvVars({
     ATLAS_CLUSTER0_URI: `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@${process.env.MONGO_ATLAS_CLUSTER0_HOST}/?retryWrites=true&w=majority`,
     ATLAS_SEARCH_URI: `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@${process.env.MONGO_ATLAS_SEARCH_HOST}/?retryWrites=true&w=majority`,
-    REPOS_BRANCHES_COLLECTION: process.env
-      .REPOS_BRANCHES_COLLECTION as CollectionName,
-    DOCSETS_COLLECTION: process.env.DOCSETS_COLLECTION as CollectionName,
-    DOCUMENTS_COLLECTION: process.env.DOCUMENTS_COLLECTION as CollectionName,
+    REPOS_BRANCHES_COLLECTION:
+      (process.env.REPOS_BRANCHES_COLLECTION as CollectionName) ??
+      'repos_branches',
+    DOCSETS_COLLECTION:
+      (process.env.DOCSETS_COLLECTION as CollectionName) ?? 'docsets',
+    DOCUMENTS_COLLECTION:
+      (process.env.DOCUMENTS_COLLECTION as CollectionName) ?? 'documents',
   });
 
   return environmentVariables;
