@@ -20,7 +20,7 @@ extension.addBuildEventHandler('onSuccess', ({ utils: { status, git } }) => {
 
   if (markdownList.length !== 0) {
     status.show({
-      title: 'URLs to Changed Files',
+      title: 'Staged Links to Changed Files',
       summary: markdownList.join('\n'),
     });
   }
