@@ -1,5 +1,6 @@
 import { promisify } from 'node:util';
 // Documentation: https://sdk.netlify.com
+import { NetlifyExtension } from '@netlify/sdk';
 import { BSON } from 'bson';
 import { Document } from './generateManifest/document';
 import { Manifest } from './generateManifest/manifest';
@@ -10,11 +11,10 @@ import type { S3UploadParams } from './types';
 import { getProperties } from './uploadToAtlas/getProperties';
 import { closeSearchDb, closeSnootyDb } from './uploadToAtlas/searchConnector';
 import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
-import { Extension } from '../../populate-metadata/src/extension';
 
 const readdirAsync = promisify(readdir);
 
-const extension = new Extension();
+const extension = new NetlifyExtension();
 
 export const generateManifest = async () => {
   const manifest = new Manifest();
