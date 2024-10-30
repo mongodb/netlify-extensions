@@ -27,6 +27,7 @@ export const mutRedirectsAndPublish = async (
 
     // running mut-publish ----------------------------------------------------------
     //TODO: change these teamwide env vars in Netlify UI when ready to move to prod
+    //TODO: we only want to run mut publish for dotcomprof and dotcomstg
     process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY;
     process.env.AWS_ACCESS_KEY_ID = process.env.AWS_S3_ACCESS_KEY_ID;
 

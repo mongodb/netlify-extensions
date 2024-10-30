@@ -44,6 +44,7 @@ export interface BranchEntry {
   active: boolean;
 }
 
+// TODO: once brandon's ticket is complete this want have to be declared in each extension
 export type PoolDbName = 'pool' | 'pool_test';
 
 export type SearchDbName = 'search' | 'search-test' | 'search-stage';
