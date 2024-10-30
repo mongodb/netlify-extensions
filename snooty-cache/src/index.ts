@@ -6,6 +6,7 @@ import { readdir } from 'node:fs';
 
 import { promisify } from 'node:util';
 import { checkForNewSnootyVersion } from './snooty-frontend-version-check';
+import { envVarToBool } from './extension';
 
 const readdirAsync = promisify(readdir);
 
@@ -19,7 +20,7 @@ const extension = new NetlifyExtension();
 extension.addBuildEventHandler(
   'onPreBuild',
   async ({ utils: { cache, run } }) => {
-    if (!process.env.SNOOTY_CACHE_ENABLED) return;
+    if (!envVarToBool(process.env.SNOOTY_CACHE_ENABLED)) return;
 
     const files: string[] = await cache.list();
 
@@ -42,7 +43,7 @@ extension.addBuildEventHandler(
 extension.addBuildEventHandler(
   'onSuccess',
   async ({ utils: { run, cache } }) => {
-    if (!process.env.SNOOTY_CACHE_ENABLED) return;
+    if (!envVarToBool(process.env.SNOOTY_CACHE_ENABLED)) return;
 
     console.log('Creating cache files...');
     await run.command('./snooty-parser/snooty/snooty create-cache .');
@@ -63,7 +64,7 @@ extension.addBuildEventHandler(
 extension.addBuildEventHandler(
   'onSuccess',
   async ({ utils: { run, status } }) => {
-    if (!process.env.SNOOTY_CACHE_ENABLED) return;
+    if (!envVarToBool(process.env.SNOOTY_CACHE_ENABLED)) return;
 
     const redirectErrs = '';
 
@@ -87,7 +88,7 @@ extension.addBuildEventHandler(
 );
 
 extension.addBuildEventHandler('onEnd', async ({ utils: { run, status } }) => {
-  if (!process.env.SNOOTY_CACHE_ENABLED) return;
+  if (!envVarToBool(process.env.SNOOTY_CACHE_ENABLED)) return;
 
   console.log('Creating cache files...');
   const { all, stderr, stdout } = await run.command(
