@@ -2,7 +2,7 @@ import type { DbConfig, Environments } from './assertDbEnvVars';
 import {
   type CollectionConnectionInfo,
   closePoolDb,
-} from './databaseConnection/clusterZeroConnector';
+} from './databaseConnection/atlasClusterConnector';
 import {
   type DocsetsDocument,
   getDocsetsCollection,
@@ -12,6 +12,7 @@ import {
   getReposBranchesCollection,
 } from './databaseConnection/fetchReposBranchesData';
 import type { PoolDbName } from './updateConfig';
+const EXTENSION_NAME = 'populate-metadata-extension';
 
 const getEnvProjection = (env?: Environments) => {
   return Object.fromEntries([[env ?? 'prd', 1]]);
@@ -26,7 +27,10 @@ const getDocsetEntry = async ({
   projectName: string;
   environment: Environments;
 }): Promise<DocsetsDocument> => {
-  const docsets = await getDocsetsCollection(docsetsConnectionInfo);
+  const docsets = await getDocsetsCollection({
+    ...docsetsConnectionInfo,
+    extName: EXTENSION_NAME,
+  });
   const docsetEnvironmentProjection = getEnvProjection(environment);
   const query = { project: { $eq: projectName } };
   const projection = {
@@ -57,7 +61,10 @@ const getRepoEntry = async ({
   branchName: string;
   connectionInfo: CollectionConnectionInfo;
 }): Promise<ReposBranchesDocument> => {
-  const reposBranches = await getReposBranchesCollection(connectionInfo);
+  const reposBranches = await getReposBranchesCollection({
+    ...connectionInfo,
+    extName: EXTENSION_NAME,
+  });
 
   const query = {
     repoName: repoName,

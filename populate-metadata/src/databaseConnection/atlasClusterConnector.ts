@@ -3,6 +3,7 @@ import type { CollectionName } from '../assertDbEnvVars';
 import type { PoolDbName } from '../updateConfig';
 
 let clusterZeroClient: mongodb.MongoClient;
+let searchClusterClient: mongodb.MongoClient;
 
 export type CollectionConnectionInfo = {
   clusterZeroURI: string;
@@ -15,8 +16,11 @@ export const teardown = async (client: mongodb.MongoClient): Promise<void> => {
 };
 
 // Handles memoization of db object, and initial connection logic if needs to be initialized
-const dbClient = async (uri: string): Promise<mongodb.MongoClient> => {
-  const client = new mongodb.MongoClient(uri);
+const dbClient = async ({
+  uri,
+  appName,
+}: { uri: string; appName: string }): Promise<mongodb.MongoClient> => {
+  const client = new mongodb.MongoClient(uri, { appName });
   try {
     await client.connect();
     return client;
@@ -28,12 +32,33 @@ const dbClient = async (uri: string): Promise<mongodb.MongoClient> => {
 export const getPoolDb = async ({
   clusterZeroURI,
   databaseName,
-}: { clusterZeroURI: string; databaseName: string }): Promise<mongodb.Db> => {
+  appName,
+}: {
+  clusterZeroURI: string;
+  databaseName: string;
+  appName: string;
+}): Promise<mongodb.Db> => {
   if (!clusterZeroClient) {
     console.info('Creating new instance of Cluster Zero client');
-    clusterZeroClient = await dbClient(clusterZeroURI);
+    clusterZeroClient = await dbClient({ uri: clusterZeroURI, appName });
   }
   return clusterZeroClient.db(databaseName);
+};
+
+export const getSearchDb = async ({
+  atlasSearchUri,
+  databaseName,
+  appName,
+}: {
+  atlasSearchUri: string;
+  databaseName: string;
+  appName: string;
+}): Promise<mongodb.Db> => {
+  if (!searchClusterClient) {
+    console.info('Creating new instance of Cluster Zero client');
+    searchClusterClient = await dbClient({ uri: atlasSearchUri, appName });
+  }
+  return searchClusterClient.db(databaseName);
 };
 
 export const closePoolDb = async () => {
