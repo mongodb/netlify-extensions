@@ -1,6 +1,6 @@
 // TODO: Move this out of individual extensions with nx with DOP-5009
 
-import type { NetlifyPluginOptions } from '@netlify/build';
+import type { NetlifyPluginOptions, NetlifyConfig } from '@netlify/build';
 // Documentation: https://sdk.netlify.com
 import {
   type BuildHookOptions,
@@ -9,6 +9,9 @@ import {
 } from '@netlify/sdk';
 import type z from 'zod';
 import { type DbConfig, getDbConfig } from './assertDbEnvVars';
+import type { ConfigEnvironmentVariables, ExtendedConfig } from './types';
+
+type PluginOptions = Omit<NetlifyPluginOptions, 'inputs'> & ExtendedConfig;
 
 type BuildHookWithEnvVars<
   DbConfig,

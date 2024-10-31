@@ -1,4 +1,5 @@
-import type { Document, WithId } from 'mongodb';
+import type { Document } from 'mongodb';
+import type { Environments } from './assertDbEnvVars';
 
 export type RefreshInfo = {
   deleted: number;
@@ -50,7 +51,7 @@ export interface ReposBranchesDocument {
     categoryTitle: string;
     categoryName?: string;
   };
-  branches: Array<BranchEntry>;
+  branches?: Array<BranchEntry>;
   prodDeployable: boolean;
   internalOnly: boolean;
 }
@@ -87,3 +88,32 @@ export type EnvVars = {
   DOCSETS_COLLECTION: string;
   DOCUMENTS_COLLECTION: string;
 };
+
+export interface ExtendedConfig {
+  environment: ConfigEnvironmentVariables;
+}
+export type ConfigEnvironmentVariables = Partial<{
+  BRANCH: string;
+  SITE_NAME: string;
+  INCOMING_HOOK_URL?: string;
+  INCOMING_HOOK_TITLE?: string;
+  INCOMING_HOOK_BODY?: string;
+  ENV: Environments;
+  REPO_ENTRY: ReposBranchesDocument;
+  DOCSET_ENTRY: DocsetsDocument;
+  BRANCH_ENTRY: BranchEntry;
+  POOL_DB_NAME: PoolDbName;
+  SEARCH_DB_NAME: SearchDbName;
+  SNOOTY_DB_NAME: SnootyDbName;
+}>;
+
+export type PoolDbName = 'pool' | 'pool_test';
+
+export type SearchDbName = 'search' | 'search-test' | 'search-stage';
+
+export type SnootyDbName =
+  | 'snooty_dev'
+  | 'snooty_stage'
+  | 'snooty_dotcomstg'
+  | 'snooty_prod'
+  | 'snooty_dotcomprd';

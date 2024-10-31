@@ -6,10 +6,7 @@ import {
   teardownMockDbClient,
 } from '../utils/mockDB';
 
-import {
-  getBranch,
-  getProperties,
-} from '../../src/uploadToAtlas/getProperties';
+import { getSearchProperties } from '../../src/uploadToAtlas/getSearchProperties';
 
 import { afterEach } from 'node:test';
 import type { BranchEntry } from '../../src/types';
