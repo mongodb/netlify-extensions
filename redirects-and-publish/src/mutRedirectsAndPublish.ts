@@ -70,19 +70,37 @@ export const mutRedirectsAndPublish = async (
       console.log('And a URL of: ',  docsetEntry?.url); // https://mongodbcom-cdn.website.staging.corp.mongodb.com/
       
       // TODO: do I need to log this command below ?
-      await run(
-        `${process.cwd()}/mut/mut-publish`,
-        [
-          'snooty/public',
-          'docs-mongodb-org-dotcomstg',
-          '--prefix=/netlify/docs-qa',
-          '--deploy',
-          '--deployed-url-prefix=https://mongodbcom-cdn.website.staging.corp.mongodb.com/',
-          '--json',
-          '--all-subdirectories',
-        ],
-        { input: 'y' },
-      );
+      if (docsetEntry?.bucket?.dotcomstg === 'docs-mongodb-org-dotcomstg' && docsetEntry.project === 'landing') {
+        console.log("Testing docs-landing in doctcomstg...");
+        await run(
+          `${process.cwd()}/mut/mut-publish`,
+          [
+            'snooty/public',
+            `${docsetEntry?.bucket?.dotcomstg}`,
+            `--prefix=/${docsetEntry?.prefix?.dotcomstg}`,
+            '--deploy',
+            `--deployed-url-prefix=${docsetEntry?.url?.dotcomstg}`,
+            '--json',
+            '--all-subdirectories',
+          ],
+          { input: 'y' },
+        );
+      } else {
+        await run(
+          `${process.cwd()}/mut/mut-publish`,
+          [
+            'snooty/public',
+            'docs-mongodb-org-dotcomstg',
+            '--prefix=/netlify/docs-qa',
+            '--deploy',
+            '--deployed-url-prefix=https://mongodbcom-cdn.website.staging.corp.mongodb.com/',
+            '--json',
+            '--all-subdirectories',
+          ],
+          { input: 'y' },
+        );
+      }
+      
     } catch (e) {
       console.log(`Error occurred while running mut-publish: ${e}`);
     }
