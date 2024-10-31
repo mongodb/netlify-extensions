@@ -65,7 +65,7 @@ export const mutRedirectsAndPublish = async (
       }
 
       // TODO: sub in the temporary values for the real values (this values from docs-landing staging)
-      console.log('In the bucket of', docsetEntry?.bucket); // subbed in docs-mongodb-org-dotcomstg
+      console.log('In the bucket of', docsetEntry?.bucket, docsetEntry?.bucket?.prd, docsetEntry?.bucket?.dotcomstg); // subbed in docs-mongodb-org-dotcomstg
       console.log('With a prefix of', docsetEntry?.prefix); // subbed in /netlify/docs-qa
       console.log('And a URL of: ',  docsetEntry?.url); // https://mongodbcom-cdn.website.staging.corp.mongodb.com/
       
