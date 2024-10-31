@@ -4,11 +4,11 @@
     "module": "ES2022",
     "moduleResolution": "bundler",
     "strict": true,
-    "rootDir": ".",
     "paths": {
       "bson": ["./node_modules/bson/src/"],
-      "populate-metadata": ["./node_modules/populate-metadata/src/extension"]
+      "@populate-metadata": ["../populate-metadata/src/extension.ts"]
     }
   },
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

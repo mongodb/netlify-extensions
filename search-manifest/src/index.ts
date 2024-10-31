@@ -1,6 +1,6 @@
 import { uploadManifest } from './uploadToAtlas/uploadManifest';
 import { generateManifest } from './generateManifest';
-import { Extension } from 'populate-metadata';
+import { Extension } from '@populate-metadata';
 import type {
   BranchEntry,
   ConfigEnvironmentVariables,
