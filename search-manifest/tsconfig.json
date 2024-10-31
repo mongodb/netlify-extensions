@@ -6,7 +6,8 @@
     "strict": true,
     "rootDir": ".",
     "paths": {
-      "bson": ["./node_modules/bson/src/"]
+      "bson": ["./node_modules/bson/src/"],
+      "populate-metadata": ["./node_modules/populate-metadata/src/extension"]
     }
   },
   "exclude": ["node_modules", "dist"]
