@@ -6,7 +6,7 @@
     "strict": true,
     "paths": {
       "bson": ["./node_modules/bson/src/"],
-      "@populate-metadata": ["../populate-metadata/src/extension.ts"]
+      "populate-metadata": ["../populate-metadata/src/extension.ts"]
     }
   },
   "include": ["src"],
