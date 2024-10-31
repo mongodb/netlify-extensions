@@ -14,7 +14,7 @@ export interface DocsetsDocument {
   project: string;
   url: EnvironmentConfig;
   prefix: EnvironmentConfig;
-  bucket: string;
+  bucket: EnvironmentConfig;
 }
 
 export interface DatabaseDocument extends ManifestEntry {
