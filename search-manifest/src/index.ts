@@ -1,5 +1,6 @@
 import { uploadManifest } from './uploadToAtlas/uploadManifest';
 import { generateManifest } from './generateManifest';
+import { Extension } from '../node_modules/populate-metadata/src/extension';
 import type {
   BranchEntry,
   ConfigEnvironmentVariables,
@@ -12,14 +13,17 @@ import type { NetlifyPluginUtils } from '@netlify/build';
 import { getSearchProperties } from './uploadToAtlas/getSearchProperties';
 import { closeSearchDb, closeSnootyDb } from './uploadToAtlas/searchConnector';
 import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
-import { envVarToBool, Extension } from './extension';
+import { envVarToBool } from './extension';
+import type { DbConfig } from './assertDbEnvVars';
 
 const generateAndUploadManifests = async ({
   configEnvironment,
   run,
+  dbEnvVars,
 }: {
   configEnvironment: ConfigEnvironmentVariables;
   run: NetlifyPluginUtils['run'];
+  dbEnvVars: DbConfig;
 }) => {
   if (!process.env.SEARCH_MANIFEST_ENABLED) return;
 
@@ -38,6 +42,7 @@ const generateAndUploadManifests = async ({
   const manifest = await generateManifest();
 
   console.log('=========== finished generating manifests ================');
+
   const {
     url,
     searchProperty,
@@ -91,10 +96,11 @@ const extension = new Extension({
 //Return indexing data from a page's AST for search purposes.
 extension.addBuildEventHandler(
   'onSuccess',
-  async ({ utils: { run }, netlifyConfig }) => {
+  async ({ utils: { run }, netlifyConfig, dbEnvVars }) => {
     await generateAndUploadManifests({
       configEnvironment: netlifyConfig?.build?.environment,
       run,
+      dbEnvVars,
     });
   },
 );
