@@ -60,16 +60,19 @@ type ConfigEnvironmentVariables = Partial<{
   ENV: Environments;
   REPO_ENTRY: ReposBranchesDocument;
   DOCSET_ENTRY: DocsetsDocument;
-  BRANCH_ENTRY: BranchEntry[];
+  BRANCH_ENTRY: BranchEntry;
   POOL_DB_NAME: PoolDbName;
   SEARCH_DB_NAME: SearchDbName;
   SNOOTY_DB_NAME: SnootyDbName;
 }>;
 
-export const updateConfig = async (
-  configEnvironment: ConfigEnvironmentVariables,
-  dbEnvVars: DbConfig,
-): Promise<void> => {
+export const updateConfig = async ({
+  configEnvironment,
+  dbEnvVars,
+}: {
+  configEnvironment: ConfigEnvironmentVariables;
+  dbEnvVars: DbConfig;
+}): Promise<void> => {
   // Check if repo name and branch name have been set as environment variables through Netlify UI
   // Allows overwriting of database name values for testing
   const branchName = process.env.BRANCH_NAME ?? configEnvironment.BRANCH;
@@ -128,7 +131,7 @@ export const updateConfig = async (
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
   configEnvironment.DOCSET_ENTRY = docsetEntry;
-  configEnvironment.BRANCH_ENTRY = branch;
+  configEnvironment.BRANCH_ENTRY = branch.pop();
 
   console.info(
     'BUILD ENVIRONMENT: ',
