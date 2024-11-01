@@ -1,14 +1,14 @@
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
-import autoprefixerPlugin from "autoprefixer";
-import tailwindcssPlugin from "tailwindcss";
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import autoprefixerPlugin from 'autoprefixer';
+import tailwindcssPlugin from 'tailwindcss';
 
 export default defineConfig(() => ({
-  base: "",
+  base: '',
   build: {
-    outDir: "../../.ntli/site/static/ui",
+    outDir: '../../.ntli/site/static/ui',
   },
-  root: "./src/ui",
+  root: './src/ui',
   plugins: [react()],
   server: {
     strictPort: true,
