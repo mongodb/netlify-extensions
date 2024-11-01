@@ -15,6 +15,8 @@ extension.addBuildEventHandler("onSuccess", async ({ utils: { run } }) => {
   try {
     await createSnootyCopy(run, NEW_SNOOTY_PATH);
     // await processGatsbyOutput
+  } catch (e) {
+    console.error(e);
   }
   // convertSnootyToHtml('/public')
 
