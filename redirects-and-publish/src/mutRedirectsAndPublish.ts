@@ -9,6 +9,8 @@ export const mutRedirectsAndPublish = async (
 ): Promise<void> => {
     // running mut-redirects -------------------------------------------------------
     console.log('Downloading Mut...');
+    console.log("the process.cwd is ", process.cwd());
+    console.log("the fs.readdir is ",  readdir);
     await run('curl', [
       '-L',
       '-o',
@@ -69,8 +71,6 @@ export const mutRedirectsAndPublish = async (
       console.log('In the bucket of', docsetEntry?.bucket, docsetEntry?.bucket?.prd, docsetEntry?.bucket?.dotcomstg); // subbed in docs-mongodb-org-dotcomstg
       console.log('With a prefix of', docsetEntry?.prefix); // subbed in /netlify/docs-qa
       console.log('And a URL of: ',  docsetEntry?.url); // https://mongodbcom-cdn.website.staging.corp.mongodb.com/
-      console.log("the process.cwd is ", process.cwd());
-      console.log("the fs.readdir is ",  readdir);
       
       // TODO: do I need to log this command below ?
       if (docsetEntry?.bucket?.dotcomstg === 'docs-mongodb-org-dotcomstg' && docsetEntry.project === 'landing') {
