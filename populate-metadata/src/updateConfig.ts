@@ -51,7 +51,7 @@ const getDbNames = (
   }
 };
 
-type ConfigEnvironmentVariables = Partial<{
+export type ConfigEnvironmentVariables = Partial<{
   BRANCH: string;
   SITE_NAME: string;
   INCOMING_HOOK_URL: string;

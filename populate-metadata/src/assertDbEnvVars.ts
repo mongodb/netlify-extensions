@@ -2,6 +2,13 @@ export type Environments = 'dev' | 'stg' | 'dotcomstg' | 'prd' | 'dotcomprd';
 
 export type CollectionName = 'repos_branches' | 'docsets' | 'documents';
 
+export type S3UploadParams = {
+  bucket: string;
+  prefix: string;
+  fileName: string;
+  manifest: string;
+};
+
 export type DbConfig = {
   ATLAS_CLUSTER0_URI: string;
   ATLAS_SEARCH_URI: string;
@@ -27,8 +34,8 @@ export const getDbConfig = (): DbConfig => {
   const environmentVariables = assertEnvVars({
     ATLAS_CLUSTER0_URI: `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@${process.env.MONGO_ATLAS_CLUSTER0_HOST}/?retryWrites=true&w=majority`,
     ATLAS_SEARCH_URI: `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@${process.env.MONGO_ATLAS_SEARCH_HOST}/?retryWrites=true&w=majority`,
-    AWS_S3_ACCESS_KEY_ID: process.env.AWS_S3_ACCESS_KEY_ID,
-    AWS_S3_SECRET_ACCESS_KEY: process.env.AWS_S3_SECRET_ACCESS_KEY,
+    AWS_S3_ACCESS_KEY_ID: process.env.AWS_S3_ACCESS_KEY_ID as string,
+    AWS_S3_SECRET_ACCESS_KEY: process.env.AWS_S3_SECRET_ACCESS_KEY as string,
     DOCSETS_COLLECTION:
       (process.env.DOCSETS_COLLECTION as CollectionName) ?? 'docsets',
     DOCUMENTS_COLLECTION:
@@ -36,7 +43,7 @@ export const getDbConfig = (): DbConfig => {
     REPOS_BRANCHES_COLLECTION:
       (process.env.REPOS_BRANCHES_COLLECTION as CollectionName) ??
       'repos_branches',
-    SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET,
+    SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET as string,
   });
 
   return environmentVariables;
