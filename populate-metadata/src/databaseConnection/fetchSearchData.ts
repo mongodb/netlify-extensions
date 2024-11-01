@@ -1,5 +1,5 @@
-import { getSearchDb } from './atlasClusterConnector';
 import type * as mongodb from 'mongodb';
+import { getSearchDb } from './atlasClusterConnector';
 
 export interface SearchDocument {
   url: string;
@@ -20,8 +20,7 @@ export const getDocumentsCollection = async ({
   databaseName: string;
   collectionName: string;
   extensionName: string;
-}): //TODO: specify type
-Promise<mongodb.Collection<SearchDocument>> => {
+}): Promise<mongodb.Collection<SearchDocument>> => {
   const dbSession = await getSearchDb({
     URI,
     databaseName,
