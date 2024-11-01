@@ -1,16 +1,16 @@
-import { TRPCError } from "@trpc/server";
-import { procedure, router } from "./trpc";
-import { teamSettingsSchema } from "../schema/team-settings-schema";
+import { TRPCError } from '@trpc/server';
+import { teamSettingsSchema } from '../schema/team-settings-schema';
+import { procedure, router } from './trpc';
 
-const BUILD_EVENT_HANDLER_ENABLED_ENV_VAR = "OFFLINE_SNOOTY_ENABLED";
+const BUILD_EVENT_HANDLER_ENABLED_ENV_VAR = 'OFFLINE_SNOOTY_ENABLED';
 
 export const appRouter = router({
   teamSettings: {
     query: procedure.query(async ({ ctx: { teamId, client } }) => {
       if (!teamId) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "teamId is required",
+          code: 'BAD_REQUEST',
+          message: 'teamId is required',
         });
       }
       const teamConfig = await client.getTeamConfiguration(teamId);
@@ -20,8 +20,8 @@ export const appRouter = router({
       const result = teamSettingsSchema.safeParse(teamConfig.config);
       if (!result.success) {
         console.warn(
-          "Failed to parse team settings",
-          JSON.stringify(result.error, null, 2)
+          'Failed to parse team settings',
+          JSON.stringify(result.error, null, 2),
         );
       }
       return result.data;
@@ -32,8 +32,8 @@ export const appRouter = router({
       .mutation(async ({ ctx: { teamId, client }, input }) => {
         if (!teamId) {
           throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: "teamId is required",
+            code: 'BAD_REQUEST',
+            message: 'teamId is required',
           });
         }
 
@@ -49,8 +49,8 @@ export const appRouter = router({
           }
         } catch (e) {
           throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Failed to save team configuration",
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to save team configuration',
             cause: e,
           });
         }
@@ -60,8 +60,8 @@ export const appRouter = router({
     status: procedure.query(async ({ ctx: { teamId, siteId, client } }) => {
       if (!teamId || !siteId) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Both teamId and siteId are required",
+          code: 'BAD_REQUEST',
+          message: 'Both teamId and siteId are required',
         });
       }
       const envVars = await client.getEnvironmentVariables({
@@ -71,7 +71,7 @@ export const appRouter = router({
 
       const enabledVar = envVars
         .find((val) => val.key === BUILD_EVENT_HANDLER_ENABLED_ENV_VAR)
-        ?.values.find((val) => val.context === "all");
+        ?.values.find((val) => val.context === 'all');
 
       return {
         enabled: !!enabledVar,
@@ -80,8 +80,8 @@ export const appRouter = router({
     enable: procedure.mutation(async ({ ctx: { teamId, siteId, client } }) => {
       if (!teamId || !siteId) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Both teamId and siteId are required",
+          code: 'BAD_REQUEST',
+          message: 'Both teamId and siteId are required',
         });
       }
 
@@ -90,26 +90,26 @@ export const appRouter = router({
           accountId: teamId,
           siteId,
           key: BUILD_EVENT_HANDLER_ENABLED_ENV_VAR,
-          value: "true",
+          value: 'true',
         });
 
         console.log(
-          `Build event handler enabled for team ${teamId}, site ${siteId}`
+          `Build event handler enabled for team ${teamId}, site ${siteId}`,
         );
 
         return {
           success: true,
-          message: "Build event handler enabled successfully",
+          message: 'Build event handler enabled successfully',
         };
       } catch (error) {
         console.error(
           `Failed to enable build event handler: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`
+            error instanceof Error ? error.message : 'Unknown error'
+          }`,
         );
         throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to enable build event handler",
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to enable build event handler',
           cause: error,
         });
       }
@@ -117,8 +117,8 @@ export const appRouter = router({
     disable: procedure.mutation(async ({ ctx: { teamId, siteId, client } }) => {
       if (!teamId || !siteId) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "teamId and siteId are required",
+          code: 'BAD_REQUEST',
+          message: 'teamId and siteId are required',
         });
       }
 
@@ -129,21 +129,21 @@ export const appRouter = router({
           key: BUILD_EVENT_HANDLER_ENABLED_ENV_VAR,
         });
         console.log(
-          `Build event handler disabled for team ${teamId}, site ${siteId}`
+          `Build event handler disabled for team ${teamId}, site ${siteId}`,
         );
         return {
           success: true,
-          message: "Build event handler disabled successfully",
+          message: 'Build event handler disabled successfully',
         };
       } catch (error) {
         console.error(
           `Failed to disable build event handler for site ${siteId} and team ${teamId}: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`
+            error instanceof Error ? error.message : 'Unknown error'
+          }`,
         );
         throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to disable build event handler",
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to disable build event handler',
           cause: error,
         });
       }

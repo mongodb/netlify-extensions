@@ -8,7 +8,7 @@ const NEW_SNOOTY_PATH = `${process.cwd()}/snooty-offline`;
 // run this extension after the build and deploy are successful
 extension.addBuildEventHandler("onSuccess", async ({ utils: { run } }) => {
   // If the build event handler is not enabled, return early
-  if (!process.env["OFFLINE_SNOOTY_ENABLED"]) {
+  if (!process.env.OFFLINE_SNOOTY_ENABLED) {
     return;
   }
   console.log("snooty offline onSuccess.");

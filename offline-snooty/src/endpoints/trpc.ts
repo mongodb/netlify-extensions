@@ -1,13 +1,13 @@
-import { type Config } from "@netlify/functions";
-import { createNetlifyTRPCHandler } from "@netlify/sdk/ui/functions/trpc";
-import { appRouter } from "../server/router.js";
+import type { Config } from '@netlify/functions';
+import { createNetlifyTRPCHandler } from '@netlify/sdk/ui/functions/trpc';
+import { appRouter } from '../server/router.js';
 
 export const config: Config = {
-  path: ["/api/trpc{/*}?"],
+  path: ['/api/trpc{/*}?'],
 };
 
 const handler = createNetlifyTRPCHandler({
-  endpoint: "/api/trpc",
+  endpoint: '/api/trpc',
   router: appRouter,
 });
 

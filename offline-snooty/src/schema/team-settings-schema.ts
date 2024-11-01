@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const teamSettingsSchema = z.object({
   exampleString: z.string().min(1),
