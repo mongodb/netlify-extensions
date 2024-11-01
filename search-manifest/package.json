@@ -13,7 +13,7 @@
     "@aws-sdk/lib-storage": "^3.657.0",
     "@netlify/build": "^29.56.0",
     "@netlify/netlify-plugin-netlify-extension": "^1.0.3",
-    "@netlify/sdk": "^2.7.2",
+    "@netlify/sdk": "^2.8.1",
     "bson": "^6.8.0",
     "crypto": "^1.0.1",
     "deps": "^1.0.0",
@@ -26,7 +26,8 @@
     "node": "^20.5.0",
     "path": "^0.12.7",
     "peer": "^1.0.2",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.14.9",
