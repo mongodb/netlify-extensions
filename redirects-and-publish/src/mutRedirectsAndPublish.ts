@@ -10,11 +10,6 @@ export const mutRedirectsAndPublish = async (
     // running mut-redirects -------------------------------------------------------
     console.log('Downloading Mut...',configEnvironment?.SITE_NAME );
 
-    if (configEnvironment?.SITE_NAME === "mongodb-snooty") {
-      console.log("switching sites");
-      await process.chdir(`${process.cwd()}/docs-landing`);
-    }
-    
     console.log("the process.cwd is ", process.cwd());
     console.log("the fs.readdir is ");
     readdir(process.cwd(), (err, items) => {
@@ -25,18 +20,29 @@ export const mutRedirectsAndPublish = async (
     
       console.log('Files in the directory:', items);
     });
+
     await run('curl', [
       '-L',
       '-o',
       'mut.zip',
       `https://github.com/mongodb/mut/releases/download/v${MUT_VERSION}/mut-v${MUT_VERSION}-linux_x86_64.zip`,
     ]);
+
     await run.command('unzip -d . -qq mut.zip');
+
     try {
       console.log('Running mut-redirects...');
-      await run.command(
-        `${process.cwd()}/mut/mut-redirects config/redirects -o snooty/public/.htaccess`,
-      );
+      
+      if (configEnvironment?.SITE_NAME === "mongodb-snooty") {
+        console.log("switching sites");
+        await run.command(
+          `${process.cwd()}/mut/mut-redirects docs-landing/config/redirects -o snooty/public/.htaccess`,
+        );
+      } else {
+        await run.command(
+          `${process.cwd()}/mut/mut-redirects config/redirects -o snooty/public/.htaccess`,
+        );
+     }
     } catch (e) {
       console.log(`Error occurred while running mut-redirects: ${e}`);
     }
