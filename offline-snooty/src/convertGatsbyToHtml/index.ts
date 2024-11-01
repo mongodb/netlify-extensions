@@ -5,8 +5,8 @@
  * @param path full directory path of gatsby output
  */
 
-import * as zlib from 'zlib';
+import { type Gzip, createGzip } from 'node:zlib';
 
-export const convertGatsbyToHtml = async (path: string): Promise<zlib.Gzip> => {
-  return zlib.createGzip();
+export const convertGatsbyToHtml = async (path: string): Promise<Gzip> => {
+  return createGzip();
 };

@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
-import { procedure, router } from './trpc';
 import { teamSettingsSchema } from '../schema/team-settings-schema';
+import { procedure, router } from './trpc';
 
 const BUILD_EVENT_HANDLER_ENABLED_ENV_VAR = 'OFFLINE_SNOOTY_ENABLED';
 
