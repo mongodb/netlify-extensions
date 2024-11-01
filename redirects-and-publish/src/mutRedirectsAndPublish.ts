@@ -1,6 +1,6 @@
 import type { ConfigEnvironmentVariables } from "./types";
 import type { NetlifyPluginUtils } from '@netlify/build';
-import { readdir } from 'node:fs';
+
 const MUT_VERSION = '0.11.4';
 
 export const mutRedirectsAndPublish = async (
@@ -9,17 +9,6 @@ export const mutRedirectsAndPublish = async (
 ): Promise<void> => {
     // running mut-redirects -------------------------------------------------------
     console.log('Downloading Mut...',configEnvironment?.SITE_NAME );
-
-    console.log("the process.cwd is ", process.cwd());
-    console.log("the fs.readdir is ");
-    readdir(process.cwd(), (err, items) => {
-      if (err) {
-        console.error('Error reading directory:', err);
-        return;
-      }
-    
-      console.log('Files in the directory:', items);
-    });
 
     await run('curl', [
       '-L',
@@ -34,7 +23,7 @@ export const mutRedirectsAndPublish = async (
       console.log('Running mut-redirects...');
       
       if (configEnvironment?.SITE_NAME === "mongodb-snooty") {
-        console.log("switching sites");
+        // so mongodb-snooty can launch with docs-landing
         await run.command(
           `${process.cwd()}/mut/mut-redirects docs-landing/config/redirects -o snooty/public/.htaccess`,
         );
