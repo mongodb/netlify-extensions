@@ -10,7 +10,7 @@ export const mutRedirectsAndPublish = async (
     // running mut-redirects -------------------------------------------------------
     console.log('Downloading Mut...',configEnvironment?.SITE_NAME );
 
-    if (configEnvironment?.SITE_NAME === "mongdb-snooty") {
+    if (configEnvironment?.SITE_NAME === "mongodb-snooty") {
       console.log("switching sites");
       await run.command(`${process.chdir('./docs-landing')}`)
     }
