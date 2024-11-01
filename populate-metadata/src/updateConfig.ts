@@ -93,10 +93,12 @@ export const updateConfig = async ({
 
   // Check if this was an engineering build or writer's build; writer's builds by default are all builds not built on the "mongodb-snooty" site
   // Environment is either dotcomprd or prd if it is a writer build
+  const isFrontendBuild = configEnvironment.SITE_NAME === 'mongodb-snooty';
+  const isFrontendStagingBuild = isWebhookDeploy || branchName === 'main';
   const env =
     (process.env.ENV as Environments) ??
-    (configEnvironment.SITE_NAME === 'mongodb-snooty'
-      ? isWebhookDeploy
+    (isFrontendBuild
+      ? isFrontendStagingBuild
         ? 'dotcomstg'
         : 'stg'
       : isWebhookDeploy
@@ -142,5 +144,9 @@ export const updateConfig = async ({
     configEnvironment.DOCSET_ENTRY,
     '\n BRANCH ENTRY: ',
     configEnvironment.BRANCH_ENTRY,
+    '\n pool database name: ',
+    configEnvironment.POOL_DB_NAME,
+    '\n search database name: ',
+    configEnvironment.SEARCH_DB_NAME,
   );
 };

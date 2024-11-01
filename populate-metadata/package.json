@@ -16,7 +16,9 @@
     "@trpc/client": "^11.0.0-rc.477",
     "@trpc/react-query": "^11.0.0-rc.477",
     "@trpc/server": "^11.0.0-rc.477",
-    "mongodb": "^6.9.0",
+    "deps": "^1.0.0",
+    "mongodb": "^6.10.0",
+    "peer": "^1.0.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zod": "^3.23.8"

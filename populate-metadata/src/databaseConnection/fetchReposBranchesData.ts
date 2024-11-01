@@ -1,5 +1,5 @@
 import type * as mongodb from 'mongodb';
-import { getPoolDb } from './clusterZeroConnector';
+import { getPoolDb } from './atlasClusterConnector';
 
 export interface BranchEntry {
   name?: string;
@@ -25,11 +25,17 @@ export const getReposBranchesCollection = async ({
   clusterZeroURI,
   databaseName,
   collectionName,
+  extName,
 }: {
   clusterZeroURI: string;
   databaseName: string;
   collectionName: string;
+  extName: string;
 }): Promise<mongodb.Collection<ReposBranchesDocument>> => {
-  const dbSession = await getPoolDb({ clusterZeroURI, databaseName });
+  const dbSession = await getPoolDb({
+    clusterZeroURI,
+    databaseName,
+    appName: extName,
+  });
   return dbSession.collection<ReposBranchesDocument>(collectionName);
 };
