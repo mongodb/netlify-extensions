@@ -7,14 +7,20 @@ import type {
   DocsetsDocument,
   ReposBranchesDocument,
   S3UploadParams,
+  SearchDbName,
 } from './types';
 import type { NetlifyPluginUtils } from '@netlify/build';
 
 import { getSearchProperties } from './uploadToAtlas/getSearchProperties';
-import { closeSearchDb, closeSnootyDb } from './uploadToAtlas/searchConnector';
+import {
+  closePoolDb,
+  // closeSearchDb,
+} from 'populate-metadata/databaseConnection/atlasClusterConnector';
 import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
 import { envVarToBool } from './extension';
 import type { DbConfig } from 'populate-metadata/assertDbEnvVars';
+
+const EXTENSION_NAME = 'search-manifest';
 
 const generateAndUploadManifests = async ({
   configEnvironment,
@@ -62,7 +68,7 @@ const generateAndUploadManifests = async ({
   console.log('=========== Uploading Manifests to S3=================');
   const uploadArgs: S3UploadParams = {
     bucket: 'docs-search-indexes-test',
-    //TODO: change this values based on environments
+    //TODO: change prefix based on environments
     prefix: 'search-indexes/ab-testing',
     fileName: `${projectName}-${branchName}.json`,
     manifest: manifest.export(),
@@ -76,16 +82,25 @@ const generateAndUploadManifests = async ({
   try {
     manifest.setUrl(url);
     manifest.setGlobalSearchValue(includeInGlobalSearch);
-
+    const connectionInfo = {
+      URI: dbEnvVars.ATLAS_SEARCH_URI,
+      databaseName: configEnvironment.SEARCH_DB_NAME as SearchDbName,
+      collectionName: dbEnvVars.DOCUMENTS_COLLECTION,
+      extensionName: EXTENSION_NAME,
+    };
     console.log('=========== Uploading Manifests to Atlas =================');
-    const status = await uploadManifest(manifest, searchProperty);
+    const status = await uploadManifest({
+      manifest,
+      searchProperty,
+      connectionInfo,
+    });
     console.log(status);
     console.log('=========== Manifests uploaded to Atlas =================');
   } catch (e) {
     console.log('Manifest could not be uploaded', e);
   } finally {
-    await closeSearchDb();
-    await closeSnootyDb();
+    await closePoolDb();
+    // await closeSearchDb();
   }
 };
 

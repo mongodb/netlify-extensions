@@ -1,8 +1,32 @@
+import type * as mongodb from 'mongodb';
 import assert from 'node:assert';
 import type { Manifest } from '../generateManifest/manifest';
 import type { RefreshInfo, SearchDocument } from '../types';
 import { generateHash, joinUrl } from '../utils';
-import { getDocumentsCollection } from './searchConnector';
+import {
+  getSearchDb,
+  type CollectionConnectionInfo,
+} from 'populate-metadata/databaseConnection/atlasClusterConnector';
+
+export const getDocumentsCollection = async ({
+  URI,
+  databaseName,
+  collectionName,
+  extensionName,
+}: {
+  URI: string;
+  databaseName: string;
+  collectionName: string;
+  extensionName: string;
+}): //TODO: specify type
+Promise<any> => {
+  const dbSession = await getSearchDb({
+    URI,
+    databaseName,
+    appName: extensionName,
+  });
+  return dbSession.collection<mongodb.Document>(collectionName);
+};
 
 const composeUpserts = async (
   manifest: Manifest,
@@ -39,16 +63,24 @@ const composeUpserts = async (
   });
 };
 
-export const uploadManifest = async (
-  manifest: Manifest,
-  searchProperty: string,
-) => {
+export const uploadManifest = async ({
+  manifest,
+  searchProperty,
+  connectionInfo,
+}: {
+  manifest: Manifest;
+  searchProperty: string;
+  connectionInfo: CollectionConnectionInfo;
+}) => {
   //check that manifest documents exist
   //TODO: maybe check other manifest properties as well?
   if (!manifest?.documents?.length) {
     return Promise.reject(new Error('Invalid manifest'));
   }
-  const documentsColl = await getDocumentsCollection();
+
+  const documentsColl = await getDocumentsCollection({
+    ...connectionInfo,
+  });
 
   const status: RefreshInfo = {
     deleted: 0,
