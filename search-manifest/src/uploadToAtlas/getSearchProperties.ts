@@ -1,8 +1,9 @@
+import type { CollectionConnectionInfo } from 'populate-metadata/databaseConnection/atlasClusterConnector';
+import type { DocsetsDocument } from 'populate-metadata/databaseConnection/fetchDocsetsData';
 import type {
   BranchEntry,
-  DocsetsDocument,
   ReposBranchesDocument,
-} from '../types';
+} from 'populate-metadata/databaseConnection/fetchReposBranchesData';
 import { assertTrailingSlash } from '../utils';
 import { deleteStaleProperties } from './deleteStale';
 
@@ -10,10 +11,12 @@ export const getSearchProperties = async ({
   branchEntry,
   docsetEntry,
   repoEntry,
+  connectionInfo,
 }: {
   branchEntry: BranchEntry;
   docsetEntry: DocsetsDocument;
   repoEntry: ReposBranchesDocument;
+  connectionInfo: CollectionConnectionInfo;
 }) => {
   //TODO: change based on environment
   const url = assertTrailingSlash(
@@ -27,7 +30,7 @@ export const getSearchProperties = async ({
   const active = branchEntry.active;
 
   if (!active) {
-    await deleteStaleProperties(searchProperty);
+    await deleteStaleProperties(searchProperty, connectionInfo);
     throw new Error(
       `Search manifest should not be generated for inactive version ${version} of repo ${repoEntry.repoName}. Removing all associated manifests`,
     );

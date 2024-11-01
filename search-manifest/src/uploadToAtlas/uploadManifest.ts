@@ -1,32 +1,10 @@
-import type * as mongodb from 'mongodb';
 import assert from 'node:assert';
 import type { Manifest } from '../generateManifest/manifest';
-import type { RefreshInfo, SearchDocument } from '../types';
+import type { RefreshInfo } from '../types';
+import type { SearchDocument } from 'populate-metadata/databaseConnection/fetchSearchData';
 import { generateHash, joinUrl } from '../utils';
-import {
-  getSearchDb,
-  type CollectionConnectionInfo,
-} from 'populate-metadata/databaseConnection/atlasClusterConnector';
-
-export const getDocumentsCollection = async ({
-  URI,
-  databaseName,
-  collectionName,
-  extensionName,
-}: {
-  URI: string;
-  databaseName: string;
-  collectionName: string;
-  extensionName: string;
-}): //TODO: specify type
-Promise<any> => {
-  const dbSession = await getSearchDb({
-    URI,
-    databaseName,
-    appName: extensionName,
-  });
-  return dbSession.collection<mongodb.Document>(collectionName);
-};
+import type { CollectionConnectionInfo } from 'populate-metadata/databaseConnection/atlasClusterConnector';
+import { getDocumentsCollection } from 'populate-metadata/databaseConnection/fetchSearchData';
 
 const composeUpserts = async (
   manifest: Manifest,
@@ -78,9 +56,7 @@ export const uploadManifest = async ({
     return Promise.reject(new Error('Invalid manifest'));
   }
 
-  const documentsColl = await getDocumentsCollection({
-    ...connectionInfo,
-  });
+  const documentsColl = await getDocumentsCollection(connectionInfo);
 
   const status: RefreshInfo = {
     deleted: 0,

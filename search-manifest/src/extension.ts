@@ -9,9 +9,7 @@ import {
 } from '@netlify/sdk';
 import type z from 'zod';
 import { type DbConfig, getDbConfig } from './assertDbEnvVars';
-import type { ConfigEnvironmentVariables, ExtendedConfig } from './types';
-
-type PluginOptions = Omit<NetlifyPluginOptions, 'inputs'> & ExtendedConfig;
+import type { ConfigEnvironmentVariables } from 'populate-metadata/updateConfig';
 
 type BuildHookWithEnvVars<
   DbConfig,

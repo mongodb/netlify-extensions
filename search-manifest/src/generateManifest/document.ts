@@ -1,8 +1,13 @@
 import type { BSON } from 'bson';
 import { JSONPath } from 'jsonpath-plus';
-import type { ManifestEntry, ManifestFacets, Metadata } from '../types';
-import { type Facet, createFacet } from './createFacets';
+import { type Facet, type ManifestFacets, createFacet } from './createFacets';
+import type { ManifestEntry } from './manifest';
 
+export type Metadata = {
+  robots: boolean;
+  keywords: string | null;
+  description?: string;
+};
 export class Document {
   //Return indexing data from a page's JSON-formatted AST for search purposes
 

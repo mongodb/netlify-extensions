@@ -3,18 +3,17 @@ import { generateManifest } from './generateManifest';
 import { Extension } from 'populate-metadata/extension';
 import type {
   BranchEntry,
-  ConfigEnvironmentVariables,
-  DocsetsDocument,
   ReposBranchesDocument,
-  S3UploadParams,
-  SearchDbName,
-} from './types';
+} from 'populate-metadata/databaseConnection/fetchReposBranchesData';
+import type { DocsetsDocument } from 'populate-metadata/databaseConnection/fetchDocsetsData';
+import type { ConfigEnvironmentVariables } from 'populate-metadata/extension';
+import type { S3UploadParams } from './types';
 import type { NetlifyPluginUtils } from '@netlify/build';
 
 import { getSearchProperties } from './uploadToAtlas/getSearchProperties';
 import {
   closePoolDb,
-  // closeSearchDb,
+  closeSearchDb,
 } from 'populate-metadata/databaseConnection/atlasClusterConnector';
 import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
 import { envVarToBool } from './extension';
@@ -49,6 +48,13 @@ const generateAndUploadManifests = async ({
 
   console.log('=========== finished generating manifests ================');
 
+  const searchConnectionInfo = {
+    URI: dbEnvVars.ATLAS_SEARCH_URI,
+    databaseName: configEnvironment.SEARCH_DB_NAME,
+    collectionName: dbEnvVars.DOCUMENTS_COLLECTION,
+    extensionName: EXTENSION_NAME,
+  };
+
   const {
     url,
     searchProperty,
@@ -61,6 +67,7 @@ const generateAndUploadManifests = async ({
     branchEntry: configEnvironment.BRANCH_ENTRY as BranchEntry,
     docsetEntry: configEnvironment.DOCSET_ENTRY as DocsetsDocument,
     repoEntry: configEnvironment.REPO_ENTRY as ReposBranchesDocument,
+    connectionInfo: searchConnectionInfo,
   });
 
   const projectName = configEnvironment.REPO_ENTRY?.project;
@@ -82,17 +89,11 @@ const generateAndUploadManifests = async ({
   try {
     manifest.setUrl(url);
     manifest.setGlobalSearchValue(includeInGlobalSearch);
-    const connectionInfo = {
-      URI: dbEnvVars.ATLAS_SEARCH_URI,
-      databaseName: configEnvironment.SEARCH_DB_NAME as SearchDbName,
-      collectionName: dbEnvVars.DOCUMENTS_COLLECTION,
-      extensionName: EXTENSION_NAME,
-    };
     console.log('=========== Uploading Manifests to Atlas =================');
     const status = await uploadManifest({
       manifest,
       searchProperty,
-      connectionInfo,
+      connectionInfo: searchConnectionInfo,
     });
     console.log(status);
     console.log('=========== Manifests uploaded to Atlas =================');
@@ -100,7 +101,7 @@ const generateAndUploadManifests = async ({
     console.log('Manifest could not be uploaded', e);
   } finally {
     await closePoolDb();
-    // await closeSearchDb();
+    await closeSearchDb();
   }
 };
 

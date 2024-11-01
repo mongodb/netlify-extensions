@@ -4,6 +4,8 @@ export interface Facet {
   subFacets: Array<Facet> | null;
 }
 
+export type ManifestFacets = Record<string, Array<string> | undefined> | null;
+
 export const createFacet = (facet: Facet) => {
   const category = facet.category;
   const value = facet.value;

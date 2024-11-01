@@ -1,4 +1,16 @@
-import type { ManifestEntry } from '../types';
+import type { ManifestFacets } from './createFacets';
+
+export type ManifestEntry = {
+  slug: string;
+  strippedSlug?: string;
+  title: string;
+  headings?: Array<string>;
+  paragraphs: string;
+  code: Array<{ lang: string | null; value: string }>;
+  preview?: string | null;
+  tags: string | null;
+  facets: ManifestFacets;
+};
 
 export class Manifest {
   url: string;
