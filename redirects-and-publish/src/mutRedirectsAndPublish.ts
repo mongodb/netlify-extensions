@@ -19,6 +19,21 @@ export const mutRedirectsAndPublish = async (
     
       console.log('Files in the directory:', items);
     });
+    if (configEnvironment?.SITE_NAME === "mongdb-snooty") {
+      console.log("switching sites");
+      await run.command(`${process.chdir('./docs-landing')}`)
+    }
+
+    console.log("the process.cwd is ", process.cwd());
+    console.log("the fs.readdir is ");
+    readdir(process.cwd(), (err, items) => {
+      if (err) {
+        console.error('Error reading directory:', err);
+        return;
+      }
+    
+      console.log('Files in the directory:', items);
+    });
     await run('curl', [
       '-L',
       '-o',
