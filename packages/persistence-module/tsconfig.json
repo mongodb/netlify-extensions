@@ -6,7 +6,7 @@
     "strict": true,
     "rootDir": ".",
     "paths": {
-      "bson": ["./node_modules/bson/src/"]
+      "bson": ["../../node_modules/bson/src/"]
     }
   },
   "exclude": ["node_modules", "dist"]

@@ -2,8 +2,10 @@ import { NetlifyExtension } from '@netlify/sdk';
 import { deserialize } from 'bson';
 import { buildOpenAPIPages } from './build-pages';
 import { readFileAsync } from './utils/fs-async';
+import { Extension } from '@populate-metadata/extension'
 
-const extension = new NetlifyExtension();
+
+const extension = new Extension({isEnabled: true});
 const BUNDLE_PATH = `${process.cwd()}/bundle`;
 const REDOC_CLI_VERSION = '1.2.3';
 
