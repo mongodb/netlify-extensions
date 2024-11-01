@@ -10,7 +10,7 @@ export const mutRedirectsAndPublish = async (
     // running mut-redirects -------------------------------------------------------
     console.log('Downloading Mut...');
     console.log("the process.cwd is ", process.cwd());
-    console.log("the fs.readdir is ",  readdir);
+    console.log("the fs.readdir is ", readdir(process.cwd(), (err, items) => {}));
     await run('curl', [
       '-L',
       '-o',
