@@ -6,7 +6,7 @@ import type {
   ReposBranchesDocument,
 } from 'populate-metadata/databaseConnection/fetchReposBranchesData';
 import type { DocsetsDocument } from 'populate-metadata/databaseConnection/fetchDocsetsData';
-import type { ConfigEnvironmentVariables } from 'populate-metadata/extension';
+import type { ConfigEnvironmentVariables } from 'populate-metadata/updateConfig';
 import type { S3UploadParams } from './types';
 import type { NetlifyPluginUtils } from '@netlify/build';
 
@@ -50,7 +50,7 @@ const generateAndUploadManifests = async ({
 
   const searchConnectionInfo = {
     URI: dbEnvVars.ATLAS_SEARCH_URI,
-    databaseName: configEnvironment.SEARCH_DB_NAME,
+    databaseName: configEnvironment.SEARCH_DB_NAME as string,
     collectionName: dbEnvVars.DOCUMENTS_COLLECTION,
     extensionName: EXTENSION_NAME,
   };
