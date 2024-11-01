@@ -29,7 +29,6 @@ const getDocsetEntry = async ({
 }): Promise<DocsetsDocument> => {
   const docsets = await getDocsetsCollection({
     ...docsetsConnectionInfo,
-    extName: EXTENSION_NAME,
   });
   const docsetEnvironmentProjection = getEnvProjection(environment);
   const query = { project: { $eq: projectName } };
@@ -63,7 +62,6 @@ const getRepoEntry = async ({
 }): Promise<ReposBranchesDocument> => {
   const reposBranches = await getReposBranchesCollection({
     ...connectionInfo,
-    extName: EXTENSION_NAME,
   });
 
   const query = {
@@ -108,9 +106,10 @@ export const getProperties = async ({
   environment: Environments;
 }): Promise<{ repo: ReposBranchesDocument; docsetEntry: DocsetsDocument }> => {
   const repoBranchesConnectionInfo = {
-    clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
+    URI: dbEnvVars.ATLAS_CLUSTER0_URI,
     databaseName: poolDbName,
     collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
+    extensionName: EXTENSION_NAME,
   };
 
   const repo = await getRepoEntry({
@@ -120,9 +119,10 @@ export const getProperties = async ({
   });
 
   const docsetsConnectionInfo = {
-    clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
+    URI: dbEnvVars.ATLAS_CLUSTER0_URI,
     databaseName: poolDbName,
     collectionName: dbEnvVars.DOCSETS_COLLECTION,
+    extensionName: EXTENSION_NAME,
   };
 
   const docsetEntry = await getDocsetEntry({

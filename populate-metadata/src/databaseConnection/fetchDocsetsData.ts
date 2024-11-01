@@ -16,20 +16,20 @@ export interface DocsetsDocument {
 }
 
 export const getDocsetsCollection = async ({
-  clusterZeroURI,
+  URI,
   databaseName,
   collectionName,
-  extName,
+  extensionName,
 }: {
-  clusterZeroURI: string;
+  URI: string;
   databaseName: string;
   collectionName: string;
-  extName: string;
+  extensionName: string;
 }): Promise<mongodb.Collection<DocsetsDocument>> => {
   const dbSession = await getPoolDb({
-    clusterZeroURI,
+    URI,
     databaseName,
-    appName: extName,
+    appName: extensionName,
   });
   return dbSession.collection<DocsetsDocument>(collectionName);
 };
