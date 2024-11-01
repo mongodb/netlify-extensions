@@ -7,7 +7,7 @@ let searchClusterClient: mongodb.MongoClient;
 
 export type CollectionConnectionInfo = {
   URI: string;
-  databaseName: PoolDbName;
+  databaseName: string;
   collectionName: CollectionName;
   extensionName: string;
 };
@@ -47,17 +47,17 @@ export const getPoolDb = async ({
 };
 
 export const getSearchDb = async ({
-  atlasSearchUri,
+  URI,
   databaseName,
   appName,
 }: {
-  atlasSearchUri: string;
+  URI: string;
   databaseName: string;
   appName: string;
 }): Promise<mongodb.Db> => {
   if (!searchClusterClient) {
     console.info('Creating new instance of Cluster Zero client');
-    searchClusterClient = await dbClient({ uri: atlasSearchUri, appName });
+    searchClusterClient = await dbClient({ uri: URI, appName });
   }
   return searchClusterClient.db(databaseName);
 };
