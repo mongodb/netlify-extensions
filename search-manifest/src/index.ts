@@ -1,6 +1,6 @@
 import { uploadManifest } from './uploadToAtlas/uploadManifest';
 import { generateManifest } from './generateManifest';
-import { Extension } from 'populate-metadata';
+import { Extension } from 'populate-metadata/extension';
 import type {
   BranchEntry,
   ConfigEnvironmentVariables,
@@ -14,7 +14,7 @@ import { getSearchProperties } from './uploadToAtlas/getSearchProperties';
 import { closeSearchDb, closeSnootyDb } from './uploadToAtlas/searchConnector';
 import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
 import { envVarToBool } from './extension';
-import type { DbConfig } from './assertDbEnvVars';
+import type { DbConfig } from 'populate-metadata/assertDbEnvVars';
 
 const generateAndUploadManifests = async ({
   configEnvironment,
