@@ -1,5 +1,4 @@
 import type { WithId } from 'mongodb';
-import type { ManifestEntry } from './manifestEntry';
 import type { Environments } from './assertDbEnvVars';
 
 type EnvironmentConfig = {
@@ -15,14 +14,6 @@ export interface DocsetsDocument {
   url: EnvironmentConfig;
   prefix: EnvironmentConfig;
   bucket: EnvironmentConfig;
-}
-
-export interface DatabaseDocument extends ManifestEntry {
-  url: string;
-  lastModified: Date;
-  manifestRevisionId: string;
-  searchProperty: string[];
-  includeInGlobalSearch: boolean;
 }
 
 export interface ReposBranchesDocument extends WithId<Document> {
