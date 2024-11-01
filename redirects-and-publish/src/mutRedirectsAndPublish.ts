@@ -12,7 +12,7 @@ export const mutRedirectsAndPublish = async (
 
     if (configEnvironment?.SITE_NAME === "mongodb-snooty") {
       console.log("switching sites");
-      await run.command(`${process.chdir(`${process.cwd()}./docs-landing`)}`)
+      await run.command(`${process.chdir(`${process.cwd()}/docs-landing`)}`)
     }
     
     console.log("the process.cwd is ", process.cwd());
