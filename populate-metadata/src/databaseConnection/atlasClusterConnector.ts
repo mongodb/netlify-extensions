@@ -6,9 +6,10 @@ let clusterZeroClient: mongodb.MongoClient;
 let searchClusterClient: mongodb.MongoClient;
 
 export type CollectionConnectionInfo = {
-  clusterZeroURI: string;
+  URI: string;
   databaseName: PoolDbName;
   collectionName: CollectionName;
+  extensionName: string;
 };
 
 export const teardown = async (client: mongodb.MongoClient): Promise<void> => {
@@ -30,17 +31,17 @@ const dbClient = async ({
 };
 
 export const getPoolDb = async ({
-  clusterZeroURI,
+  URI,
   databaseName,
   appName,
 }: {
-  clusterZeroURI: string;
+  URI: string;
   databaseName: string;
   appName: string;
 }): Promise<mongodb.Db> => {
   if (!clusterZeroClient) {
     console.info('Creating new instance of Cluster Zero client');
-    clusterZeroClient = await dbClient({ uri: clusterZeroURI, appName });
+    clusterZeroClient = await dbClient({ uri: URI, appName });
   }
   return clusterZeroClient.db(databaseName);
 };

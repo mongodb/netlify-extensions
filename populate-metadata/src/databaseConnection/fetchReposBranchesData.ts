@@ -22,20 +22,20 @@ export interface ReposBranchesDocument {
 }
 
 export const getReposBranchesCollection = async ({
-  clusterZeroURI,
+  URI,
   databaseName,
   collectionName,
-  extName,
+  extensionName,
 }: {
-  clusterZeroURI: string;
+  URI: string;
   databaseName: string;
   collectionName: string;
-  extName: string;
+  extensionName: string;
 }): Promise<mongodb.Collection<ReposBranchesDocument>> => {
   const dbSession = await getPoolDb({
-    clusterZeroURI,
+    URI,
     databaseName,
-    appName: extName,
+    appName: extensionName,
   });
   return dbSession.collection<ReposBranchesDocument>(collectionName);
 };
