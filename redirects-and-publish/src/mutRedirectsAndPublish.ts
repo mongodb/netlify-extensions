@@ -8,17 +8,8 @@ export const mutRedirectsAndPublish = async (
     run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
     // running mut-redirects -------------------------------------------------------
-    console.log('Downloading Mut...');
-    console.log("the process.cwd is ", process.cwd());
-    console.log("the fs.readdir is ");
-    readdir(process.cwd(), (err, items) => {
-      if (err) {
-        console.error('Error reading directory:', err);
-        return;
-      }
-    
-      console.log('Files in the directory:', items);
-    });
+    console.log('Downloading Mut...',configEnvironment?.SITE_NAME );
+
     if (configEnvironment?.SITE_NAME === "mongdb-snooty") {
       console.log("switching sites");
       await run.command(`${process.chdir('./docs-landing')}`)
