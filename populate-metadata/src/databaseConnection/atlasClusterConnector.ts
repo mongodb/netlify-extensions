@@ -68,3 +68,10 @@ export const closePoolDb = async () => {
     console.info('No client connection open to Cluster Zero client');
   }
 };
+
+export const closeSearchDb = async () => {
+  if (searchClusterClient) await teardown(searchClusterClient);
+  else {
+    console.info('No client connection open to Search Cluster client');
+  }
+};
