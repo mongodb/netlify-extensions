@@ -83,13 +83,13 @@ export const mutRedirectsAndPublish = async (
       
       // TODO: do I need to log this command below ?
       if (docsetEntry?.bucket?.dotcomstg === 'docs-mongodb-org-dotcomstg' && docsetEntry.project === 'landing' && configEnvironment?.SITE_NAME === "mongodb-snooty") {
-        console.log("Testing docs-landing in doctcomstg...");
+        console.log("Testing docs-landing in dotcomstg...");
         await run(
           `${process.cwd()}/mut/mut-publish`,
           [
             'public',
             `${docsetEntry?.bucket?.dotcomstg}`,
-            `--prefix="${docsetEntry?.prefix?.dotcomstg}"`,
+            `--prefix=${docsetEntry?.prefix?.dotcomstg}`,
             '--deploy',
             `--deployed-url-prefix=${docsetEntry?.url?.dotcomstg}`,
             '--json',
