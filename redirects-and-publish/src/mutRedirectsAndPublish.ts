@@ -87,7 +87,7 @@ export const mutRedirectsAndPublish = async (
         await run(
           `${process.cwd()}/mut/mut-publish`,
           [
-            'snooty/public',
+            'public',
             `${docsetEntry?.bucket?.dotcomstg}`,
             `--prefix=/${docsetEntry?.prefix?.dotcomstg}`,
             '--deploy',
