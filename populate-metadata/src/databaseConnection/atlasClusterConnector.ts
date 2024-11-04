@@ -16,7 +16,7 @@ export const teardown = async (client: mongodb.MongoClient): Promise<void> => {
   await client.close();
 };
 
-// Handles memoization of db object, and initial connection logic if needs to be initialized
+// Handles initial connection logic if needs to be initialized
 const dbClient = async ({
   uri,
   appName,
