@@ -12,9 +12,13 @@ export const mutRedirectsAndPublish = async (
     // clone snooty directory into the new sub directory
     // in that sub directory run 'npm run build'
     // might have to come out of the paths for directories 
-    console.log(await run.command('mkdir redirects-and-publish'));
-    console.log(await run.command('cp -r snooty /redirects-and-publish/'));
-    console.log(await run.command('ls /redirects-and-publish/'));
+    console.log("please check if this runs -----------------------------")
+    const status = await run.command('mkdir redirects-and-publish');
+    console.log(status);
+    const status1 = await run.command('cp -r snooty /redirects-and-publish/');
+    console.log(status1);
+    const status2 = await run.command('ls /redirects-and-publish/');
+    console.log(status2);
     // await run.command('cd redirects-and-publish');
 
 
