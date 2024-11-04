@@ -14,12 +14,12 @@ export const createSnootyCopy = async (
     cwd: offlineSnootyPath,
   });
 
-  await run.command(`npm run build:clean`, {
+  await run.command(`npm run clean && npm run build:no-prefix`, {
     cwd: offlineSnootyPath,
   });
 
   // debugging
-  await run.command(`ls -l`, {
-    cwd: `${offlineSnootyPath}/pulic`,
-  });
+  // await run.command(`ls -l`, {
+  //   cwd: `${offlineSnootyPath}/pulic`,
+  // });
 };
