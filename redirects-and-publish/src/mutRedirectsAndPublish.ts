@@ -14,7 +14,7 @@ export const mutRedirectsAndPublish = async (
     // might have to come out of the paths for directories 
     console.log(await run.command('mkdir redirects-and-publish'));
     console.log(await run.command('cp -r snooty redirects-and-publish'));
-    console.log(await run.command('ls /redirects-and-publish/'));
+    console.log(await run.command('ls redirects-and-publish'));
     // await run.command('cd redirects-and-publish');
 
     // running mut-redirects -------------------------------------------------------
