@@ -7,6 +7,16 @@ export const mutRedirectsAndPublish = async (
     configEnvironment: ConfigEnvironmentVariables,
     run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
+
+    // create and cd to new dir
+    // clone snooty directory into the new sub directory
+    // in that sub directory run 'npm run build'
+    // might have to come out of the paths for directories 
+    console.log(await run.command('mkdir redirects-and-publish'));
+    console.log(await run.command('cp -r snooty /redirects-and-publish/'));
+    console.log(await run.command('ls /redirects-and-publish/'));
+    // await run.command('cd redirects-and-publish');
+
     // running mut-redirects -------------------------------------------------------
     console.log('Downloading Mut...',configEnvironment?.SITE_NAME );
 
