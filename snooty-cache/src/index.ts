@@ -10,8 +10,6 @@ import { checkForNewSnootyVersion } from './snooty-frontend-version-check';
 
 const readdirAsync = promisify(readdir);
 
-const MUT_VERSION = '0.11.4';
-
 const getCacheFilePaths = (filesPaths: string[]): string[] =>
   filesPaths.filter((filePath) => filePath.endsWith('.cache.gz'));
 
@@ -58,32 +56,6 @@ extension.addBuildEventHandler(
         await cache.save(filePath);
       }),
     );
-  },
-);
-
-extension.addBuildEventHandler(
-  'onSuccess',
-  async ({ utils: { run, status } }) => {
-    if (!envVarToBool(process.env.SNOOTY_CACHE_ENABLED)) return;
-
-    const redirectErrs = '';
-
-    console.log('Downloading Mut...');
-    await run('curl', [
-      '-L',
-      '-o',
-      'mut.zip',
-      `https://github.com/mongodb/mut/releases/download/v${MUT_VERSION}/mut-v${MUT_VERSION}-linux_x86_64.zip`,
-    ]);
-    await run.command('unzip -d . -qq mut.zip');
-    try {
-      console.log('Running mut-redirects...');
-      await run.command(
-        `${process.cwd()}/mut/mut-redirects config/redirects -o snooty/public/.htaccess`,
-      );
-    } catch (e) {
-      console.log(`Error occurred while running mut-redirects: ${e}`);
-    }
   },
 );
 
