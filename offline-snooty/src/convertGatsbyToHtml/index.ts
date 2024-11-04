@@ -16,7 +16,7 @@ import {
 } from "node:fs";
 import { create } from "tar";
 import { join } from "node:path";
-import { handleHtmlFile } from "./fileHandler";
+// import { handleHtmlFile } from "./fileHandler";
 
 type fileUpdateLog = {
   processedHtmlFiles: string[];
@@ -45,7 +45,9 @@ async function scanFileTree(
     if (stat.isDirectory()) {
       scanFileTree(filename, fileUpdateLog); //recurse
     } else if (filename.endsWith(".html")) {
-      await handleHtmlFile(filename);
+      // await handleHtmlFile(filename);
+      console.log("HANDLE HTML");
+      
       fileUpdateLog.processedHtmlFiles.push(filename);
     } else if (filename.endsWith("test")) {
     }
