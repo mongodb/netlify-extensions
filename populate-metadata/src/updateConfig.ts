@@ -76,8 +76,10 @@ export const updateConfig = async ({
   // Check if repo name and branch name have been set as environment variables through Netlify UI
   // Allows overwriting of database name values for testing
   const branchName = process.env.BRANCH_NAME ?? configEnvironment.BRANCH;
+
+  console.log('REPO URL', process.env.REPOSITORY_URL);
   const repoName =
-    process.env.REPO_NAME ?? process.env.REPOSITORY_URL?.split('/').pop();
+    process.env.REPO_NAME ?? process.env.REPOSITORY_URL?.split('/')?.pop();
 
   if (!branchName || !repoName) {
     throw new Error('Repo name or branch name missing from deploy');
@@ -133,7 +135,7 @@ export const updateConfig = async ({
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
   configEnvironment.DOCSET_ENTRY = docsetEntry;
-  configEnvironment.BRANCH_ENTRY = branch.pop();
+  configEnvironment.BRANCH_ENTRY = branch?.pop();
 
   console.info(
     'BUILD ENVIRONMENT: ',
