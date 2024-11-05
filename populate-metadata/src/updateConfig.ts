@@ -132,7 +132,7 @@ export const updateConfig = async ({
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = env;
   process.env.PATH_PREFIX = docsetEntry.prefix[env];
-  console.log(process.env.PATH_PREFIX);
+  console.log('PATH PREFIX:', docsetEntry.prefix[env], process.env.PATH_PREFIX);
 
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
