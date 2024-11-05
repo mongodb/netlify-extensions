@@ -132,7 +132,6 @@ export const updateConfig = async ({
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = env;
   process.env.PATH_PREFIX = docsetEntry.prefix[env];
-  console.log('docset entry prefix is: ', docsetEntry.prefix[env]);
   console.log('PATH PREFIX:', process.env.PATH_PREFIX);
 
   const { branches: branch, ...repoEntry } = repo;
@@ -149,9 +148,9 @@ export const updateConfig = async ({
     configEnvironment.DOCSET_ENTRY,
     '\n BRANCH ENTRY: ',
     configEnvironment.BRANCH_ENTRY,
-    '\n pool database name: ',
+    '\n POOL DB NAME: ',
     configEnvironment.POOL_DB_NAME,
-    '\n search database name: ',
+    '\n SEARCH DB NAME: ',
     configEnvironment.SEARCH_DB_NAME,
   );
 };

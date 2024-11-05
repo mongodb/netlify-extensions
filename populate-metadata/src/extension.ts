@@ -77,7 +77,7 @@ export class Extension<
       {
         ...options,
         if: (buildConfig: Zod.infer<BuildConfigSchema>) => {
-          console.log(this.isEnabled);
+          console.log(`Extension enabled?: ${this.isEnabled}`);
           if (!this.isEnabled) {
             return false;
           }
