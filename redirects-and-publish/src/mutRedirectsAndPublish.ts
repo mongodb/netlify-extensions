@@ -2,6 +2,7 @@ import type { ConfigEnvironmentVariables } from "./types";
 import type { NetlifyPluginUtils } from '@netlify/build';
 
 const MUT_VERSION = '0.11.4';
+const SNOOTY_PATH = `${process.cwd()}/running-mut/snooty`
 
 export const mutRedirectsAndPublish = async (
     configEnvironment: ConfigEnvironmentVariables,
@@ -15,8 +16,8 @@ export const mutRedirectsAndPublish = async (
     console.log(await run.command('rm -f -r running-mut'));
     console.log(await run.command('mkdir -p running-mut'));
     console.log(await run.command('cp -r snooty running-mut'));
-    console.log(await run.command('ls running-mut'));
-    console.log(await run.command('ls'), {cwd: `${process.cwd()}/running-mut/snooty`});
+    console.log(await run.command('ls running-mut/snooty'));
+    console.log(await run.command('npm run build'), {cwd: SNOOTY_PATH});
     // console.log(await run.command('ls'));
     // console.log(await run.command('npm run build'));
     // console.log(await run.command('cd ../'));
