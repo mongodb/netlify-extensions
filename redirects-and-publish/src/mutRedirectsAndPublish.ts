@@ -120,7 +120,7 @@ export const mutRedirectsAndPublish = async (
         await run(
           `${process.cwd()}/mut/mut-publish`,
           [
-            'snooty/public',
+            'public',
             'docs-mongodb-org-dotcomstg',
             '--prefix=/netlify/docs-qa',
             '--deploy',
