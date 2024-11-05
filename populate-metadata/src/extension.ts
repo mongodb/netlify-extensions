@@ -66,7 +66,13 @@ export class Extension<
       type,
       async (args) => {
         const dbEnvVars = this.dbEnvVars;
-        await func({ dbEnvVars, ...args });
+        try {
+          await func({ dbEnvVars, ...args });
+        } catch (e) {
+          console.info(
+            `Build handler did not complete successfully. Errored with error: ${e}`,
+          );
+        }
       },
       {
         ...options,

@@ -77,7 +77,6 @@ export const updateConfig = async ({
   // Allows overwriting of database name values for testing
   const branchName = process.env.BRANCH_NAME ?? configEnvironment.BRANCH;
 
-  console.log('REPO URL', process.env.REPOSITORY_URL);
   const repoName =
     process.env.REPO_NAME ?? process.env.REPOSITORY_URL?.split('/')?.pop();
 
@@ -108,8 +107,6 @@ export const updateConfig = async ({
         : 'prd');
 
   configEnvironment.ENV = env;
-  // Set process.env SNOOTY_ENV environment variable for Snooty frontend to retrieve at build time
-  process.env.SNOOTY_ENV = env;
 
   const { snootyDb, searchDb, poolDb } = getDbNames(env);
 
@@ -131,6 +128,11 @@ export const updateConfig = async ({
     poolDbName: configEnvironment.POOL_DB_NAME,
     environment: env,
   });
+
+  // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
+  process.env.SNOOTY_ENV = env;
+  process.env.PATH_PREFIX = docsetEntry.prefix[env];
+  console.log(process.env.PATH_PREFIX);
 
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
