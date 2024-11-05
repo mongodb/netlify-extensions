@@ -122,7 +122,7 @@ export const mutRedirectsAndPublish = async (
           [
             'public',
             'docs-mongodb-org-dotcomstg',
-            '--prefix=/netlify/docs-qa',
+            '--prefix=/docs-qa',
             '--deploy',
             '--deployed-url-prefix=https://mongodbcom-cdn.website.staging.corp.mongodb.com/',
             '--json',
