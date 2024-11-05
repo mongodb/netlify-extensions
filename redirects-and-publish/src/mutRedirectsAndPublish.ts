@@ -13,18 +13,16 @@ export const mutRedirectsAndPublish = async (
     // clone snooty directory into the new sub directory
     // in that sub directory run 'npm run build'
     // might have to come out of the paths for directories 
-    console.log(await run.command('rm -f -r running-mut'));
-    console.log(await run.command('mkdir -p running-mut'));
+    
     console.log(await run.command('ls'));
-    if (configEnvironment?.SITE_NAME === 'mongodb-snooty') {
-      console.log(await run.command('cp -r ./* running-mut'));
-    } else {
+    if (configEnvironment?.SITE_NAME !== 'mongodb-snooty') {
+      console.log(await run.command('rm -f -r running-mut'));
+      console.log(await run.command('mkdir -p running-mut'));
       console.log(await run.command('cp -r snooty running-mut'));
-    }
-    console.log(await run.command('cp -r snooty running-mut'));
-    console.log(await run.command('ls running-mut/snooty'));
-    console.log(process.chdir(`${process.cwd()}/running-mut/snooty`));
-    console.log(await run.command('ls'));
+      console.log(await run.command('ls running-mut/snooty'));
+      console.log(process.chdir(`${process.cwd()}/running-mut/snooty`));
+      console.log(await run.command('ls'));
+    } 
     console.log(await run.command('npm run clean'));
     console.log(await run.command('npm run build'));
     // console.log(await run.command('ls'));
@@ -50,7 +48,7 @@ export const mutRedirectsAndPublish = async (
       if (configEnvironment?.SITE_NAME === "mongodb-snooty") {
         // so mongodb-snooty can launch with docs-landing
         await run.command(
-          `${process.cwd()}/mut/mut-redirects ../../docs-landing/config/redirects -o public/.htaccess`,
+          `${process.cwd()}/mut/mut-redirects /docs-landing/config/redirects -o public/.htaccess`,
         );
       } else {
         await run.command(
