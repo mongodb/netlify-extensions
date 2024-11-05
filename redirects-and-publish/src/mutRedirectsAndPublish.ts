@@ -44,11 +44,11 @@ export const mutRedirectsAndPublish = async (
       if (configEnvironment?.SITE_NAME === "mongodb-snooty") {
         // so mongodb-snooty can launch with docs-landing
         await run.command(
-          `${process.cwd()}/mut/mut-redirects ../docs-landing/config/redirects -o public/.htaccess`,
+          `${process.cwd()}/mut/mut-redirects ../../docs-landing/config/redirects -o public/.htaccess`,
         );
       } else {
         await run.command(
-          `${process.cwd()}/mut/mut-redirects ../config/redirects -o snooty/public/.htaccess`,
+          `${process.cwd()}/mut/mut-redirects ../../config/redirects -o snooty/public/.htaccess`,
         );
      }
     } catch (e) {
