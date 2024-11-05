@@ -50,6 +50,7 @@ export class Extension<
   constructor({ isEnabled }: ExtensionOptions) {
     super();
     this.isEnabled = isEnabled;
+    console.log(`Extension enabled: ${this.isEnabled}`);
     this.dbEnvVars = getDbConfig();
   }
 
@@ -77,7 +78,6 @@ export class Extension<
       {
         ...options,
         if: (buildConfig: Zod.infer<BuildConfigSchema>) => {
-          console.log(`Extension enabled?: ${this.isEnabled}`);
           if (!this.isEnabled) {
             return false;
           }
