@@ -16,7 +16,7 @@ export const mutRedirectsAndPublish = async (
     console.log(await run.command('rm -f -r running-mut'));
     console.log(await run.command('mkdir -p running-mut'));
     if (configEnvironment?.SITE_NAME === 'mongodb-snooty') {
-      console.log(await run.command('cp -r ../snooty running-mut'));
+      console.log(await run.command('cp -r ./* running-mut'));
     } else {
       console.log(await run.command('cp -r snooty running-mut'));
     }
