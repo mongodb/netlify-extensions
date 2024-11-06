@@ -1,6 +1,6 @@
-import axios from "axios";
-import { capitalizeFirstLetter } from "./utils.js";
-import type { branchOption } from "./types.js";
+import axios from 'axios';
+import { capitalizeFirstLetter } from './utils.js';
+import type { branchOption } from './types.js';
 
 export const buildRepoGroups = async (cursor: any) => {
   const repoOptions: any[] = [];
@@ -10,15 +10,15 @@ export const buildRepoGroups = async (cursor: any) => {
     if (repo.branches.length) {
       const options = [];
       for (const branch of repo.branches) {
-        const buildWithSnooty = branch["buildsWithSnooty"];
+        const buildWithSnooty = branch.buildsWithSnooty;
 
         if (buildWithSnooty) {
-          const active = branch["active"];
-          const branchName = branch["gitBranchName"];
+          const active = branch.active;
+          const branchName = branch.gitBranchName;
 
           options.push({
             text: {
-              type: "plain_text",
+              type: 'plain_text',
               text: active ? branchName : `(!inactive) ${branchName}`,
             },
             value: branchName,
@@ -28,7 +28,7 @@ export const buildRepoGroups = async (cursor: any) => {
       const sortedOptions = sortOptions(options);
       const repoOption = {
         label: {
-          type: "plain_text",
+          type: 'plain_text',
           text: capitalizeFirstLetter(repoName),
         },
         //sort the options by version number
@@ -38,7 +38,7 @@ export const buildRepoGroups = async (cursor: any) => {
     }
   }
   return repoOptions.sort((repoOne, repoTwo) =>
-    repoOne.label.text.localeCompare(repoTwo.label.text)
+    repoOne.label.text.localeCompare(repoTwo.label.text),
   );
 };
 
@@ -50,8 +50,8 @@ export const sortOptions = (options: Array<branchOption>) => {
       .localeCompare(
         branchOne.text.text
           .toString()
-          .replace(/\d+/g, (n) => (+n + 100000).toString())
-      )
+          .replace(/\d+/g, (n) => (+n + 100000).toString()),
+      ),
   );
   return sortedOptions;
 };
@@ -60,33 +60,33 @@ export function getDropDownView(triggerId: string, repos: Array<unknown>) {
   return {
     trigger_id: triggerId,
     view: {
-      type: "modal",
+      type: 'modal',
       title: {
-        type: "plain_text",
-        text: "Deploy Docs",
+        type: 'plain_text',
+        text: 'Deploy Docs',
       },
       submit: {
-        type: "plain_text",
-        text: "Submit",
+        type: 'plain_text',
+        text: 'Submit',
       },
       close: {
-        type: "plain_text",
-        text: "Cancel",
+        type: 'plain_text',
+        text: 'Cancel',
       },
       blocks: [
         {
-          type: "input",
-          block_id: "block_repo_option",
+          type: 'input',
+          block_id: 'block_repo_option',
           label: {
-            type: "plain_text",
-            text: "Select Repo",
+            type: 'plain_text',
+            text: 'Select Repo',
           },
           element: {
-            type: "multi_static_select",
-            action_id: "repo_option",
+            type: 'multi_static_select',
+            action_id: 'repo_option',
             placeholder: {
-              type: "plain_text",
-              text: "Select a repo to deploy",
+              type: 'plain_text',
+              text: 'Select a repo to deploy',
             },
             option_groups: repos,
           },
