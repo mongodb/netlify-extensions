@@ -9,7 +9,6 @@ export const createSnootyCopy = async (
   );
 
   const offlineSnootyPath = `${targetPath}/snooty`;
-  console.log(`CWD IS ${offlineSnootyPath}`);
 
   await run.command(`npm ci --legacy-peer-deps`, {
     cwd: offlineSnootyPath,
@@ -22,9 +21,4 @@ export const createSnootyCopy = async (
   await run.command(`npm run build:no-prefix`, {
     cwd: offlineSnootyPath,
   });
-
-  // debugging
-  // await run.command(`ls -l`, {
-  //   cwd: `${offlineSnootyPath}/pulic`,
-  // });
 };

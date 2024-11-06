@@ -2,7 +2,13 @@
 import { NetlifyExtension } from "@netlify/sdk";
 import { createSnootyCopy } from "./createSnootyCopy";
 import { convertGatsbyToHtml } from "./convertGatsbyToHtml";
-import { uploadToS3 } from "./uploadToS3";
+import { destroyClient, uploadToS3 } from "./uploadToS3";
+import {
+  readEnvConfigs,
+  type BranchEntry,
+  type DocsetsDocument,
+  type ReposBranchesDocument,
+} from "./uploadToS3/utils";
 
 const extension = new NetlifyExtension();
 export const NEW_SNOOTY_PATH = `${process.cwd()}/snooty-offline`;
@@ -15,19 +21,29 @@ extension.addBuildEventHandler(
     if (!process.env.OFFLINE_SNOOTY_ENABLED) {
       return;
     }
-    console.log("snooty offline onSuccess.");
+    const { bucketName, fileName } = readEnvConfigs({
+      env: netlifyConfig.build.environment.ENV ?? "",
+      docsetEntry:
+        (netlifyConfig.build.environment
+          .DOCSET_ENTRY as unknown as DocsetsDocument) ?? {},
+      repoEntry:
+        (netlifyConfig.build.environment
+          .REPO_ENTRY as unknown as ReposBranchesDocument) ?? {},
+      branchEntry:
+        (netlifyConfig.build.environment
+          .BRANCH_ENTRY as unknown as BranchEntry) ?? {},
+    });
+
     try {
-      await createSnootyCopy(run, NEW_SNOOTY_PATH);
-      await convertGatsbyToHtml(`${NEW_SNOOTY_PATH}/snooty/public`);
-      await uploadToS3(
-        `${process.cwd()}/test-create-gzip.tgz`,
-        netlifyConfig.build.environment.ENV ?? ""
-        // netlifyConfig.build.environment.REPO_ENTRY ?? {}
-      );
+      // await createSnootyCopy(run, NEW_SNOOTY_PATH);
+      // await convertGatsbyToHtml(`${NEW_SNOOTY_PATH}/snooty/public`, fileName);
+      await uploadToS3(`${process.cwd()}/${fileName}`, bucketName, fileName);
       // TODO: update atlas collection repos_branches to signal offline availability
     } catch (e) {
       console.error(e);
       throw e;
+    } finally {
+      destroyClient();
     }
   }
 );

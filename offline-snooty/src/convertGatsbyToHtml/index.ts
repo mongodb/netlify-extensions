@@ -5,11 +5,7 @@
  * @param path full directory path of gatsby output
  */
 
-import {
-  existsSync,
-  readdirSync,
-  lstatSync,
-} from "node:fs";
+import { existsSync, readdirSync, lstatSync } from "node:fs";
 import { create } from "tar";
 import { join } from "node:path";
 import { handleHtmlFile } from "./fileHandler";
@@ -42,8 +38,6 @@ async function scanFileTree(
       scanFileTree(filename, fileUpdateLog); //recurse
     } else if (filename.endsWith(".html")) {
       await handleHtmlFile(filename);
-      // console.log("HANDLE HTML");
-      
       fileUpdateLog.processedHtmlFiles.push(filename);
     } else {
       // TODO: DOP-5167: handle other file types
@@ -51,14 +45,17 @@ async function scanFileTree(
   }
 }
 
-export const convertGatsbyToHtml = async (path: string): Promise<void> => {
+export const convertGatsbyToHtml = async (
+  path: string,
+  fileName: string
+): Promise<void> => {
   await scanFileTree(path);
   await create(
     {
       gzip: true,
-      file: "test-create-gzip.tgz", // TODO: update with netlify site,
-      cwd: process.cwd(),
+      file: fileName,
+      cwd: path,
     },
-    [path]
+    ["./"]
   );
 };

@@ -23,13 +23,20 @@ export const getClient = () => {
   return client;
 };
 
-export const uploadToS3 = async (filepath: string, env: string) => {
+export const uploadToS3 = async (
+  filepath: string,
+  bucketName: string,
+  fileName: string
+) => {
   const client = getClient();
   const fileStream = createReadStream(filepath);
+  if (!(bucketName && fileName)) {
+    throw new Error(`Missing bucketname or filename`);
+  }
 
   const command = new PutObjectCommand({
-    Bucket: "test-offline-snooty-uploads",
-    Key: "test.gzip", // TODO: update name from context
+    Bucket: bucketName,
+    Key: `docs/offline/${fileName}`,
     ContentEncoding: "gzip",
     Body: fileStream,
   });
