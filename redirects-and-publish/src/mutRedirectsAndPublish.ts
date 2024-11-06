@@ -120,10 +120,10 @@ export const mutRedirectsAndPublish = async (
           `${process.cwd()}/mut/mut-publish`,
           [
             'public',
-            `${docsetEntry?.bucket?.dotcomstg}`,
-            `--prefix=${docsetEntry?.prefix?.dotcomstg}`,
+            'docs-mongodb-org-dotcomstg',
+            '--prefix=/docs-qa',
             '--deploy',
-            `--deployed-url-prefix=${docsetEntry?.url?.dotcomstg}`,
+            '--deployed-url-prefix=https://mongodbcom-cdn.website.staging.corp.mongodb.com/',
             '--json',
             '--all-subdirectories',
             '--verbose'
