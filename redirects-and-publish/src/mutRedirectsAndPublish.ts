@@ -26,8 +26,8 @@ export const mutRedirectsAndPublish = async (
       console.log(await run.command('ls running-mut/snooty'));
       console.log(process.chdir(`${process.cwd()}/running-mut/snooty`));
     } else {
-      console.log(await run.command('find . -mindepth 1 -maxdepth 1 -exec cp -r {} running-mut/ \\'));
-      console.log(process.chdir(`${process.cwd()}/running-mut`));
+      // console.log(await run.command('find . -mindepth 1 -maxdepth 1 -exec cp -r {} running-mut/ \\'));
+      // console.log(process.chdir(`${process.cwd()}/running-mut`));
     }
       
     console.log(await run.command('ls'));
@@ -129,10 +129,10 @@ export const mutRedirectsAndPublish = async (
           `${process.cwd()}/mut/mut-publish`,
           [
             'public',
-            'docs-mongodb-org-dotcomstg',
-            '--prefix=/docs-qa',
+            `${docsetEntry?.bucket?.dotcomstg}`,
+            `--prefix=/${docsetEntry?.prefix?.dotcomstg}`,
             '--deploy',
-            '--deployed-url-prefix=https://mongodbcom-cdn.website.staging.corp.mongodb.com/',
+            `--deployed-url-prefix${docsetEntry?.url?.dotcomstg}`,
             '--json',
             '--all-subdirectories',
             '--verbose'
