@@ -108,8 +108,8 @@ export const mutRedirectsAndPublish = async (
       }
 
       // TODO: sub in the temporary values for the real values (this values from docs-landing staging)
-      console.log('In the bucket of', docsetEntry?.bucket, docsetEntry?.bucket?.prd, docsetEntry?.bucket?.dotcomstg); // subbed in docs-mongodb-org-dotcomstg
-      console.log('With a prefix of', docsetEntry?.prefix, `--prefix="${docsetEntry?.prefix?.dotcomstg}"`); // subbed in /netlify/docs-qa
+      console.log('In the bucket of', docsetEntry?.bucket, docsetEntry?.bucket?.dotcomstg); // subbed in docs-mongodb-org-dotcomstg
+      console.log('With a prefix of', docsetEntry?.prefix, `--prefix=${docsetEntry?.prefix?.dotcomstg}`); // subbed in /netlify/docs-qa
       console.log('And a URL of: ',  docsetEntry?.url); // https://mongodbcom-cdn.website.staging.corp.mongodb.com/
       
       // TODO: do I need to log this command below ?
@@ -125,6 +125,7 @@ export const mutRedirectsAndPublish = async (
             `--deployed-url-prefix=${docsetEntry?.url?.dotcomstg}`,
             '--json',
             '--all-subdirectories',
+            '--verbose'
           ],
           { input: 'y' },
         );
