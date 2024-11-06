@@ -35,8 +35,8 @@ extension.addBuildEventHandler(
     });
 
     try {
-      // await createSnootyCopy(run, NEW_SNOOTY_PATH);
-      // await convertGatsbyToHtml(`${NEW_SNOOTY_PATH}/snooty/public`, fileName);
+      await createSnootyCopy(run, NEW_SNOOTY_PATH);
+      await convertGatsbyToHtml(`${NEW_SNOOTY_PATH}/snooty/public`, fileName);
       await uploadToS3(`${process.cwd()}/${fileName}`, bucketName, fileName);
       // TODO: update atlas collection repos_branches to signal offline availability
     } catch (e) {

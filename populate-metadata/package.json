@@ -8,15 +8,17 @@
     "dev": "netlify-extension dev --open"
   },
   "dependencies": {
-    "@netlify/netlify-plugin-netlify-extension": "^1.0.3",
     "@netlify/build": "^29.55.2",
     "@netlify/functions": "^2.8.2",
+    "@netlify/netlify-plugin-netlify-extension": "^1.0.3",
     "@netlify/sdk": "^2.6.1",
     "@tanstack/react-query": "^5.59.13",
     "@trpc/client": "^11.0.0-rc.477",
     "@trpc/react-query": "^11.0.0-rc.477",
     "@trpc/server": "^11.0.0-rc.477",
-    "mongodb": "^6.9.0",
+    "deps": "^1.0.0",
+    "mongodb": "^6.10.0",
+    "peer": "^1.0.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zod": "^3.23.8"

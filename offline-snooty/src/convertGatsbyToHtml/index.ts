@@ -5,6 +5,7 @@
  * @param path full directory path of gatsby output
  */
 
+<<<<<<< HEAD
 import { existsSync, readdirSync, lstatSync } from "node:fs";
 import { create } from "tar";
 import { join } from "node:path";
@@ -58,4 +59,10 @@ export const convertGatsbyToHtml = async (
     },
     ["./"]
   );
+=======
+import { type Gzip, createGzip } from 'node:zlib';
+
+export const convertGatsbyToHtml = async (path: string): Promise<Gzip> => {
+  return createGzip();
+>>>>>>> main
 };

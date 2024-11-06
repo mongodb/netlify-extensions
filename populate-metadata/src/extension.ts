@@ -50,6 +50,7 @@ export class Extension<
   constructor({ isEnabled }: ExtensionOptions) {
     super();
     this.isEnabled = isEnabled;
+    console.log(`Extension enabled: ${this.isEnabled}`);
     this.dbEnvVars = getDbConfig();
   }
 
@@ -66,12 +67,17 @@ export class Extension<
       type,
       async (args) => {
         const dbEnvVars = this.dbEnvVars;
-        await func({ dbEnvVars, ...args });
+        try {
+          await func({ dbEnvVars, ...args });
+        } catch (e) {
+          console.info(
+            `Build handler did not complete successfully. Errored with error: ${e}`,
+          );
+        }
       },
       {
         ...options,
         if: (buildConfig: Zod.infer<BuildConfigSchema>) => {
-          console.log(this.isEnabled);
           if (!this.isEnabled) {
             return false;
           }
