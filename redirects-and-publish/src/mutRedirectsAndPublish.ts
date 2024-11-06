@@ -26,7 +26,7 @@ export const mutRedirectsAndPublish = async (
       console.log(await run.command('ls running-mut/snooty'));
       console.log(process.chdir(`${process.cwd()}/running-mut/snooty`));
     } else {
-      console.log(await run.command('find . -mindepth 1 -maxdepth 1 -exec cp -r {} running-mut/ \ '));
+      console.log(await run.command('find . -mindepth 1 -maxdepth 1 -exec cp -r {} running-mut/ \\'));
       console.log(process.chdir(`${process.cwd()}/running-mut`));
     }
       
