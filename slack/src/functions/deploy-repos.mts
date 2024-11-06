@@ -4,6 +4,8 @@ export default async (req: any): Promise<Response> => {
     return new Response('request received', { status: 401 });
   }
   console.log(typeof req);
+  console.log(`Logging client ${req.client}`);
+  console.log(`Logging client ${req.client}`);
   console.log('body', req['[Symbol(state)]']);
   const decoded = decodeURIComponent(req).split('=');
   // const parsed = JSON.parse(decoded);
