@@ -3,6 +3,7 @@ import type { NetlifyPluginUtils } from '@netlify/build';
 
 const MUT_VERSION = '0.11.4';
 const SNOOTY_PATH = `${process.cwd()}/running-mut/snooty`
+const MANIFEST_PATH = `${process.cwd()}/bundle.zip`
 
 export const mutRedirectsAndPublish = async (
     configEnvironment: ConfigEnvironmentVariables,
@@ -13,8 +14,9 @@ export const mutRedirectsAndPublish = async (
     // clone snooty directory into the new sub directory
     // in that sub directory run 'npm run build'
     // might have to come out of the paths for directories 
-    
+    // await run.command(``);
     console.log(await run.command('ls'));
+    
     if (configEnvironment?.SITE_NAME !== 'mongodb-snooty') {
       console.log(await run.command('rm -f -r running-mut'));
       console.log(await run.command('mkdir -p running-mut'));
@@ -23,8 +25,14 @@ export const mutRedirectsAndPublish = async (
       console.log(process.chdir(`${process.cwd()}/running-mut/snooty`));
       console.log(await run.command('ls'));
     } 
+    process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
     console.log(await run.command('npm run clean'));
     console.log(await run.command('npm run build'));
+
+
+    // echo GATSBY_MANIFEST_PATH=$(pwd)/bundle.zip >> ./snooty/.env.production
+
+
     // console.log(await run.command('ls'));
     // console.log(await run.command('npm run build'));
     // console.log(await run.command('cd ../'));
@@ -48,7 +56,7 @@ export const mutRedirectsAndPublish = async (
       if (configEnvironment?.SITE_NAME === "mongodb-snooty") {
         // so mongodb-snooty can launch with docs-landing
         await run.command(
-          `${process.cwd()}/mut/mut-redirects /docs-landing/config/redirects -o public/.htaccess`,
+          `${process.cwd()}/mut/mut-redirects/docs-landing/config/redirects -o public/.htaccess`,
         );
       } else {
         await run.command(
