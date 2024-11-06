@@ -3,7 +3,7 @@ export default async (req: any): Promise<Response> => {
   if (!req.body) {
     return new Response('request received', { status: 401 });
   }
-  console.log(req.body.source);
+  console.log('body', req.body);
   const decoded = decodeURIComponent(req.body.source).split('=')[2];
   console.log(decoded);
   const parsed = JSON.parse(decoded);
