@@ -5,18 +5,14 @@
  * @param path full directory path of gatsby output
  */
 
-import { type Gzip, createGzip } from "node:zlib";
 import {
   existsSync,
   readdirSync,
   lstatSync,
-  mkdirSync,
-  writeFileSync,
-  createWriteStream,
 } from "node:fs";
 import { create } from "tar";
 import { join } from "node:path";
-// import { handleHtmlFile } from "./fileHandler";
+import { handleHtmlFile } from "./fileHandler";
 
 type fileUpdateLog = {
   processedHtmlFiles: string[];
@@ -45,11 +41,12 @@ async function scanFileTree(
     if (stat.isDirectory()) {
       scanFileTree(filename, fileUpdateLog); //recurse
     } else if (filename.endsWith(".html")) {
-      // await handleHtmlFile(filename);
-      console.log("HANDLE HTML");
+      await handleHtmlFile(filename);
+      // console.log("HANDLE HTML");
       
       fileUpdateLog.processedHtmlFiles.push(filename);
-    } else if (filename.endsWith("test")) {
+    } else {
+      // TODO: DOP-5167: handle other file types
     }
   }
 }

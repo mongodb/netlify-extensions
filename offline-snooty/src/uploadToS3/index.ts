@@ -29,7 +29,7 @@ export const uploadToS3 = async (filepath: string, env: string) => {
 
   const command = new PutObjectCommand({
     Bucket: "test-offline-snooty-uploads",
-    Key: "test.gzip",
+    Key: "test.gzip", // TODO: update name from context
     ContentEncoding: "gzip",
     Body: fileStream,
   });

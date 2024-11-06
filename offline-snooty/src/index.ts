@@ -20,10 +20,11 @@ extension.addBuildEventHandler(
       await createSnootyCopy(run, NEW_SNOOTY_PATH);
       await convertGatsbyToHtml(`${NEW_SNOOTY_PATH}/snooty/public`);
       await uploadToS3(
-        `${process.cwd}/test-create-gzip.tgz`,
+        `${process.cwd()}/test-create-gzip.tgz`,
         netlifyConfig.build.environment.ENV ?? ""
         // netlifyConfig.build.environment.REPO_ENTRY ?? {}
       );
+      // TODO: update atlas collection repos_branches to signal offline availability
     } catch (e) {
       console.error(e);
       throw e;

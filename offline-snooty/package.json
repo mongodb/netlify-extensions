@@ -15,7 +15,7 @@
     "@trpc/client": "^11.0.0-rc.477",
     "@trpc/react-query": "^11.0.0-rc.477",
     "@trpc/server": "^11.0.0-rc.477",
-    "jsdom": "^25.0.1",
+    "happy-dom": "^15.10.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tar": "^7.4.3",
