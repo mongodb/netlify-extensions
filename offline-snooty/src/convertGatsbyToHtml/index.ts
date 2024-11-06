@@ -5,10 +5,10 @@
  * @param path full directory path of gatsby output
  */
 
-import { existsSync, readdirSync, lstatSync } from "node:fs";
-import { create } from "tar";
-import { join } from "node:path";
-import { handleHtmlFile } from "./fileHandler";
+import { existsSync, lstatSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { create } from 'tar';
+import { handleHtmlFile } from './fileHandler';
 
 type fileUpdateLog = {
   processedHtmlFiles: string[];
@@ -24,7 +24,7 @@ async function scanFileTree(
     processedHtmlFiles: [],
     removedFiles: [],
     filePathsPerDir: {},
-  }
+  },
 ) {
   if (!existsSync(directoryPath)) {
     console.log(`no directory at ${directoryPath}`);
@@ -36,7 +36,7 @@ async function scanFileTree(
     const stat = lstatSync(filename);
     if (stat.isDirectory()) {
       scanFileTree(filename, fileUpdateLog); //recurse
-    } else if (filename.endsWith(".html")) {
+    } else if (filename.endsWith('.html')) {
       await handleHtmlFile(filename);
       fileUpdateLog.processedHtmlFiles.push(filename);
     } else {
@@ -47,7 +47,7 @@ async function scanFileTree(
 
 export const convertGatsbyToHtml = async (
   path: string,
-  fileName: string
+  fileName: string,
 ): Promise<void> => {
   await scanFileTree(path);
   await create(
@@ -56,6 +56,6 @@ export const convertGatsbyToHtml = async (
       file: fileName,
       cwd: path,
     },
-    ["./"]
+    ['./'],
   );
 };

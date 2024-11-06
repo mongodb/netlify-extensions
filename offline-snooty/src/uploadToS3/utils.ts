@@ -45,8 +45,8 @@ export function readEnvConfigs({
   branchEntry: BranchEntry;
 }) {
   const docset: DocsetsDocument = docsetEntry;
-  const bucketName = docset.bucket[env as keyof EnvironmentConfig] ?? "";
-  const project: string = repoEntry?.["project"] ?? "";
-  const version = branchEntry?.["gitBranchName"] ?? "";
+  const bucketName = docset.bucket[env as keyof EnvironmentConfig] ?? '';
+  const project: string = repoEntry?.project ?? '';
+  const version = branchEntry?.gitBranchName ?? '';
   return { bucketName, fileName: `${project}-${version}.tar.gz` };
 }
