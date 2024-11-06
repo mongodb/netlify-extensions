@@ -10,14 +10,6 @@ export const mutRedirectsAndPublish = async (
     run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
 
-    // create and cd to new dir
-    // clone snooty directory into the new sub directory
-    // in that sub directory run 'npm run build'
-    // might have to come out of the paths for directories 
-    // await run.command(``);
-
-    
-    console.log(await run.command('ls'));
     console.log(await run.command('rm -f -r running-mut'));
     console.log(await run.command('mkdir -p running-mut'));
 
@@ -29,23 +21,12 @@ export const mutRedirectsAndPublish = async (
       // console.log(await run.command('find . -mindepth 1 -maxdepth 1 -exec cp -r {} running-mut/ \\'));
       // console.log(process.chdir(`${process.cwd()}/running-mut`));
     }
-      
-    console.log(await run.command('ls'));
     
     process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
     process.env.PATH_PREFIX = '/docs-qa';
     process.env.GATSBY_PARSER_USER='buildbot';
     console.log(await run.command('npm run clean'));
     console.log(await run.command('npm run build'));
-
-
-    // echo GATSBY_MANIFEST_PATH=$(pwd)/bundle.zip >> ./snooty/.env.production
-
-
-    // console.log(await run.command('ls'));
-    // console.log(await run.command('npm run build'));
-    // console.log(await run.command('cd ../'));
-    // await run.command('cd redirects-and-publish');
 
     // running mut-redirects -------------------------------------------------------
     console.log('Downloading Mut...',configEnvironment?.SITE_NAME );
@@ -132,10 +113,9 @@ export const mutRedirectsAndPublish = async (
             `${docsetEntry?.bucket?.dotcomstg}`,
             `--prefix=/${docsetEntry?.prefix?.dotcomstg}`,
             '--deploy',
-            `--deployed-url-prefix${docsetEntry?.url?.dotcomstg}`,
+            `--deployed-url-prefix=s${docsetEntry?.url?.dotcomstg}`,
             '--json',
             '--all-subdirectories',
-            '--verbose'
           ],
           { input: 'y' },
         );
