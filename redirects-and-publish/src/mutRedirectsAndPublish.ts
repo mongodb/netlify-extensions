@@ -38,6 +38,7 @@ export const mutRedirectsAndPublish = async (
     
     process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
     process.env.PATH_PREFIX = '/docs-qa';
+    process.env.GATSBY_PARSER_USER='buildbot';
     console.log(await run.command('npm run clean'));
     console.log(await run.command('npm run build'));
 
