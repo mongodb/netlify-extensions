@@ -1,5 +1,5 @@
 export default async (req: Request): Promise<Response> => {
-  console.log('request received:', req);
+  console.log('request received:', req.body);
   if (!req.body) {
     return new Response('request received', { status: 401 });
   }
