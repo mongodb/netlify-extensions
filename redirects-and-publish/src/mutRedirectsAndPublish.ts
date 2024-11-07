@@ -1,13 +1,17 @@
 import type { ConfigEnvironmentVariables } from './types';
 import type { NetlifyPluginUtils } from '@netlify/build';
 
-const MUT_VERSION = '0.11.4';
+const MUT_VERSION = process.env.MUT_VERSION;
 const MANIFEST_PATH = `${process.cwd()}/bundle.zip`;
 
 export const mutRedirectsAndPublish = async (
   configEnvironment: ConfigEnvironmentVariables,
   run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
+  // connect to mongodb and pool.docsets to get bucket
+  const docsetEntry = configEnvironment?.DOCSET_ENTRY;
+  console.log('Succesfully got docsets entry:', docsetEntry);
+  
   // we want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh --------------------------
   // we do this so when we run mut-publish we are able to uplaod the correct files with the correct paths
   await run.command('rm -f -r running-mut');
@@ -28,7 +32,7 @@ export const mutRedirectsAndPublish = async (
   await run.command('ls running-mut/snooty');
   process.chdir(`${process.cwd()}/running-mut/snooty`);
   process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
-  process.env.PATH_PREFIX = '/docs-qa';
+  process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.dotcomstg}` ?? '/docs-qa';
   process.env.GATSBY_PARSER_USER = 'buildbot';
   await run.command('npm run clean');
   await run.command('npm run build');
@@ -82,10 +86,6 @@ export const mutRedirectsAndPublish = async (
   }
   console.log('Repo name is:', repoName);
 
-  // connect to mongodb and pool.docsets to get bucket
-  const docsetEntry = configEnvironment?.DOCSET_ENTRY;
-  console.log('Succesfully got docsets entry:', docsetEntry);
-
   /*Usage: mut-publish <source> <bucket> --prefix=prefix
                     (--stage|--deploy)
                     [--all-subdirectories]
@@ -112,7 +112,7 @@ export const mutRedirectsAndPublish = async (
     console.log('And a URL of: ', docsetEntry?.url); // https://mongodbcom-cdn.website.staging.corp.mongodb.com/
 
     // TODO: do I need to log this command below ?
-    if (docsetEntry?.bucket?.dotcomstg !== undefined) {
+    if (configEnvironment.ENV === 'dotcomstg') {
       await run(
         `${process.cwd()}/mut/mut-publish`,
         [
@@ -126,7 +126,7 @@ export const mutRedirectsAndPublish = async (
         ],
         { input: 'y' },
       );
-    } else if (docsetEntry?.bucket?.dotcomprd !== undefined) {
+    } else if (configEnvironment.ENV === 'dotcomprd') {
       // we will want to do this in the future but not in this PR
       // await run(
       //   `${process.cwd()}/mut/mut-publish`,
