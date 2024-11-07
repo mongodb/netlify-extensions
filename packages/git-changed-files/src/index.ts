@@ -1,5 +1,5 @@
 import { NetlifyExtension } from '@netlify/sdk';
-import { envVarToBool, Extension } from '@populate-metadata/extension';
+import { envVarToBool, Extension } from 'util/extension';
 
 const extension = new Extension({
   isEnabled: envVarToBool(process.env.GIT_CHANGED_FILES_ENABLED),

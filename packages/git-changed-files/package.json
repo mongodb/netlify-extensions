@@ -18,6 +18,7 @@
     "@netlify/netlify-plugin-netlify-extension": "^1.0.3",
     "@tsconfig/node18": "^18.2.4",
     "@tsconfig/recommended": "^1.0.8",
+    "util": "workspace:*",
     "@types/node": "^20.14.9",
     "execa": "^6.1.0",
     "netlify-cli": "^17.36.4",

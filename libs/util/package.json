@@ -1,0 +1,33 @@
+{
+  "name": "util",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
+    "build:clean": "rm -rf ./build",
+    "build": "npm-run-all build:clean compile && node ./scripts/prepare-package-json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@netlify/build": "^29.56.0",
+    "@netlify/sdk": "^2.8.2",
+    "zod": "^3.23.8"
+  },
+  "exports": {
+    "./*": {
+      "types": "./build/types/*.d.ts",
+      "require": "./build/cjs/*.js",
+      "import": "./build/esm/*.js",
+      "default": "./build/esm/*.js"
+    }
+  }
+}
