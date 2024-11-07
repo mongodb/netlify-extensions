@@ -9,7 +9,11 @@ export default async (req: Request): Promise<Response> => {
   // console.log(`requestJSon: ${reqJson}`);
   const slackPayload = await new Response(req.body).text();
   console.log(`Slack payload: ${slackPayload}`);
-  const reqJson = await req.body.json();
+
+  // This is coming in as urlencoded string, need to decode before parsing
+  const decoded = decodeURIComponent(slackPayload).split('=');
+  // const parsed = JSON.parse(decoded);
+  // const stateValues = parsed.view.state.values;
 
   // if (req?.body?.payload) {
   //   console.log(`parsed payload: ${JSON.parse(req?.body?.payload)}`);
