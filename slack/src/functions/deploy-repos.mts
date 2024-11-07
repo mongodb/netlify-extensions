@@ -40,12 +40,15 @@ export default async (req: Request): Promise<any> => {
       const repoName = splitValues[0];
       const branchName = splitValues[1];
       if (splitValues[0] === 'docs-landing') {
-        return await axios.post(
-          'https://api.netlify.com/build_hooks/6723eca38897343993c049b5',
+        console.log(
+          await axios.post(
+            'https://api.netlify.com/build_hooks/6723eca38897343993c049b5',
+          ),
         );
       }
     }
   }
+  return new Response('', { status: 200 });
 };
 
 // const parsed = JSON.parse(decoded);
