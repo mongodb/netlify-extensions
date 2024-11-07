@@ -30,6 +30,12 @@ importers:
       '@netlify/netlify-plugin-netlify-extension':
         specifier: ^1.0.3
         version: 1.0.3
+      '@tsconfig/node18':
+        specifier: ^18.2.4
+        version: 18.2.4
+      '@tsconfig/recommended':
+        specifier: ^1.0.8
+        version: 1.0.8
       '@types/node':
         specifier: ^20.14.9
         version: 20.17.5
