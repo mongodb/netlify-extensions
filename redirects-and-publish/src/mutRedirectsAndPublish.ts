@@ -8,6 +8,11 @@ export const mutRedirectsAndPublish = async (
   configEnvironment: ConfigEnvironmentVariables,
   run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
+
+  if (configEnvironment.ENV !== 'dotcomstg') {
+    return;
+  }
+
   // connect to mongodb and pool.docsets to get bucket
   const docsetEntry = configEnvironment?.DOCSET_ENTRY;
   console.log('Succesfully got docsets entry:', docsetEntry);
