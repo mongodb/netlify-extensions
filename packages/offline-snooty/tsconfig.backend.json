@@ -10,7 +10,12 @@
     "sourceMap": true,
     "verbatimModuleSyntax": true,
     "module": "ES2022",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "paths": {
+      "bson": ["../../node_modules/bson/src/"],
+      "@populate-metadata/*": ["../populate-metadata/src/*"]
+    }
   },
+  "include": ["src"],
   "exclude": ["dist/", "src/ui/"]
 }

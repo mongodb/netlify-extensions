@@ -1,10 +1,11 @@
 import { NetlifyExtension } from '@netlify/sdk';
+import { envVarToBool, Extension } from '@populate-metadata/extension';
 
-const extension = new NetlifyExtension();
+const extension = new Extension({
+  isEnabled: envVarToBool(process.env.GIT_CHANGED_FILES_ENABLED),
+});
 
 extension.addBuildEventHandler('onSuccess', ({ utils: { status, git } }) => {
-  if (!process.env.GIT_CHANGED_FILES_ENABLED) return;
-
   console.log('Checking if any files changed on git -----');
   console.log('Modified files:', git.modifiedFiles);
 

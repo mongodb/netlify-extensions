@@ -1,12 +1,13 @@
 // Documentation: https://sdk.netlify.com
-import { NetlifyExtension } from '@netlify/sdk';
-import { downloadPersistenceModule } from './persistence';
 
-const extension = new NetlifyExtension();
-const ZIP_PATH = `${process.cwd()}/bundle/documents`;
+import { downloadPersistenceModule } from './persistence';
+import { envVarToBool, Extension } from '@populate-metadata/extension';
+
+const extension = new Extension({
+  isEnabled: envVarToBool(process.env.PERSISTENCE_MODULE_ENABLED),
+});
 
 extension.addBuildEventHandler('onPreBuild', async ({ utils: { run } }) => {
-  if (!process.env.PERSISTENCE_MODULE_ENABLED) return;
   try {
     await downloadPersistenceModule(run);
   } catch (e) {

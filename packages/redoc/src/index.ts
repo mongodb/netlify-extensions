@@ -1,11 +1,11 @@
-import { NetlifyExtension } from '@netlify/sdk';
 import { deserialize } from 'bson';
 import { buildOpenAPIPages } from './build-pages';
 import { readFileAsync } from './utils/fs-async';
-import { Extension } from '@populate-metadata/extension'
+import { envVarToBool, Extension } from '@populate-metadata/extension';
 
-
-const extension = new Extension({isEnabled: true});
+const extension = new Extension({
+  isEnabled: envVarToBool(process.env.REDOC_ENABLED),
+});
 const BUNDLE_PATH = `${process.cwd()}/bundle`;
 const REDOC_CLI_VERSION = '1.2.3';
 
@@ -22,8 +22,6 @@ export type OASPagesMetadata = Record<string, OASPageMetadata>;
 extension.addBuildEventHandler(
   'onPreBuild',
   async ({ utils: { run, cache } }) => {
-    if (!process.env.REDOC_ENABLED) return;
-
     console.log('Running redoc prebuild');
     const hasRedoc = await cache.has('redoc');
 
@@ -73,7 +71,6 @@ extension.addBuildEventHandler('onPostBuild', async ({ utils: { run } }) => {
 
 // cache redoc
 extension.addBuildEventHandler('onSuccess', async ({ utils: { cache } }) => {
-  if (!process.env.REDOC_ENABLED) return;
   const hasRedoc = await cache.has('redoc');
   if (!hasRedoc) {
     console.log('saving redoc to cache');

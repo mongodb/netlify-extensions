@@ -5,7 +5,7 @@ import { NetlifyExtension } from '@netlify/sdk';
 import { readdir } from 'node:fs';
 
 import { promisify } from 'node:util';
-import { envVarToBool } from './extension';
+import { envVarToBool, Extension } from '@populate-metadata/extension';
 import { checkForNewSnootyVersion } from './snooty-frontend-version-check';
 
 const readdirAsync = promisify(readdir);
@@ -13,13 +13,13 @@ const readdirAsync = promisify(readdir);
 const getCacheFilePaths = (filesPaths: string[]): string[] =>
   filesPaths.filter((filePath) => filePath.endsWith('.cache.gz'));
 
-const extension = new NetlifyExtension();
+const extension = new Extension({
+  isEnabled: envVarToBool(process.env.SNOOTY_CACHE_ENABLED),
+});
 
 extension.addBuildEventHandler(
   'onPreBuild',
   async ({ utils: { cache, run } }) => {
-    if (!envVarToBool(process.env.SNOOTY_CACHE_ENABLED)) return;
-
     const files: string[] = await cache.list();
 
     const cacheFiles = getCacheFilePaths(files);
