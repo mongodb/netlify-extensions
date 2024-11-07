@@ -16,7 +16,7 @@ export const mutRedirectsAndPublish = async (
     if (configEnvironment?.SITE_NAME !== 'mongodb-snooty') {
       console.log(await run.command('cp -r snooty running-mut'));
       console.log(await run.command('ls running-mut/snooty'));
-      console.log(process.chdir(`${process.cwd()}/running-mut/snooty`));
+      
     } else {
       console.log(await run.command('rm -f -r running-mut/snooty'));
       console.log(await run.command('mkdir -p running-mut/snooty'));
@@ -24,7 +24,7 @@ export const mutRedirectsAndPublish = async (
       console.log(await run.command('ls running-mut/snooty'));
       // console.log(process.chdir(`${process.cwd()}/running-mut`));
     }
-    
+    console.log(process.chdir(`${process.cwd()}/running-mut/snooty`));
     process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
     process.env.PATH_PREFIX = '/docs-qa';
     process.env.GATSBY_PARSER_USER='buildbot';
