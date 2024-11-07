@@ -2,7 +2,6 @@ import type { ConfigEnvironmentVariables } from "./types";
 import type { NetlifyPluginUtils } from '@netlify/build';
 
 const MUT_VERSION = '0.11.4';
-const SNOOTY_PATH = `${process.cwd()}/running-mut/snooty`
 const MANIFEST_PATH = `${process.cwd()}/bundle.zip`
 
 export const mutRedirectsAndPublish = async (
@@ -10,26 +9,27 @@ export const mutRedirectsAndPublish = async (
     run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
 
-    console.log(await run.command('rm -f -r running-mut'));
-    console.log(await run.command('mkdir -p running-mut'));
+    // we want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh
+    // we do this so when we run mut-publish we are able to uplaod the correct files with the correct paths
+    await run.command('rm -f -r running-mut');
+    await run.command('mkdir -p running-mut');
 
-    if (configEnvironment?.SITE_NAME !== 'mongodb-snooty') {
-      console.log(await run.command('cp -r snooty running-mut'));
-      console.log(await run.command('ls running-mut/snooty'));
-      
+    if (configEnvironment?.SITE_NAME === 'mongodb-snooty') { // since mongodb-snooty is not a content repo the file structure is different and needs to be treated as such
+      await run.command('rm -f -r running-mut/snooty');
+      await run.command('mkdir -p running-mut/snooty');
+      await run.command('cp -r AWSCLIV2.pkg build.sh bundle.zip CHANGELOG.md code-of-conduct.md component-factory-transformer docs-landing gatsby-browser.js gatsby-config.js gatsby-ssr.js jest.config.js jest-preprocess.js Makefile __mocks__ netlify.toml node_modules package.json package-lock.json plugins public README.md scripts snooty-parser snooty-parser.zip src static stubs tests running-mut/snooty/');
     } else {
-      console.log(await run.command('rm -f -r running-mut/snooty'));
-      console.log(await run.command('mkdir -p running-mut/snooty'));
-      console.log(await run.command('cp -r AWSCLIV2.pkg build.sh bundle.zip CHANGELOG.md code-of-conduct.md component-factory-transformer docs-landing gatsby-browser.js gatsby-config.js gatsby-ssr.js jest.config.js jest-preprocess.js Makefile __mocks__ netlify.toml node_modules package.json package-lock.json plugins public README.md scripts snooty-parser snooty-parser.zip src static stubs tests running-mut/snooty/'));
-      console.log(await run.command('ls running-mut/snooty'));
-      // console.log(process.chdir(`${process.cwd()}/running-mut`));
+      await run.command('cp -r snooty running-mut');
+      await run.command('ls running-mut/snooty');
     }
-    console.log(process.chdir(`${process.cwd()}/running-mut/snooty`));
+
+    console.log(await run.command('ls running-mut/snooty'));
+    process.chdir(`${process.cwd()}/running-mut/snooty`);
     process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
     process.env.PATH_PREFIX = '/docs-qa';
     process.env.GATSBY_PARSER_USER='buildbot';
-    console.log(await run.command('npm run clean'));
-    console.log(await run.command('npm run build'));
+    await run.command('npm run clean');
+    await run.command('npm run build');
 
     // running mut-redirects -------------------------------------------------------
     console.log('Downloading Mut...',configEnvironment?.SITE_NAME );
