@@ -9,7 +9,7 @@ export const mutRedirectsAndPublish = async (
     run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
 
-    // we want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh
+    // we want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh --------------------------
     // we do this so when we run mut-publish we are able to uplaod the correct files with the correct paths
     await run.command('rm -f -r running-mut');
     await run.command('mkdir -p running-mut');
@@ -23,7 +23,7 @@ export const mutRedirectsAndPublish = async (
       await run.command('ls running-mut/snooty');
     }
 
-    console.log(await run.command('ls running-mut/snooty'));
+    await run.command('ls running-mut/snooty');
     process.chdir(`${process.cwd()}/running-mut/snooty`);
     process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
     process.env.PATH_PREFIX = '/docs-qa';
@@ -83,8 +83,6 @@ export const mutRedirectsAndPublish = async (
 
     // connect to mongodb and pool.docsets to get bucket
     const docsetEntry = configEnvironment?.DOCSET_ENTRY;
-
-    //TODO: we only want to run mut publish for dotcomprod and dotcomstg
     console.log('Succesfully got docsets entry:', docsetEntry);
 
     /*Usage: mut-publish <source> <bucket> --prefix=prefix
@@ -100,15 +98,12 @@ export const mutRedirectsAndPublish = async (
         throw new Error;
       }
 
-      // TODO: sub in the temporary values for the real values (this values from docs-landing staging)
       console.log('In the bucket of', docsetEntry?.bucket, docsetEntry?.bucket?.dotcomstg); // subbed in docs-mongodb-org-dotcomstg
       console.log('With a prefix of', docsetEntry?.prefix, `--prefix=${docsetEntry?.prefix?.dotcomstg}`); // subbed in /netlify/docs-qa
       console.log('And a URL of: ',  docsetEntry?.url); // https://mongodbcom-cdn.website.staging.corp.mongodb.com/
       
       // TODO: do I need to log this command below ?
-      if (docsetEntry?.bucket?.dotcomstg === 'docs-mongodb-org-dotcomstg' && docsetEntry.project === 'landing' && configEnvironment?.SITE_NAME === "mongodb-snooty") {
-        console.log("Testing docs-landing in dotcomstg...");
-        await run.command('ls public/')
+      if (docsetEntry?.bucket?.dotcomstg !== undefined) {
         await run(
           `${process.cwd()}/mut/mut-publish`,
           [
@@ -122,22 +117,21 @@ export const mutRedirectsAndPublish = async (
           ],
           { input: 'y' },
         );
-      } else {
-        await run(
-          `${process.cwd()}/mut/mut-publish`,
-          [
-            'public',
-            'docs-mongodb-org-dotcomstg',
-            '--prefix=/docs-qa',
-            '--deploy',
-            '--deployed-url-prefix=https://mongodbcom-cdn.website.staging.corp.mongodb.com/',
-            '--json',
-            '--all-subdirectories',
-          ],
-          { input: 'y' },
-        );
+      } else if (docsetEntry?.bucket?.dotcomprd !== undefined) { // we will want to do this in the future but not in this PR
+        // await run(
+        //   `${process.cwd()}/mut/mut-publish`,
+        //   [
+        //     'public',
+        //     `${docsetEntry?.bucket?.dotcomprd}`,
+        //     `--prefix=/${docsetEntry?.prefix?.dotcomprd}`,
+        //     '--deploy',
+        //     `--deployed-url-prefix=s${docsetEntry?.url?.dotcomprd}`,
+        //     '--json',
+        //     '--all-subdirectories',
+        //   ],
+        //   { input: 'y' },
+        // );
       }
-      
     } catch (e) {
       console.log(`Error occurred while running mut-publish: ${e}`);
     }
