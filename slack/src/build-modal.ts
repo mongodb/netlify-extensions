@@ -21,7 +21,7 @@ export const buildRepoGroups = async (cursor: any) => {
               type: 'plain_text',
               text: active ? branchName : `(!inactive) ${branchName}`,
             },
-            value: `${repoName} ${branchName}`,
+            value: `${repoName}/${branchName}`,
           });
         }
       }
