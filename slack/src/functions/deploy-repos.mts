@@ -12,6 +12,7 @@ export default async (req: Request): Promise<Response> => {
 
   // This is coming in as urlencoded string, need to decode before parsing
   const decoded = decodeURIComponent(slackPayload).split('=');
+  console.log(decoded);
   // const parsed = JSON.parse(decoded);
   // const stateValues = parsed.view.state.values;
 
