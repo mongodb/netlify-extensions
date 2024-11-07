@@ -1,4 +1,4 @@
-export default async (req: Request): Promise<Response> => {
+export default async (req: Request): Promise<any> => {
   console.log('request received:', req);
   if (!req.body) {
     return new Response('request received', { status: 401 });
@@ -11,9 +11,21 @@ export default async (req: Request): Promise<Response> => {
 
   // This is coming in as urlencoded string, need to decode before parsing
   const decoded = decodeURIComponent(slackPayload).split('=')[1];
-  console.log(JSON.parse(decoded));
+  const parsed = JSON.parse(decoded);
+  const stateValues = parsed.view.state.values;
+  console.log(stateValues);
 
-  console.log('No response used:', req.body.text());
+  //TODO: create an interface for slack view_submission payloads
+  if (parsed.type !== 'view_submission') {
+    const response = {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: 'Form not submitted, will not process request',
+    };
+    return response;
+  }
 
   // const parsed = JSON.parse(decoded);
   // const stateValues = parsed.view.state.values;
