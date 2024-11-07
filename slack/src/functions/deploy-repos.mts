@@ -13,7 +13,8 @@ export default async (req: Request): Promise<any> => {
   const decoded = decodeURIComponent(slackPayload).split('=')[1];
   const parsed = JSON.parse(decoded);
   const stateValues = parsed.view.state.values;
-  console.log(stateValues);
+  const selected = stateValues.block_repo_option.repo_option.selected_options;
+  console.log(selected);
 
   //TODO: create an interface for slack view_submission payloads
   if (parsed.type !== 'view_submission') {
