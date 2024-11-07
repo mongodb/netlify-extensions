@@ -14,9 +14,9 @@ export default async (req: Request): Promise<any> => {
   // This is coming in as urlencoded string, need to decode before parsing
   const decoded = decodeURIComponent(slackPayload).split('=')[1];
   const parsed = JSON.parse(decoded);
+  console.log(parsed);
   const stateValues = parsed.view.state.values;
   const selected = stateValues.block_repo_option.repo_option.selected_options;
-  console.log(selected);
 
   if (parsed.type !== 'view_submission') {
     //TODO: create an interface for slack view_submission payloads
