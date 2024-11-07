@@ -1,10 +1,9 @@
 export default async (req: Request): Promise<Response> => {
-  console.log('request received:', req.body);
+  console.log('request received:', req.headers);
   if (!req.body) {
     return new Response('request received', { status: 401 });
   }
-  console.log(Object.keys(req));
-  console.log(`headers: ${JSON.stringify(req.headers)}`);
+  // console.log(decodeURIComponent(req.headers).split('='));
   // const decoded = decodeURIComponent(req).split('=');
   // const parsed = JSON.parse(decoded);
   // const stateValues = parsed.view.state.values;
