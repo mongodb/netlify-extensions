@@ -3,11 +3,14 @@ export default async (req: Request): Promise<Response> => {
   if (!req.body) {
     return new Response('request received', { status: 401 });
   }
+  console.log(`request state: ${req.state}`);
   console.log(`request body: ${req.body}`);
-  const reqJson = await req.json();
-  console.log(`requestJSon: ${reqJson}`);
+
+  // console.log(`requestJSon: ${reqJson}`);
   const slackPayload = await new Response(req.body).text();
   console.log(`Slack payload: ${slackPayload}`);
+  const reqJson = await req.body.json();
+
   // if (req?.body?.payload) {
   //   console.log(`parsed payload: ${JSON.parse(req?.body?.payload)}`);
   // }
