@@ -41,7 +41,7 @@ export default async (req: Request): Promise<Response> => {
   const reposBranchesCollection = await getReposBranchesCollection();
 
   const deployableRepos = await getDeployableRepos(reposBranchesCollection);
-  console.log('deployable repos:', deployableRepos);
+  console.log('deployable repos:', JSON.stringify(deployableRepos));
 
   const response = await displayRepoOptions(deployableRepos, trigger_id);
 

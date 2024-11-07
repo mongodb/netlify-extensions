@@ -4,7 +4,7 @@ export default async (req: any): Promise<Response> => {
     return new Response('request received', { status: 401 });
   }
   console.log(Object.keys(req));
-  console.log(`headers: ${req.headers}`);
+  console.log(`headers: ${JSON.stringify(req.headers)}`);
   const decoded = decodeURIComponent(req).split('=');
   // const parsed = JSON.parse(decoded);
   // const stateValues = parsed.view.state.values;
