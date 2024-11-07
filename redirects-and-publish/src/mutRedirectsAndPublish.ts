@@ -10,7 +10,6 @@ export const mutRedirectsAndPublish = async (
     run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
 
-    console.log(run.command('ls'));
     console.log(await run.command('rm -f -r running-mut'));
     console.log(await run.command('mkdir -p running-mut'));
 
@@ -21,7 +20,7 @@ export const mutRedirectsAndPublish = async (
     } else {
       console.log(await run.command('rm -f -r running-mut/snooty'));
       console.log(await run.command('mkdir -p running-mut/snooty'));
-      console.log(await run.command('cp -r build.sh component-factory-transformer docs-landing gatsby-browser.js running-mut/snooty/'));
+      console.log(await run.command('cp -r AWSCLIV2.pkg build.sh bundle.zip CHANGELOG.md code-of-conduct.md component-factory-transformer docs-landing gatsby-browser.js gatsby-config.js gatsby-ssr.js jest.config.js jest-preprocess.js Makefile __mocks__ netlify.toml node_modules package.json package-lock.json plugins public README.md scripts snooty-parser snooty-parser.zip src static stubs tests running-mut/snooty/'));
       console.log(await run.command('ls running-mut/snooty'));
       // console.log(process.chdir(`${process.cwd()}/running-mut`));
     }
