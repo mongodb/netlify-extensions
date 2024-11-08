@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:util": "pnpm --filter util build",
+    "build:git-changed-files": "pnpm build:util && pnpm --filter git-changed-files build",
     "lint": "biome ci"
   },
   "keywords": [],

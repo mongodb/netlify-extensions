@@ -30,6 +30,9 @@ importers:
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
+      tsc-alias:
+        specifier: ^1.8.10
+        version: 1.8.10
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
@@ -6901,6 +6904,10 @@ packages:
   mute-stream@0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
 
+  mylas@2.1.13:
+    resolution: {integrity: sha512-+MrqnJRtxdF+xngFfUUkIMQrUUL0KsxbADUkn23Z/4ibGg192Q+z+CQyiYwvWTsYjJygmMR8+w3ZDa98Zh6ESg==}
+    engines: {node: '>=12.0.0'}
+
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
 
@@ -7570,6 +7577,10 @@ packages:
   pkg-types@1.2.1:
     resolution: {integrity: sha512-sQoqa8alT3nHjGuTjuKgOnvjo4cljkufdtLMnO2LBP/wRwuDlo1tkaEdMxCRhyGRPacv/ztlZgDPm2b7FAmEvw==}
 
+  plimit-lit@1.6.1:
+    resolution: {integrity: sha512-B7+VDyb8Tl6oMJT9oSO2CW8XC/T4UcJGrwOVoNGwOQsQYhlpfajmrMj5xeejqaASq3V/EqThyOeATEOMuSEXiA==}
+    engines: {node: '>=12'}
+
   pn@1.1.0:
     resolution: {integrity: sha512-2qHaIQr2VLRFoxe2nASzsV6ef4yOOH+Fi9FBOVH6cqeSgUnoyySPZkxzLuzd+RYOQTRpROA0ztTMqxROKSb/nA==}
 
@@ -7748,6 +7759,10 @@ packages:
 
   querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
+
+  queue-lit@1.5.2:
+    resolution: {integrity: sha512-tLc36IOPeMAubu8BkW8YDBV+WyIgKlYU7zUNs0J5Vk9skSZ4JfGlPOqplP0aHdfv7HL0B2Pg6nwiq60Qc6M2Hw==}
+    engines: {node: '>=12'}
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -8759,6 +8774,10 @@ packages:
         optional: true
       '@swc/wasm':
         optional: true
+
+  tsc-alias@1.8.10:
+    resolution: {integrity: sha512-Ibv4KAWfFkFdKJxnWfVtdOmB0Zi1RJVxcbPGiCDsFpCQSsmpWyuzHG3rQyI5YkobWwxFPEyQfu1hdo4qLG2zPw==}
+    hasBin: true
 
   tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
@@ -11546,13 +11565,10 @@ snapshots:
       zod-to-json-schema: 3.23.5(zod@3.23.8)
       zod-validation-error: 2.1.0(zod@3.23.8)
     transitivePeerDependencies:
-      - bufferutil
-      - canvas
       - debug
       - encoding
       - graphql
       - supports-color
-      - utf-8-validate
 
   '@netlify/sdk@2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))':
     dependencies:
@@ -11603,8 +11619,6 @@ snapshots:
       - '@trpc/server'
       - '@types/react'
       - autoprefixer
-      - bufferutil
-      - canvas
       - debug
       - encoding
       - graphql
@@ -11614,7 +11628,6 @@ snapshots:
       - supports-color
       - tailwindcss
       - ts-node
-      - utf-8-validate
 
   '@netlify/sdk@2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))':
     dependencies:
@@ -11665,8 +11678,6 @@ snapshots:
       - '@trpc/server'
       - '@types/react'
       - autoprefixer
-      - bufferutil
-      - canvas
       - debug
       - encoding
       - graphql
@@ -11676,7 +11687,6 @@ snapshots:
       - supports-color
       - tailwindcss
       - ts-node
-      - utf-8-validate
 
   '@netlify/sdk@2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))':
     dependencies:
@@ -12676,13 +12686,10 @@ snapshots:
       slugify: 1.6.6
       uuid: 9.0.1
     transitivePeerDependencies:
-      - bufferutil
-      - canvas
       - debug
       - encoding
       - graphql
       - supports-color
-      - utf-8-validate
 
   '@stackbit/cms-git@0.4.18(graphql@16.9.0)':
     dependencies:
@@ -12698,13 +12705,10 @@ snapshots:
       micromatch: 4.0.8
       slugify: 1.6.6
     transitivePeerDependencies:
-      - bufferutil
-      - canvas
       - debug
       - encoding
       - graphql
       - supports-color
-      - utf-8-validate
 
   '@stackbit/cms-sanity@0.2.56(graphql@16.9.0)':
     dependencies:
@@ -17976,6 +17980,8 @@ snapshots:
 
   mute-stream@0.0.8: {}
 
+  mylas@2.1.13: {}
+
   mz@2.7.0:
     dependencies:
       any-promise: 1.3.0
@@ -18912,6 +18918,10 @@ snapshots:
       mlly: 1.7.2
       pathe: 1.1.2
 
+  plimit-lit@1.6.1:
+    dependencies:
+      queue-lit: 1.5.2
+
   pn@1.1.0: {}
 
   possible-typed-array-names@1.0.0: {}
@@ -19107,6 +19117,8 @@ snapshots:
   qs@6.5.3: {}
 
   querystringify@2.2.0: {}
+
+  queue-lit@1.5.2: {}
 
   queue-microtask@1.2.3: {}
 
@@ -20336,6 +20348,15 @@ snapshots:
       typescript: 5.6.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+
+  tsc-alias@1.8.10:
+    dependencies:
+      chokidar: 3.6.0
+      commander: 9.5.0
+      globby: 11.1.0
+      mylas: 2.1.13
+      normalize-path: 3.0.0
+      plimit-lit: 1.6.1
 
   tslib@1.14.1: {}
 
