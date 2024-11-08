@@ -24,9 +24,6 @@ export const mutRedirectsAndPublish = async (
     await run.command('rm -f -r running-mut/snooty');
     await run.command('mkdir -p running-mut/snooty');
     await run.command(
-      `rsync -av --progress  ${process.cwd()} running-mut --exclude public --exclude node_modules`,
-    );
-    await run.command(
       'cp -r AWSCLIV2.pkg build.sh bundle.zip CHANGELOG.md code-of-conduct.md component-factory-transformer docs-landing gatsby-browser.js gatsby-config.js gatsby-ssr.js jest.config.js jest-preprocess.js Makefile __mocks__ netlify.toml node_modules package.json package-lock.json plugins public README.md scripts snooty-parser snooty-parser.zip src static stubs tests running-mut/snooty/',
     );
   } else {
@@ -37,7 +34,8 @@ export const mutRedirectsAndPublish = async (
   await run.command('ls running-mut/snooty');
   process.chdir(`${process.cwd()}/running-mut/snooty`);
   process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
-  process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.dotcomstg}` ?? '/docs-qa';
+  // TODO: when uploaded to prod, run this command instead  process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`;
+  process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.dotcomstg}`;
   process.env.GATSBY_PARSER_USER = 'buildbot';
   await run.command('npm run clean');
   await run.command('npm run build');
@@ -72,24 +70,16 @@ export const mutRedirectsAndPublish = async (
   }
 
   // running mut-publish ----------------------------------------------------------
-  //TODO: change these teamwide env vars in Netlify UI when ready to move to prod
-  process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY;
-  process.env.AWS_ACCESS_KEY_ID = process.env.AWS_S3_ACCESS_KEY_ID;
-
+  
   if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
     throw new Error('Credentials not found');
   }
 
+  //TODO: change these teamwide env vars in Netlify UI when ready to move to prod
+  process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY;
+  process.env.AWS_ACCESS_KEY_ID = process.env.AWS_S3_ACCESS_KEY_ID;
+
   console.log('Start of the mut-publish plugin -----------');
-
-  const repoName = process.env.REPO_NAME ?? configEnvironment?.SITE_NAME;
-
-  if (!repoName) {
-    throw new Error(
-      'No repo name supplied as environment variable, manifest cannot be uploaded to Atlas Search.Documents collection ',
-    );
-  }
-  console.log('Repo name is:', repoName);
 
   /*Usage: mut-publish <source> <bucket> --prefix=prefix
                     (--stage|--deploy)
