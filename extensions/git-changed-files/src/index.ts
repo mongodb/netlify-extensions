@@ -1,4 +1,3 @@
-import { NetlifyExtension } from '@netlify/sdk';
 import { envVarToBool, Extension } from 'util/extension';
 
 const extension = new Extension({
