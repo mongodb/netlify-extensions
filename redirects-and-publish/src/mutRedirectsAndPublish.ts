@@ -54,17 +54,8 @@ export const mutRedirectsAndPublish = async (
 
   try {
     console.log('Running mut-redirects...');
-
-    if (configEnvironment?.SITE_NAME === 'mongodb-snooty') {
-      // so mongodb-snooty can launch with docs-landing
-      await run.command(
-        `${process.cwd()}/mut/mut-redirects docs-landing/config/redirects -o public/.htaccess`,
-      );
-    } else {
-      await run.command(
-        `${process.cwd()}/mut/mut-redirects ../../config/redirects -o public/.htaccess`,
-      );
-    }
+    const redirectPath = configEnvironment.SITE_NAME === 'mongodb-snooty' ? 'docs-landing/config/redirects' : '../../config/redirects';
+    await run.command(`${process.cwd()}/mut/mut-redirects ${redirectPath} -o public/.htaccess`);
   } catch (e) {
     console.log(`Error occurred while running mut-redirects: ${e}`);
   }
