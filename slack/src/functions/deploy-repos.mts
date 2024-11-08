@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default async (req: Request): Promise<any> => {
+export default async (req: Request): Promise<Response> => {
   console.log('request received:', req);
   if (!req.body) {
     return new Response('request received', { status: 401 });
@@ -13,35 +13,35 @@ export default async (req: Request): Promise<any> => {
   const decoded = decodeURIComponent(slackPayload).split('=')[1];
   const parsed = JSON.parse(decoded);
   console.log('Parsed', parsed);
-  const stateValues = parsed.view.state.values;
-  const selected = stateValues.block_repo_option.repo_option.selected_options;
+
+  const user = parsed?.user?.username;
+  const stateValues = parsed?.view?.state?.values;
+  const selected =
+    stateValues?.block_repo_option?.repo_option?.selected_options;
 
   if (parsed.type !== 'view_submission') {
     //TODO: create an interface for slack view_submission payloads
-    const response = {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      body: 'Form not submitted, will not process request',
-    };
+    const response = new Response(
+      'Form not submitted, will not process request',
+      { status: 200 },
+    );
     return response;
   }
 
+  sendMessage('this is a test message', parsed?.user?.id);
+
   const deployable = [];
 
-  for (let i = 0; i < selected.length; i++) {
-    const splitValues = selected[i].value.split('/');
-    // TODO: add in slack username here
-    const jobTitle = `Slack deploy: ${selected[i].value}, by person`;
-    if (splitValues.length === 2) {
-      const repoName = splitValues[0];
-      const branchName = splitValues[1];
-      if (splitValues[0] === 'docs-landing') {
-        console.log(
-          await axios.post(
-            'https://api.netlify.com/build_hooks/6723eca38897343993c049b5',
-          ),
+  for (let i = 0; i < selected?.length; i++) {
+    const { repoName, branchName } = selected[i].value.split('/');
+    // TODO: add job title to title of deploy
+    const jobTitle = `Slack deploy: ${selected[i].value}, by ${user}`;
+    if (repoName && branchName) {
+      // TODO: add other conditionals here to deploy based on branchName
+      if (repoName === 'docs-landing' && branchName === 'master') {
+        // Send build hook to deploy MongoDB-snooty site which builds docs-landing master
+        const resp = await axios.post(
+          'https://api.netlify.com/build_hooks/6723eca38897343993c049b5?trigger_branch=master&trigger_title=testing+deployHook+title',
         );
       }
     }
@@ -49,17 +49,24 @@ export default async (req: Request): Promise<any> => {
   return new Response('', { status: 200 });
 };
 
-// const parsed = JSON.parse(decoded);
-// const stateValues = parsed.view.state.values;
-
-// if (req?.body?.payload) {
-//   console.log(`parsed payload: ${JSON.parse(req?.body?.payload)}`);
-// }
-// console.log(`headers: ${JSON.stringify(req.headers)}`);
-// const decoded = decodeURIComponent(req);
-// console.log(decoded);
-// const parsed = JSON.parse(decoded);
-// const stateValues = parsed.view.state.values;
-// console.log(`Parsed type ${parsed.type}`);
-// console.log(`State values: ${stateValues}`);
-// return new Response('request received', { status: 200 });
+const sendMessage = async (message: any, user: string): Promise<any> => {
+  try {
+    const body = {
+      channel: user,
+      text: message,
+    };
+    const slackToken = process.env.SLACK_AUTH_TOKEN;
+    if (!slackToken) {
+      throw new Error('No Slack token provided');
+    }
+    return await axios.post('https://slack.com/api/chat.postMessage', body, {
+      headers: {
+        Authorization: [`Bearer ${slackToken}`],
+        'Content-type': 'application/json; charset=utf-8',
+      },
+    });
+  } catch (error) {
+    console.error('Slack SendMessage', error);
+  }
+  return {};
+};
