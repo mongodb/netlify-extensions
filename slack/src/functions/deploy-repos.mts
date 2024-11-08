@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default async (req: Request): Promise<Response> => {
+export default async (req: Request): Promise<any> => {
   console.log('request received:', req);
   if (!req.body) {
     return new Response('request received', { status: 401 });
@@ -50,7 +50,7 @@ export default async (req: Request): Promise<Response> => {
       }
     }
   }
-  return new Response('', { status: 200 });
+  // return new Response('', { status: 200 });
 };
 
 const sendMessage = async (
@@ -62,6 +62,7 @@ const sendMessage = async (
       channel: user,
       text: message,
     };
+    console.log('body of message:', message);
     const slackToken = process.env.SLACK_AUTH_TOKEN;
     if (!slackToken) {
       throw new Error('No Slack token provided');
