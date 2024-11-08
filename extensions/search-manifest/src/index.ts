@@ -11,7 +11,7 @@ import type { S3UploadParams } from './types';
 import { getProperties } from './uploadToAtlas/getProperties';
 import { closeSearchDb, closeSnootyDb } from './uploadToAtlas/searchConnector';
 import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
-import { envVarToBool, Extension } from '@populate-metadata/extension';
+import { envVarToBool, Extension } from 'util/extension';
 
 const readdirAsync = promisify(readdir);
 

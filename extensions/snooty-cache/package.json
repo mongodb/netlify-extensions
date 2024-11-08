@@ -20,6 +20,7 @@
     "@tsconfig/recommended": "^1.0.8",
     "@types/node": "^20.14.9",
     "execa": "^6.1.0",
+    "util": "workspace:*",
     "vitest": "^2.0.5"
   }
 }

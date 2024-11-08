@@ -5,8 +5,7 @@
     "moduleResolution": "bundler",
     "strict": true,
     "paths": {
-      "bson": ["../../node_modules/bson/src/"],
-      "@populate-metadata/*": ["../populate-metadata/src/*"]
+      "bson": ["../../node_modules/bson/src/"]
     }
   },
   "include": ["src"],
