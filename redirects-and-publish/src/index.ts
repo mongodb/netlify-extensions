@@ -9,6 +9,10 @@ const extension = new Extension({
 extension.addBuildEventHandler(
   'onSuccess',
   async ({ utils: { run }, netlifyConfig }) => {
+    // in the future this should also account for dotcomprd
+    if (netlifyConfig?.build?.environment.ENV !== 'dotcomstg') {
+      return;
+    }
     await mutRedirectsAndPublish(netlifyConfig?.build?.environment, run);
   },
 );
