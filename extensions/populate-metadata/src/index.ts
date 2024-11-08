@@ -1,5 +1,5 @@
 // Documentation: https://sdk.netlify.com
-import { Extension, envVarToBool } from './extension';
+import { Extension, envVarToBool } from 'util/extension';
 import { updateConfig } from './updateConfig';
 
 const extension = new Extension({
