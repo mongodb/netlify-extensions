@@ -5,16 +5,14 @@ export default async (req: Request): Promise<any> => {
   if (!req.body) {
     return new Response('request received', { status: 401 });
   }
-  console.log(`request body: ${req.body}`);
 
   // console.log(`requestJSon: ${reqJson}`);
   const slackPayload = await new Response(req.body).text();
-  console.log(`Slack payload: ${slackPayload}`);
 
   // This is coming in as urlencoded string, need to decode before parsing
   const decoded = decodeURIComponent(slackPayload).split('=')[1];
   const parsed = JSON.parse(decoded);
-  console.log(parsed);
+  console.log('Parsed', parsed);
   const stateValues = parsed.view.state.values;
   const selected = stateValues.block_repo_option.repo_option.selected_options;
 
