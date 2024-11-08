@@ -3,10 +3,11 @@ import axios, { type AxiosResponse } from 'axios';
 import { getQSString, validateSlackRequest } from '../process-slack-req.js';
 import { getReposBranchesCollection } from '../dbConnector.js';
 import { getDeployableRepos } from '../getRepos.js';
-import { getDropDownView } from '../build-modal.js';
+import { getDropDownView, type repoOption } from '../build-modal.js';
+import type { ReposBranchesDocument } from '../../../search-manifest/src/types.js';
 
 export const displayRepoOptions = async (
-  repos: Array<any>,
+  repos: Array<repoOption>,
   triggerId: string,
 ): Promise<AxiosResponse> => {
   const repoOptView = getDropDownView(triggerId, repos);

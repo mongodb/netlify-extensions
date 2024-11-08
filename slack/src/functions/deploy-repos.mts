@@ -28,7 +28,11 @@ export default async (req: Request): Promise<Response> => {
     return response;
   }
 
-  sendMessage('this is a test message', parsed?.user?.id);
+  const messageResponse = sendMessage(
+    'this is a test message',
+    parsed?.user?.id,
+  );
+  console.log(messageResponse);
 
   const deployable = [];
 
@@ -49,7 +53,10 @@ export default async (req: Request): Promise<Response> => {
   return new Response('', { status: 200 });
 };
 
-const sendMessage = async (message: any, user: string): Promise<any> => {
+const sendMessage = async (
+  message: string,
+  user: string,
+): Promise<Response> => {
   try {
     const body = {
       channel: user,
@@ -67,6 +74,6 @@ const sendMessage = async (message: any, user: string): Promise<any> => {
     });
   } catch (error) {
     console.error('Slack SendMessage', error);
+    throw new Error();
   }
-  return {};
 };

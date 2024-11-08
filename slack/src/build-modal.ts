@@ -1,29 +1,44 @@
-import axios from 'axios';
-import { capitalizeFirstLetter } from './utils.js';
-import type { branchOption } from './types.js';
+import type * as mongodb from 'mongodb';
+import type { ReposBranchesDocument } from '../../search-manifest/src/types.js';
 
-export const buildRepoGroups = async (cursor: any) => {
-  const repoOptions: any[] = [];
+import { capitalizeFirstLetter } from './utils.js';
+
+export type branchOption = {
+  text: {
+    type: string;
+    text: string;
+  };
+  value: string;
+};
+
+export type repoOption = {
+  label: {
+    type: string;
+    text: string;
+  };
+  //sort the options by version number
+  options: Array<branchOption>;
+};
+
+export const buildRepoGroups = async (
+  cursor: mongodb.FindCursor<mongodb.WithId<ReposBranchesDocument>>,
+): Promise<Array<repoOption>> => {
+  const repoOptions: Array<repoOption> = [];
   for await (const repo of cursor) {
     const repoName = repo.repoName;
 
-    if (repo.branches.length) {
-      const options = [];
+    if (repo?.branches?.length) {
+      const options: Array<branchOption> = [];
       for (const branch of repo.branches) {
-        const buildWithSnooty = branch.buildsWithSnooty;
-
-        if (buildWithSnooty) {
-          const active = branch.active;
-          const branchName = branch.gitBranchName;
-
-          options.push({
-            text: {
-              type: 'plain_text',
-              text: active ? branchName : `(!inactive) ${branchName}`,
-            },
-            value: `${repoName}/${branchName}`,
-          });
-        }
+        const active = branch.active;
+        const branchName = branch.gitBranchName;
+        options.push({
+          text: {
+            type: 'plain_text',
+            text: active ? branchName : `(!inactive) ${branchName}`,
+          },
+          value: `${repoName}/${branchName}`,
+        });
       }
       const sortedOptions = sortOptions(options);
       const repoOption = {
