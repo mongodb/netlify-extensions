@@ -4,7 +4,7 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "build": "netlify-extension build",
+    "build": "pnpm --filter util build && netlify-extension build -a",
     "dev": "netlify-extension dev --open",
     "test": "vitest"
   },
@@ -19,6 +19,7 @@
     "@netlify/build": "^29.50.2",
     "@types/node": "^20.14.9",
     "execa": "^6.1.0",
+    "util": "workspace:*",
     "mongodb-memory-server": "^9.4.0",
     "vitest": "^2.0.2"
   }

@@ -4,5 +4,9 @@
     "outDir": "./build/cjs",
     "module": "commonjs"
   },
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "verbose": false
+  },
   "include": ["src"]
 }

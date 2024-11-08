@@ -1,5 +1,5 @@
 [build]
-command = "netlify-extension build"
+command = "pnpm build"
 publish = ".ntli/site/static"
 
 [dev]
