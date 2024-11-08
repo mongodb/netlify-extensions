@@ -1,25 +1,6 @@
 import type * as mongodb from 'mongodb';
 import { getPoolDb } from './atlasClusterConnector';
-
-export interface BranchEntry {
-  name?: string;
-  gitBranchName: string;
-  urlSlug: string;
-  isStableBranch: boolean;
-  active: boolean;
-}
-
-export interface ReposBranchesDocument {
-  repoName: string;
-  project: string;
-  search?: {
-    categoryTitle: string;
-    categoryName?: string;
-  };
-  branches?: Array<BranchEntry>;
-  prodDeployable: boolean;
-  internalOnly: boolean;
-}
+import type { ReposBranchesDocument } from './types';
 
 export const getReposBranchesCollection = async ({
   URI,

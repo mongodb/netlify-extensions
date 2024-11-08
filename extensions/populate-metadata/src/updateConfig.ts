@@ -1,12 +1,12 @@
-import type { DbConfig, Environments } from './assertDbEnvVars';
-import type { DocsetsDocument } from './databaseConnection/fetchDocsetsData';
 import type {
   BranchEntry,
+  DbConfig,
+  DocsetsDocument,
+  Environments,
+  PoolDbName,
   ReposBranchesDocument,
-} from './databaseConnection/fetchReposBranchesData';
+} from 'util/databaseConnection/types';
 import { getProperties } from './getProperties';
-
-export type PoolDbName = 'pool' | 'pool_test';
 
 export type SearchDbName = 'search' | 'search-test' | 'search-stage';
 
@@ -16,6 +16,21 @@ export type SnootyDbName =
   | 'snooty_dotcomstg'
   | 'snooty_prod'
   | 'snooty_dotcomprd';
+
+export type ConfigEnvironmentVariables = Partial<{
+  BRANCH: string;
+  SITE_NAME: string;
+  INCOMING_HOOK_URL: string;
+  INCOMING_HOOK_TITLE: string;
+  INCOMING_HOOK_BODY: string;
+  ENV: Environments;
+  REPO_ENTRY: ReposBranchesDocument;
+  DOCSET_ENTRY: DocsetsDocument;
+  BRANCH_ENTRY: BranchEntry;
+  POOL_DB_NAME: PoolDbName;
+  SEARCH_DB_NAME: SearchDbName;
+  SNOOTY_DB_NAME: SnootyDbName;
+}>;
 
 const getDbNames = (
   env: Environments,
@@ -50,21 +65,6 @@ const getDbNames = (
       };
   }
 };
-
-export type ConfigEnvironmentVariables = Partial<{
-  BRANCH: string;
-  SITE_NAME: string;
-  INCOMING_HOOK_URL: string;
-  INCOMING_HOOK_TITLE: string;
-  INCOMING_HOOK_BODY: string;
-  ENV: Environments;
-  REPO_ENTRY: ReposBranchesDocument;
-  DOCSET_ENTRY: DocsetsDocument;
-  BRANCH_ENTRY: BranchEntry;
-  POOL_DB_NAME: PoolDbName;
-  SEARCH_DB_NAME: SearchDbName;
-  SNOOTY_DB_NAME: SnootyDbName;
-}>;
 
 export const updateConfig = async ({
   configEnvironment,

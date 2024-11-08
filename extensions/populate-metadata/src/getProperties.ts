@@ -2,15 +2,15 @@ import type { DbConfig, Environments } from './assertDbEnvVars';
 import {
   type CollectionConnectionInfo,
   closePoolDb,
-} from './databaseConnection/atlasClusterConnector';
+} from '../../../libs/util/src/databaseConnection/atlasClusterConnector';
 import {
   type DocsetsDocument,
   getDocsetsCollection,
-} from './databaseConnection/fetchDocsetsData';
+} from '../../../libs/util/src/databaseConnection/fetchDocsetsData';
 import {
   type ReposBranchesDocument,
   getReposBranchesCollection,
-} from './databaseConnection/fetchReposBranchesData';
+} from '../../../libs/util/src/databaseConnection/fetchReposBranchesData';
 import type { PoolDbName } from './updateConfig';
 const EXTENSION_NAME = 'populate-metadata-extension';
 

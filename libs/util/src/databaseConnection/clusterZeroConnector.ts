@@ -1,14 +1,6 @@
 import * as mongodb from 'mongodb';
-import type { CollectionName } from '../assertDbEnvVars';
-import type { PoolDbName } from '../updateConfig';
 
 let clusterZeroClient: mongodb.MongoClient;
-
-export type CollectionConnectionInfo = {
-  clusterZeroURI: string;
-  databaseName: PoolDbName;
-  collectionName: CollectionName;
-};
 
 export const teardown = async (client: mongodb.MongoClient): Promise<void> => {
   await client.close();

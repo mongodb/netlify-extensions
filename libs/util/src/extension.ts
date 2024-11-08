@@ -8,7 +8,8 @@ import {
   NetlifyExtension,
 } from '@netlify/sdk';
 import type z from 'zod';
-import { type DbConfig, getDbConfig } from './assertDbEnvVars';
+import type { DbConfig } from './databaseConnection/types';
+import { getDbConfig } from './assertDbEnvVars';
 
 type BuildHookWithEnvVars<
   DbConfig,
