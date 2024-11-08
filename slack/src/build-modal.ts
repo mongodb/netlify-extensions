@@ -16,8 +16,35 @@ export type repoOption = {
     type: string;
     text: string;
   };
-  //sort the options by version number
   options: Array<branchOption>;
+};
+
+type slackBlock = {
+  type: 'plain_text';
+  text: string;
+};
+
+export type dropdownView = {
+  trigger_id: string;
+  view: {
+    type: 'modal';
+    title: slackBlock;
+    submit: slackBlock;
+    close: slackBlock;
+    blocks: [
+      {
+        type: 'input';
+        block_id: 'block_repo_option';
+        label: slackBlock;
+        element: {
+          type: 'multi_static_select';
+          action_id: 'repo_option';
+          placeholder: slackBlock;
+          option_groups: Array<repoOption>;
+        };
+      },
+    ];
+  };
 };
 
 export const buildRepoGroups = async (
@@ -71,7 +98,10 @@ export const sortOptions = (options: Array<branchOption>) => {
   return sortedOptions;
 };
 
-export function getDropDownView(triggerId: string, repos: Array<unknown>) {
+export function getDropDownView(
+  triggerId: string,
+  repos: Array<repoOption>,
+): dropdownView {
   return {
     trigger_id: triggerId,
     view: {

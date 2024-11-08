@@ -1,26 +1,23 @@
 import axios from 'axios';
 
-export default async (req: Request): Promise<any> => {
-  console.log('request received:', req);
-  if (!req.body) {
-    return new Response('request received', { status: 401 });
+export default async (req: Request) => {
+  if (!req?.body) {
+    return new Response('Request received without a body', { status: 401 });
   }
 
-  // console.log(`requestJSon: ${reqJson}`);
   const slackPayload = await new Response(req.body).text();
 
   // This is coming in as urlencoded string, need to decode before parsing
   const decoded = decodeURIComponent(slackPayload).split('=')[1];
+  //TODO: create an interface for slack view_submission payloads
   const parsed = JSON.parse(decoded);
-  console.log('Parsed', parsed);
 
   const user = parsed?.user?.username;
   const stateValues = parsed?.view?.state?.values;
   const selected =
     stateValues?.block_repo_option?.repo_option?.selected_options;
 
-  if (parsed.type !== 'view_submission') {
-    //TODO: create an interface for slack view_submission payloads
+  if (parsed?.type !== 'view_submission') {
     const response = new Response(
       'Form not submitted, will not process request',
       { status: 200 },
@@ -28,13 +25,11 @@ export default async (req: Request): Promise<any> => {
     return response;
   }
 
-  const messageResponse = sendMessage(
-    'this is a test message',
-    parsed?.user?.id,
-  );
-  console.log(messageResponse);
-
-  const deployable = [];
+  // TODO: send message to user that their job has been enqueued
+  // const messageResponse = await sendMessage(
+  //   'this is a test message',
+  //   parsed?.user?.id,
+  // );
 
   for (let i = 0; i < selected?.length; i++) {
     const { repoName, branchName } = selected[i].value.split('/');
@@ -50,7 +45,6 @@ export default async (req: Request): Promise<any> => {
       }
     }
   }
-  // return new Response('', { status: 200 });
 };
 
 const sendMessage = async (
