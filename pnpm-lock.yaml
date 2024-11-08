@@ -12,36 +12,11 @@ importers:
         specifier: 1.9.1
         version: 1.9.1
 
-  libs/util:
-    dependencies:
-      '@netlify/build':
-        specifier: ^29.56.0
-        version: 29.56.0(@opentelemetry/api@1.8.0)(@types/node@22.9.0)
-      '@netlify/sdk':
-        specifier: ^2.8.2
-        version: 2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
-    devDependencies:
-      '@types/node':
-        specifier: ^22.9.0
-        version: 22.9.0
-      npm-run-all:
-        specifier: ^4.1.5
-        version: 4.1.5
-      tsc-alias:
-        specifier: ^1.8.10
-        version: 1.8.10
-      typescript:
-        specifier: ^5.6.3
-        version: 5.6.3
-
-  packages/git-changed-files:
+  extensions/git-changed-files:
     dependencies:
       '@netlify/sdk':
         specifier: ^2.5.0
-        version: 2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
+        version: 2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
       axios:
         specifier: ^1.7.7
         version: 1.7.7
@@ -77,14 +52,14 @@ importers:
         specifier: ^2.1.0
         version: 2.1.4(@types/node@20.17.5)(jsdom@20.0.3)
 
-  packages/offline-snooty:
+  extensions/offline-snooty:
     dependencies:
       '@netlify/functions':
         specifier: ^2.8.2
         version: 2.8.2
       '@netlify/sdk':
         specifier: ^2.8.1
-        version: 2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+        version: 2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
       '@tanstack/react-query':
         specifier: ^5.59.16
         version: 5.59.16(react@18.3.1)
@@ -150,14 +125,14 @@ importers:
         specifier: ^5.4.10
         version: 5.4.10(@types/node@22.9.0)
 
-  packages/persistence-module:
+  extensions/persistence-module:
     dependencies:
       '@netlify/netlify-plugin-netlify-extension':
         specifier: ^1.0.3
         version: 1.0.3
       '@netlify/sdk':
         specifier: ^2.6.1
-        version: 2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
+        version: 2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
       bson:
         specifier: ^6.8.0
         version: 6.9.0
@@ -187,7 +162,7 @@ importers:
         specifier: ^2.0.2
         version: 2.1.4(@types/node@20.17.5)(jsdom@20.0.3)
 
-  packages/populate-metadata:
+  extensions/populate-metadata:
     dependencies:
       '@netlify/build':
         specifier: ^29.55.2
@@ -200,7 +175,7 @@ importers:
         version: 1.0.3
       '@netlify/sdk':
         specifier: ^2.6.1
-        version: 2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+        version: 2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
       '@tanstack/react-query':
         specifier: ^5.59.13
         version: 5.59.16(react@18.3.1)
@@ -272,14 +247,14 @@ importers:
         specifier: ^5.4.9
         version: 5.4.10(@types/node@22.9.0)
 
-  packages/redoc:
+  extensions/redoc:
     dependencies:
       '@netlify/netlify-plugin-netlify-extension':
         specifier: ^1.0.3
         version: 1.0.3
       '@netlify/sdk':
         specifier: ^2.7.1
-        version: 2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
+        version: 2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
       bson:
         specifier: ^6.8.0
         version: 6.9.0
@@ -306,7 +281,7 @@ importers:
         specifier: workspace:*
         version: link:../../libs/util
 
-  packages/search-manifest:
+  extensions/search-manifest:
     dependencies:
       '@aws-sdk/client-s3':
         specifier: ^3.654.0
@@ -319,7 +294,7 @@ importers:
         version: 1.0.3
       '@netlify/sdk':
         specifier: ^2.7.2
-        version: 2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
+        version: 2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
       bson:
         specifier: ^6.8.0
         version: 6.9.0
@@ -373,14 +348,14 @@ importers:
         specifier: ^2.0.5
         version: 2.1.4(@types/node@20.17.5)(jsdom@20.0.3)
 
-  packages/snooty-cache:
+  extensions/snooty-cache:
     dependencies:
       '@netlify/netlify-plugin-netlify-extension':
         specifier: ^1.0.3
         version: 1.0.3
       '@netlify/sdk':
         specifier: ^2.7.2
-        version: 2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
+        version: 2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
       axios:
         specifier: ^1.7.7
         version: 1.7.7
@@ -409,6 +384,31 @@ importers:
       vitest:
         specifier: ^2.0.5
         version: 2.1.4(@types/node@20.17.5)(jsdom@20.0.3)
+
+  libs/util:
+    dependencies:
+      '@netlify/build':
+        specifier: ^29.56.0
+        version: 29.56.0(@opentelemetry/api@1.8.0)(@types/node@22.9.0)
+      '@netlify/sdk':
+        specifier: ^2.8.2
+        version: 2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@types/node':
+        specifier: ^22.9.0
+        version: 22.9.0
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+      tsc-alias:
+        specifier: ^1.8.10
+        version: 1.8.10
+      typescript:
+        specifier: ^5.6.3
+        version: 5.6.3
 
 packages:
 
@@ -1953,15 +1953,6 @@ packages:
     peerDependencies:
       '@trpc/server': '>= 11 || >= 11.0.0-rc.0'
 
-  '@netlify/sdk--ui-react@1.8.2':
-    resolution: {integrity: sha512-o8bEdfJWSv8aOhBPnUIXUygFgSljqCv42L5CFZruDhqN5voQkBUXmyuLCR0tnTrmOyGVXj+drLPlP1M7TOGBZg==}
-    peerDependencies:
-      autoprefixer: ^10.4.19
-      postcss: ^8.4.38
-      react: ^18.3.1
-      react-dom: ^18.3.1
-      tailwindcss: ^3.4.3
-
   '@netlify/sdk--ui-react@1.9.0':
     resolution: {integrity: sha512-S5uwb/24+15SSFtiA/hDjWuvl3oREKAb7BArd7XLjVFlcOzPzl1kkRbtrjx+skf3Ccfo4my0GX15McHCE+kBYA==}
     peerDependencies:
@@ -1973,11 +1964,6 @@ packages:
 
   '@netlify/sdk@1.67.0':
     resolution: {integrity: sha512-ogDibdluTkqLtKBVWye6tzh3D9GJ3jfHe7IhnbMYc1HlNiLz7QqOrLpVyqm8pOvXW5PZfJ11JPyTcs69/yTztQ==}
-    hasBin: true
-
-  '@netlify/sdk@2.8.1':
-    resolution: {integrity: sha512-SWCm2X4OYnei4G9Apij+j2Cg/UeZbH4muEfszvZXyoeVBvwf6+YKtWdR+Wgj9/4jOA0BfuN1uztXIoN13JvIYQ==}
-    engines: {node: '>= 18.19.0'}
     hasBin: true
 
   '@netlify/sdk@2.8.2':
@@ -11473,53 +11459,7 @@ snapshots:
       '@trpc/server': 11.0.0-rc.604
       zod: 3.23.8
 
-  '@netlify/sdk--ui-react@1.8.2(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))':
-    dependencies:
-      '@hookform/resolvers': 3.9.1(react-hook-form@7.53.1(react@18.3.1))
-      '@netlify/netlify-design-tokens': 6.0.0
-      '@netlify/sdk--ui-core': 1.4.1
-      '@netlify/tailwind-config': 2.0.0(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
-      '@netlify/ui': 0.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
-      '@react-hook/resize-observer': 2.0.2(react@18.3.1)
-      autoprefixer: 10.4.20(postcss@8.4.47)
-      hast-util-to-jsx-runtime: 2.3.2
-      postcss: 8.4.47
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-hook-form: 7.53.1(react@18.3.1)
-      react-select: 5.8.2(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      shiki: 1.22.2
-      tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
-      zod: 3.23.8
-    transitivePeerDependencies:
-      - '@types/react'
-      - supports-color
-      - ts-node
-
-  '@netlify/sdk--ui-react@1.8.2(autoprefixer@10.4.20(postcss@8.4.47))(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))':
-    dependencies:
-      '@hookform/resolvers': 3.9.1(react-hook-form@7.53.1(react@18.3.1))
-      '@netlify/netlify-design-tokens': 6.0.0
-      '@netlify/sdk--ui-core': 1.4.1
-      '@netlify/tailwind-config': 2.0.0(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
-      '@netlify/ui': 0.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
-      '@react-hook/resize-observer': 2.0.2(react@18.3.1)
-      autoprefixer: 10.4.20(postcss@8.4.47)
-      hast-util-to-jsx-runtime: 2.3.2
-      postcss: 8.4.47
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      react-hook-form: 7.53.1(react@18.3.1)
-      react-select: 5.8.2(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      shiki: 1.22.2
-      tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
-      zod: 3.23.8
-    transitivePeerDependencies:
-      - '@types/react'
-      - supports-color
-      - ts-node
-
-  '@netlify/sdk--ui-react@1.9.0(autoprefixer@10.4.20(postcss@8.4.47))(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))':
+  '@netlify/sdk--ui-react@1.9.0(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))':
     dependencies:
       '@fullstory/browser': 2.0.5
       '@hookform/resolvers': 3.9.1(react-hook-form@7.53.1(react@18.3.1))
@@ -11537,6 +11477,30 @@ snapshots:
       react-select: 5.8.2(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       shiki: 1.22.2
       tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+      zod: 3.23.8
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - ts-node
+
+  '@netlify/sdk--ui-react@1.9.0(autoprefixer@10.4.20(postcss@8.4.47))(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))':
+    dependencies:
+      '@fullstory/browser': 2.0.5
+      '@hookform/resolvers': 3.9.1(react-hook-form@7.53.1(react@18.3.1))
+      '@netlify/netlify-design-tokens': 6.0.0
+      '@netlify/sdk--ui-core': 1.4.1
+      '@netlify/tailwind-config': 2.0.0(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
+      '@netlify/ui': 0.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
+      '@react-hook/resize-observer': 2.0.2(react@18.3.1)
+      autoprefixer: 10.4.20(postcss@8.4.47)
+      hast-util-to-jsx-runtime: 2.3.2
+      postcss: 8.4.47
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-hook-form: 7.53.1(react@18.3.1)
+      react-select: 5.8.2(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      shiki: 1.22.2
+      tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
       zod: 3.23.8
     transitivePeerDependencies:
       - '@types/react'
@@ -11591,7 +11555,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@netlify/sdk@2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))':
+  '@netlify/sdk@2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))':
     dependencies:
       '@commander-js/extra-typings': 12.1.0(commander@12.1.0)
       '@graphql-tools/stitch': 9.3.2(graphql@16.9.0)
@@ -11603,7 +11567,7 @@ snapshots:
       '@netlify/sdk--extension-api-client': 2.3.0
       '@netlify/sdk--ui-core': 1.4.1
       '@netlify/sdk--ui-functions': 1.2.1(@trpc/server@11.0.0-rc.604)
-      '@netlify/sdk--ui-react': 1.8.2(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+      '@netlify/sdk--ui-react': 1.9.0(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
       '@sindresorhus/slugify': 2.2.1
       '@stackbit/dev': 1.0.35(graphql@16.9.0)
       '@types/configstore': 6.0.2
@@ -11653,7 +11617,7 @@ snapshots:
       - ts-node
       - utf-8-validate
 
-  '@netlify/sdk@2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))':
+  '@netlify/sdk@2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))':
     dependencies:
       '@commander-js/extra-typings': 12.1.0(commander@12.1.0)
       '@graphql-tools/stitch': 9.3.2(graphql@16.9.0)
@@ -11665,69 +11629,7 @@ snapshots:
       '@netlify/sdk--extension-api-client': 2.3.0
       '@netlify/sdk--ui-core': 1.4.1
       '@netlify/sdk--ui-functions': 1.2.1(@trpc/server@11.0.0-rc.604)
-      '@netlify/sdk--ui-react': 1.8.2(autoprefixer@10.4.20(postcss@8.4.47))(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
-      '@sindresorhus/slugify': 2.2.1
-      '@stackbit/dev': 1.0.35(graphql@16.9.0)
-      '@types/configstore': 6.0.2
-      camelcase: 8.0.0
-      chalk: 5.3.0
-      commander: 12.1.0
-      configstore: 6.0.0
-      crypto-js: 4.2.0
-      env-paths: 3.0.0
-      esbuild: 0.20.2
-      esbuild-plugin-copy: 2.1.1(esbuild@0.20.2)
-      execa: 9.5.1
-      fs-extra: 11.2.0
-      graphql-scalars: 1.23.0(graphql@16.9.0)
-      js-xxhash: 3.0.1
-      js-yaml: 4.1.0
-      jsonwebtoken: 9.0.2
-      lodash.camelcase: 4.3.0
-      lodash.kebabcase: 4.1.1
-      open: 9.1.0
-      outdent: 0.8.0
-      safe-stable-stringify: 2.5.0
-      semver: 7.6.3
-      string-argv: 0.3.2
-      toml: 3.0.0
-      typescript: 5.6.3
-      wretch: 2.11.0
-      zod: 3.23.8
-      zod-metadata: 1.1.0(zod@3.23.8)
-      zod-to-json-schema: 3.23.5(zod@3.23.8)
-      zod-validation-error: 2.1.0(zod@3.23.8)
-    transitivePeerDependencies:
-      - '@google-cloud/storage'
-      - '@trpc/server'
-      - '@types/react'
-      - autoprefixer
-      - bufferutil
-      - canvas
-      - debug
-      - encoding
-      - graphql
-      - postcss
-      - react
-      - react-dom
-      - supports-color
-      - tailwindcss
-      - ts-node
-      - utf-8-validate
-
-  '@netlify/sdk@2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))':
-    dependencies:
-      '@commander-js/extra-typings': 12.1.0(commander@12.1.0)
-      '@graphql-tools/stitch': 9.3.2(graphql@16.9.0)
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
-      '@graphql-tools/wrap': 10.0.14(graphql@16.9.0)
-      '@netlify/content-engine': 1.5.0(@google-cloud/storage@5.20.5)
-      '@netlify/functions': 2.8.2
-      '@netlify/integrations': 0.6.0
-      '@netlify/sdk--extension-api-client': 2.3.0
-      '@netlify/sdk--ui-core': 1.4.1
-      '@netlify/sdk--ui-functions': 1.2.1(@trpc/server@11.0.0-rc.604)
-      '@netlify/sdk--ui-react': 1.9.0(autoprefixer@10.4.20(postcss@8.4.47))(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+      '@netlify/sdk--ui-react': 1.9.0(autoprefixer@10.4.20(postcss@8.4.47))(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))
       '@sindresorhus/slugify': 2.2.1
       '@stackbit/dev': 1.0.35(graphql@16.9.0)
       '@types/configstore': 6.0.2
@@ -12674,7 +12576,7 @@ snapshots:
 
   '@stackbit/artisanal-names@1.0.1': {}
 
-  '@stackbit/cms-contentful@0.4.56(graphql@16.9.0)':
+  '@stackbit/cms-contentful@0.4.56':
     dependencies:
       '@contentful/rich-text-types': 15.15.1
       '@stackbit/cms-core': 2.0.1(graphql@16.9.0)
@@ -12686,7 +12588,6 @@ snapshots:
     transitivePeerDependencies:
       - debug
       - encoding
-      - graphql
       - supports-color
 
   '@stackbit/cms-core@2.0.1(graphql@16.9.0)':
@@ -12743,7 +12644,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@stackbit/cms-sanity@0.2.56(graphql@16.9.0)':
+  '@stackbit/cms-sanity@0.2.56':
     dependencies:
       '@sanity/block-tools': 2.36.2
       '@sanity/client': 3.4.1
@@ -12763,18 +12664,17 @@ snapshots:
       - canvas
       - debug
       - encoding
-      - graphql
       - supports-color
       - utf-8-validate
 
-  '@stackbit/dev-common@0.5.51(graphql@16.9.0)':
+  '@stackbit/dev-common@0.5.51':
     dependencies:
       '@iarna/toml': 2.2.5
       '@stackbit/artisanal-names': 1.0.1
-      '@stackbit/cms-contentful': 0.4.56(graphql@16.9.0)
+      '@stackbit/cms-contentful': 0.4.56
       '@stackbit/cms-core': 2.0.1(graphql@16.9.0)
       '@stackbit/cms-git': 0.4.18(graphql@16.9.0)
-      '@stackbit/cms-sanity': 0.2.56(graphql@16.9.0)
+      '@stackbit/cms-sanity': 0.2.56
       '@stackbit/sdk': 2.0.1
       '@stackbit/types': 1.0.1
       '@stackbit/utils': 0.4.19
@@ -12800,7 +12700,6 @@ snapshots:
       - canvas
       - debug
       - encoding
-      - graphql
       - supports-color
       - utf-8-validate
 
@@ -12808,7 +12707,7 @@ snapshots:
     dependencies:
       '@stackbit/cms-core': 2.0.1(graphql@16.9.0)
       '@stackbit/cms-git': 0.4.18(graphql@16.9.0)
-      '@stackbit/dev-common': 0.5.51(graphql@16.9.0)
+      '@stackbit/dev-common': 0.5.51
       '@stackbit/sdk': 2.0.1
       axios: 0.25.0
       chalk: 4.1.2
@@ -13615,25 +13514,25 @@ snapshots:
 
   axios@0.21.4:
     dependencies:
-      follow-redirects: 1.15.9(debug@4.3.7)
+      follow-redirects: 1.15.9(debug@2.6.9)
     transitivePeerDependencies:
       - debug
 
   axios@0.24.0:
     dependencies:
-      follow-redirects: 1.15.9(debug@4.3.7)
+      follow-redirects: 1.15.9(debug@2.6.9)
     transitivePeerDependencies:
       - debug
 
   axios@0.25.0:
     dependencies:
-      follow-redirects: 1.15.9(debug@4.3.7)
+      follow-redirects: 1.15.9(debug@2.6.9)
     transitivePeerDependencies:
       - debug
 
   axios@1.7.7:
     dependencies:
-      follow-redirects: 1.15.9(debug@4.3.7)
+      follow-redirects: 1.15.9(debug@2.6.9)
       form-data: 4.0.1
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -14508,11 +14407,11 @@ snapshots:
 
   d3-brush@1.0.3:
     dependencies:
-      d3-dispatch: 1.0.2
-      d3-drag: 1.0.2
-      d3-interpolate: 1.1.2
-      d3-selection: 1.0.3
-      d3-transition: 1.0.3
+      d3-dispatch: 1.0.3
+      d3-drag: 1.0.4
+      d3-interpolate: 1.1.4
+      d3-selection: 1.0.5
+      d3-transition: 1.0.4
 
   d3-brush@1.0.4:
     dependencies:
@@ -14524,8 +14423,8 @@ snapshots:
 
   d3-chord@1.0.3:
     dependencies:
-      d3-array: 1.0.2
-      d3-path: 1.0.3
+      d3-array: 1.1.1
+      d3-path: 1.0.5
 
   d3-chord@1.0.4:
     dependencies:
@@ -14546,8 +14445,8 @@ snapshots:
 
   d3-drag@1.0.2:
     dependencies:
-      d3-dispatch: 1.0.2
-      d3-selection: 1.0.3
+      d3-dispatch: 1.0.3
+      d3-selection: 1.0.5
 
   d3-drag@1.0.4:
     dependencies:
@@ -14572,10 +14471,10 @@ snapshots:
 
   d3-force@1.0.4:
     dependencies:
-      d3-collection: 1.0.2
-      d3-dispatch: 1.0.2
-      d3-quadtree: 1.0.2
-      d3-timer: 1.0.3
+      d3-collection: 1.0.3
+      d3-dispatch: 1.0.3
+      d3-quadtree: 1.0.3
+      d3-timer: 1.0.5
 
   d3-force@1.0.6:
     dependencies:
@@ -14590,7 +14489,7 @@ snapshots:
 
   d3-geo@1.4.0:
     dependencies:
-      d3-array: 1.0.2
+      d3-array: 1.1.1
 
   d3-geo@1.6.3:
     dependencies:
@@ -14602,7 +14501,7 @@ snapshots:
 
   d3-interpolate@1.1.2:
     dependencies:
-      d3-color: 1.0.2
+      d3-color: 1.0.3
 
   d3-interpolate@1.1.4:
     dependencies:
@@ -14635,9 +14534,9 @@ snapshots:
 
   d3-request@1.0.3:
     dependencies:
-      d3-collection: 1.0.2
-      d3-dispatch: 1.0.2
-      d3-dsv: 1.0.3
+      d3-collection: 1.0.3
+      d3-dispatch: 1.0.3
+      d3-dsv: 1.0.5
       xmlhttprequest: 1.8.0
 
   d3-request@1.0.5:
@@ -14649,13 +14548,13 @@ snapshots:
 
   d3-scale@1.0.4:
     dependencies:
-      d3-array: 1.0.2
-      d3-collection: 1.0.2
-      d3-color: 1.0.2
-      d3-format: 1.0.2
-      d3-interpolate: 1.1.2
-      d3-time: 1.0.4
-      d3-time-format: 2.0.3
+      d3-array: 1.1.1
+      d3-collection: 1.0.3
+      d3-color: 1.0.3
+      d3-format: 1.1.1
+      d3-interpolate: 1.1.4
+      d3-time: 1.0.6
+      d3-time-format: 2.0.5
 
   d3-scale@1.0.5:
     dependencies:
@@ -14673,7 +14572,7 @@ snapshots:
 
   d3-shape@1.0.4:
     dependencies:
-      d3-path: 1.0.3
+      d3-path: 1.0.5
 
   d3-shape@1.0.6:
     dependencies:
@@ -14681,7 +14580,7 @@ snapshots:
 
   d3-time-format@2.0.3:
     dependencies:
-      d3-time: 1.0.4
+      d3-time: 1.0.6
 
   d3-time-format@2.0.5:
     dependencies:
@@ -14697,12 +14596,12 @@ snapshots:
 
   d3-transition@1.0.3:
     dependencies:
-      d3-color: 1.0.2
-      d3-dispatch: 1.0.2
-      d3-ease: 1.0.2
-      d3-interpolate: 1.1.2
-      d3-selection: 1.0.3
-      d3-timer: 1.0.3
+      d3-color: 1.0.3
+      d3-dispatch: 1.0.3
+      d3-ease: 1.0.3
+      d3-interpolate: 1.1.4
+      d3-selection: 1.0.5
+      d3-timer: 1.0.5
 
   d3-transition@1.0.4:
     dependencies:
@@ -14719,11 +14618,11 @@ snapshots:
 
   d3-zoom@1.1.0:
     dependencies:
-      d3-dispatch: 1.0.2
-      d3-drag: 1.0.2
-      d3-interpolate: 1.1.2
-      d3-selection: 1.0.3
-      d3-transition: 1.0.3
+      d3-dispatch: 1.0.3
+      d3-drag: 1.0.4
+      d3-interpolate: 1.1.4
+      d3-selection: 1.0.5
+      d3-transition: 1.0.4
 
   d3-zoom@1.1.4:
     dependencies:
@@ -16113,7 +16012,7 @@ snapshots:
       '@types/follow-redirects': 1.14.4
       '@types/progress-stream': 2.0.5
       decompress-response: 7.0.0
-      follow-redirects: 1.15.9(debug@4.3.7)
+      follow-redirects: 1.15.9(debug@2.6.9)
       is-retry-allowed: 2.2.0
       progress-stream: 2.0.0
       tunnel-agent: 0.6.0
@@ -16535,7 +16434,7 @@ snapshots:
 
   http-proxy-middleware@0.20.0:
     dependencies:
-      http-proxy: 1.18.1(debug@4.3.7)
+      http-proxy: 1.18.1
       is-glob: 4.0.3
       lodash: 4.17.21
       micromatch: 4.0.8
@@ -16551,6 +16450,14 @@ snapshots:
       micromatch: 4.0.8
     optionalDependencies:
       '@types/express': 4.17.21
+    transitivePeerDependencies:
+      - debug
+
+  http-proxy@1.18.1:
+    dependencies:
+      eventemitter3: 4.0.7
+      follow-redirects: 1.15.9(debug@2.6.9)
+      requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
 
