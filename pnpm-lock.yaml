@@ -143,6 +143,9 @@ importers:
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
+      util:
+        specifier: workspace:*
+        version: link:../../libs/util
       vite:
         specifier: ^5.4.10
         version: 5.4.10(@types/node@22.9.0)
@@ -177,6 +180,9 @@ importers:
       mongodb-memory-server:
         specifier: ^9.4.0
         version: 9.4.1
+      util:
+        specifier: workspace:*
+        version: link:../../libs/util
       vitest:
         specifier: ^2.0.2
         version: 2.1.4(@types/node@20.17.5)(jsdom@20.0.3)
@@ -259,6 +265,9 @@ importers:
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
+      util:
+        specifier: workspace:*
+        version: link:../../libs/util
       vite:
         specifier: ^5.4.9
         version: 5.4.10(@types/node@22.9.0)
@@ -293,6 +302,9 @@ importers:
       execa:
         specifier: ^6.1.0
         version: 6.1.0
+      util:
+        specifier: workspace:*
+        version: link:../../libs/util
 
   packages/search-manifest:
     dependencies:
@@ -354,6 +366,9 @@ importers:
       aws-sdk-client-mock:
         specifier: ^4.0.2
         version: 4.1.0
+      util:
+        specifier: workspace:*
+        version: link:../../libs/util
       vitest:
         specifier: ^2.0.5
         version: 2.1.4(@types/node@20.17.5)(jsdom@20.0.3)
@@ -11565,10 +11580,13 @@ snapshots:
       zod-to-json-schema: 3.23.5(zod@3.23.8)
       zod-validation-error: 2.1.0(zod@3.23.8)
     transitivePeerDependencies:
+      - bufferutil
+      - canvas
       - debug
       - encoding
       - graphql
       - supports-color
+      - utf-8-validate
 
   '@netlify/sdk@2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))':
     dependencies:
@@ -11619,6 +11637,8 @@ snapshots:
       - '@trpc/server'
       - '@types/react'
       - autoprefixer
+      - bufferutil
+      - canvas
       - debug
       - encoding
       - graphql
@@ -11628,6 +11648,7 @@ snapshots:
       - supports-color
       - tailwindcss
       - ts-node
+      - utf-8-validate
 
   '@netlify/sdk@2.8.1(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@20.17.5)(typescript@5.6.3))':
     dependencies:
@@ -11678,6 +11699,8 @@ snapshots:
       - '@trpc/server'
       - '@types/react'
       - autoprefixer
+      - bufferutil
+      - canvas
       - debug
       - encoding
       - graphql
@@ -11687,6 +11710,7 @@ snapshots:
       - supports-color
       - tailwindcss
       - ts-node
+      - utf-8-validate
 
   '@netlify/sdk@2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))':
     dependencies:
@@ -12686,10 +12710,13 @@ snapshots:
       slugify: 1.6.6
       uuid: 9.0.1
     transitivePeerDependencies:
+      - bufferutil
+      - canvas
       - debug
       - encoding
       - graphql
       - supports-color
+      - utf-8-validate
 
   '@stackbit/cms-git@0.4.18(graphql@16.9.0)':
     dependencies:
@@ -12705,10 +12732,13 @@ snapshots:
       micromatch: 4.0.8
       slugify: 1.6.6
     transitivePeerDependencies:
+      - bufferutil
+      - canvas
       - debug
       - encoding
       - graphql
       - supports-color
+      - utf-8-validate
 
   '@stackbit/cms-sanity@0.2.56(graphql@16.9.0)':
     dependencies:
