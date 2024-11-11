@@ -1,6 +1,6 @@
 // Documentation: https://sdk.netlify.com
 import { NetlifyExtension } from '@netlify/sdk';
-import { Extension } from 'util/extensions';
+import { Extension } from 'util/extension';
 
 const ext = new Extension();
 
