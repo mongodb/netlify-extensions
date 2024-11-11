@@ -1,15 +1,15 @@
 import crypto from 'node:crypto';
 
 export function getQSString(qs: string) {
-  const key_val: Record<string, string> = {};
+  const key_val: any = {};
   const arr = qs.split('&');
   if (arr) {
-    for (const keyval in arr) {
+    arr.forEach((keyval) => {
       const kvpair = keyval.split('=');
       key_val[kvpair[0]] = kvpair[1];
-    }
+    });
   }
-  console.log(`key val: ${key_val}`);
+  console.log(JSON.stringify(key_val));
   return key_val;
 }
 
