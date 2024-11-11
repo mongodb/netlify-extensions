@@ -9,7 +9,7 @@ export function getQSString(qs: string) {
       key_val[kvpair[0]] = kvpair[1];
     }
   }
-  console.log(JSON.stringify(key_val));
+  console.log('key_val:', JSON.stringify(key_val));
   return key_val;
 }
 
