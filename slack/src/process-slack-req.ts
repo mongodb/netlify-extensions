@@ -4,10 +4,10 @@ export function getQSString(qs: string) {
   const key_val: any = {};
   const arr = qs.split('&');
   if (arr) {
-    arr.forEach((keyval) => {
+    for (const keyval of arr) {
       const kvpair = keyval.split('=');
       key_val[kvpair[0]] = kvpair[1];
-    });
+    }
   }
   console.log(JSON.stringify(key_val));
   return key_val;
