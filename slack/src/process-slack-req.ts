@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 
 export function getQSString(qs: string) {
-  const key_val: any = {};
+  const key_val: Record<string, string> = {};
   const arr = qs.split('&');
   if (arr) {
     for (const keyval of arr) {
@@ -24,29 +24,21 @@ export const validateSlackRequest = async (
 
   // 2. Get timestamp header from request
   const timestamp = payload.headers.get('X-Slack-Request-Timestamp');
-  console.log('timestamp:', timestamp);
 
   // 3. Concatenate version number, timestamp, and request body together
   const headerSlackSignature = payload.headers.get('X-Slack-Signature');
-  console.log(`Header slack signature: ${headerSlackSignature}`);
   const [version, header_signature] = headerSlackSignature?.split('=') ?? [];
 
-  const payloadBody = payload.body;
-  console.log(`Slack payload: ${slackPayload}`);
-  console.log(`payloadBody: ${payloadBody}`);
   const baseString = `${version}:${timestamp}:${slackPayload}`;
-  console.log(`base string: ${baseString}`);
 
   //hash the resulting string
   const hmac = crypto.createHmac('sha256', signingSecret);
   hmac.update(baseString);
 
-  const digestVal = `v0=${hmac.digest('hex')}`;
-  console.log(`Digest val: ${digestVal}`);
+  const digestVal = hmac.digest('hex');
 
   const tsCompare = timeSafeCompare(header_signature, digestVal);
-  console.log(tsCompare);
-  return true;
+  return tsCompare;
 };
 
 function bufferEqual(a: Buffer, b: Buffer) {
@@ -62,6 +54,5 @@ function timeSafeCompare(a: string, b: string) {
   const key = crypto.pseudoRandomBytes(32);
   const ah = crypto.createHmac('sha256', key).update(sa).digest();
   const bh = crypto.createHmac('sha256', key).update(sb).digest();
-  console.log('a', a, 'b', b);
   return bufferEqual(ah, bh) && a === b;
 }
