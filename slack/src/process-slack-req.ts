@@ -14,6 +14,7 @@ export function getQSString(qs: string) {
 
 export const validateSlackRequest = async (
   payload: Request,
+  slackPayload: string,
 ): Promise<boolean> => {
   // 1. Grab slack signing secret
   const signingSecret = process.env.SLACK_SIGNING_SECRET;
@@ -31,8 +32,10 @@ export const validateSlackRequest = async (
   const [version, header_signature] = headerSlackSignature?.split('=') ?? [];
 
   const payloadBody = payload.body;
+  console.log(`Slack payload: ${slackPayload}`);
   console.log(`payloadBody: ${payloadBody}`);
-  const baseString = `${version}:${timestamp}:${payloadBody}`;
+  const baseString = `${version}:${timestamp}:${slackPayload}`;
+  console.log(`base string: ${baseString}`);
 
   //hash the resulting string
   const hmac = crypto.createHmac('sha256', signingSecret);
@@ -59,7 +62,6 @@ function timeSafeCompare(a: string, b: string) {
   const key = crypto.pseudoRandomBytes(32);
   const ah = crypto.createHmac('sha256', key).update(sa).digest();
   const bh = crypto.createHmac('sha256', key).update(sb).digest();
-  console.log('ah', ah, 'bh', bh);
   console.log('a', a, 'b', b);
   return bufferEqual(ah, bh) && a === b;
 }

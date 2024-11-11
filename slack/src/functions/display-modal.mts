@@ -32,7 +32,7 @@ export default async (req: Request): Promise<Response> => {
   const key_val = await getQSString(slackPayload);
   const trigger_id = key_val.trigger_id;
 
-  if (!validateSlackRequest(req)) {
+  if (!validateSlackRequest(req, slackPayload)) {
     console.log('Slack request not validated');
     return new Response('Slack request not validated', { status: 400 });
   }
