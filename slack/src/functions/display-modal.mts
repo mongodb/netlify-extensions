@@ -1,9 +1,9 @@
 // Documentation: https://sdk.netlify.com
 import axios, { type AxiosResponse } from 'axios';
-import { getQSString, validateSlackRequest } from '../process-slack-req.js';
+import { validateSlackRequest } from '../process-slack-req.js';
 import { getReposBranchesCollection } from '../dbConnector.js';
-import { getDeployableRepos } from '../getRepos.js';
-import { getDropDownView, type repoOption } from '../build-modal.js';
+import { getDeployableRepos } from '../utils/getRepos.js';
+import { getDropDownView, type repoOption } from '../utils/build-modal.js';
 
 export const displayRepoOptions = async (
   repos: Array<repoOption>,
@@ -29,8 +29,9 @@ export default async (req: Request): Promise<Response> => {
     return new Response('Event body is undefined', { status: 400 });
   }
   const slackPayload = await new Response(req.body).text();
-  const key_val = getQSString(slackPayload);
-  const trigger_id = key_val.trigger_id;
+  // const key_val = getQSString(slackPayload);
+  // const trigger_id = key_val.trigger_id;
+  const trigger_id = 'dummyVal';
 
   if (!validateSlackRequest(req)) {
     console.log('Slack request not validated');

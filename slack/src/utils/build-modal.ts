@@ -1,5 +1,5 @@
 import type * as mongodb from 'mongodb';
-import type { ReposBranchesDocument } from '../../search-manifest/src/types.js';
+import type { ReposBranchesDocument } from '../../../search-manifest/src/types.js';
 
 import { capitalizeFirstLetter } from './utils.js';
 
