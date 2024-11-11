@@ -15,26 +15,36 @@ export function getQSString(qs: string) {
 export const validateSlackRequest = async (
   payload: Request,
 ): Promise<boolean> => {
-  // params needed to verify for slack
-  const headerSlackSignature = payload.headers.get('X-Slack-Signature');
-  console.log(`Header slack signature: ${headerSlackSignature}`);
-  const timestamp = payload.headers.get('X-Slack-Request-Timestamp');
-  console.log('timestamp:', timestamp);
+  // 1. Grab slack signing secret
   const signingSecret = process.env.SLACK_SIGNING_SECRET;
   if (!signingSecret) {
     return false;
   }
-  const hmac = crypto.createHmac('sha256', signingSecret);
-  const [version, hash] = headerSlackSignature?.split('=') ?? [];
+
+  // 2. Get timestamp header from request
+  const timestamp = payload.headers.get('X-Slack-Request-Timestamp');
+  console.log('timestamp:', timestamp);
+
+  // 3. Concatenate version number, timestamp, and request body together
+  const headerSlackSignature = payload.headers.get('X-Slack-Signature');
+  console.log(`Header slack signature: ${headerSlackSignature}`);
+  const [version, header_signature] = headerSlackSignature?.split('=') ?? [];
+
   const payloadBody = payload.body;
   console.log(payloadBody);
   const baseString = `${version}:${timestamp}:${payloadBody}`;
-  console.log('base', JSON.stringify(baseString));
+
+  //hash the resulting string
+  const hmac = crypto.createHmac('sha256', signingSecret);
   hmac.update(baseString);
 
-  console.log(`hmac: ${JSON.stringify(hmac.digest('hex'))}`);
+  const digestVal = `v0=${hmac.digest('hex')}`;
+  console.log(digestVal);
 
-  const tsCompare = timeSafeCompare(hash, `v0=${hmac.digest('hex')}`);
+  const tsCompare = timeSafeCompare(
+    header_signature,
+    `v0=${hmac.digest('hex')}`,
+  );
   console.log(tsCompare);
   return true;
 };
