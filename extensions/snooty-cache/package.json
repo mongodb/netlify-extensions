@@ -1,0 +1,26 @@
+{
+  "name": "snooty-cache-plugin",
+  "version": "0.0.1",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --filter util build && netlify-extension build -a",
+    "dev": "netlify-extension dev --open",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@netlify/netlify-plugin-netlify-extension": "^1.0.3",
+    "@netlify/sdk": "^2.7.2",
+    "axios": "^1.7.7",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@netlify/build": "^29.50.2",
+    "@tsconfig/node18": "^18.2.4",
+    "@tsconfig/recommended": "^1.0.8",
+    "@types/node": "^20.14.9",
+    "execa": "^6.1.0",
+    "util": "workspace:*",
+    "vitest": "^2.0.5"
+  }
+}
