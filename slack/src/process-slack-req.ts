@@ -1,5 +1,18 @@
 import crypto from 'node:crypto';
 
+export function getQSString(qs: string) {
+  const key_val: Record<string, string> = {};
+  const arr = qs.split('&');
+  if (arr) {
+    for (const keyval in arr) {
+      const kvpair = keyval.split('=');
+      key_val[kvpair[0]] = kvpair[1];
+    }
+  }
+  console.log(`key val: ${key_val}`);
+  return key_val;
+}
+
 export function validateSlackRequest(payload: Request): boolean {
   // params needed to verify for slack
   const headerSlackSignature =
