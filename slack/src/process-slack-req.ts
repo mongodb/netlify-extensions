@@ -31,7 +31,7 @@ export const validateSlackRequest = async (
   const [version, header_signature] = headerSlackSignature?.split('=') ?? [];
 
   const payloadBody = payload.body;
-  console.log(payloadBody);
+  console.log(`payloadBody: ${payloadBody}`);
   const baseString = `${version}:${timestamp}:${payloadBody}`;
 
   //hash the resulting string
@@ -39,12 +39,9 @@ export const validateSlackRequest = async (
   hmac.update(baseString);
 
   const digestVal = `v0=${hmac.digest('hex')}`;
-  console.log(digestVal);
+  console.log(`Digest val: ${digestVal}`);
 
-  const tsCompare = timeSafeCompare(
-    header_signature,
-    `v0=${hmac.digest('hex')}`,
-  );
+  const tsCompare = timeSafeCompare(header_signature, digestVal);
   console.log(tsCompare);
   return true;
 };
