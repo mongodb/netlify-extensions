@@ -54,6 +54,7 @@ export const mutRedirectsAndPublish = async (
 
   try {
     console.log('Running mut-redirects...');
+    // TODO: change hard coded `docs-landing` to whatever repo is being built after DOP-5159 is completed
     const redirectPath = configEnvironment.SITE_NAME === 'mongodb-snooty' ? 'docs-landing/config/redirects' : '../../config/redirects';
     await run.command(`${process.cwd()}/mut/mut-redirects ${redirectPath} -o public/.htaccess`);
   } catch (e) {
@@ -61,14 +62,14 @@ export const mutRedirectsAndPublish = async (
   }
 
   // running mut-publish ----------------------------------------------------------
-  
+
+  //TODO: mut and populate-metadata extensions use different env variable names for the same values (set to team wide in future)
+  process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY;
+  process.env.AWS_ACCESS_KEY_ID = process.env.AWS_S3_ACCESS_KEY_ID;
+
   if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
     throw new Error('Credentials not found');
   }
-
-  //TODO: change these teamwide env vars in Netlify UI when ready to move to prod
-  process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY;
-  process.env.AWS_ACCESS_KEY_ID = process.env.AWS_S3_ACCESS_KEY_ID;
 
   console.log('Start of the mut-publish plugin -----------');
 
@@ -97,37 +98,20 @@ export const mutRedirectsAndPublish = async (
     ); // subbed in /netlify/docs-qa
     console.log('And a URL of: ', docsetEntry?.url); // https://mongodbcom-cdn.website.staging.corp.mongodb.com/
 
-    // TODO: do I need to log this command below ?
-    if (configEnvironment.ENV === 'dotcomstg') {
-      await run(
-        `${process.cwd()}/mut/mut-publish`,
-        [
-          'public',
-          `${docsetEntry?.bucket?.dotcomstg}`,
-          `--prefix=/${docsetEntry?.prefix?.dotcomstg}`,
-          '--deploy',
-          `--deployed-url-prefix=s${docsetEntry?.url?.dotcomstg}`,
-          '--json',
-          '--all-subdirectories',
-        ],
-        { input: 'y' },
-      );
-    } else if (configEnvironment.ENV === 'dotcomprd') {
-      // we will want to do this in the future but not in this PR
-      // await run(
-      //   `${process.cwd()}/mut/mut-publish`,
-      //   [
-      //     'public',
-      //     `${docsetEntry?.bucket?.dotcomprd}`,
-      //     `--prefix=/${docsetEntry?.prefix?.dotcomprd}`,
-      //     '--deploy',
-      //     `--deployed-url-prefix=s${docsetEntry?.url?.dotcomprd}`,
-      //     '--json',
-      //     '--all-subdirectories',
-      //   ],
-      //   { input: 'y' },
-      // );
-    }
+    // TODO: in future we change to docsetEntry?.prefix?.[configEnvironment.ENV] and docsetEntry?.url?.[configEnvironment.ENV]
+    await run(
+      `${process.cwd()}/mut/mut-publish`,
+      [
+        'public',
+        `${docsetEntry?.bucket?.dotcomstg}`,
+        `--prefix=/${docsetEntry?.prefix?.dotcomstg}`,
+        '--deploy',
+        `--deployed-url-prefix=s${docsetEntry?.url?.dotcomstg}`,
+        '--json',
+        '--all-subdirectories',
+      ],
+      { input: 'y' },
+    );
   } catch (e) {
     console.log(`Error occurred while running mut-publish: ${e}`);
   }
