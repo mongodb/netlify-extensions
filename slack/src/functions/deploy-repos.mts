@@ -12,8 +12,7 @@ export default async (req: Request) => {
   const decoded = decodeURIComponent(slackPayload).split('=')[1];
   //TODO: create an interface for slack view_submission payloads
   const parsed = JSON.parse(decoded);
-  const key_val = getQSString(parsed);
-  console.log(`deploy request key val: ${key_val}`);
+  console.log(`parsed: ${parsed}`);
 
   const user = parsed?.user?.username;
   const stateValues = parsed?.view?.state?.values;
