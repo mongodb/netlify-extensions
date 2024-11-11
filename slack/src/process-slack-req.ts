@@ -9,22 +9,26 @@ export function getQSString(qs: string) {
       key_val[kvpair[0]] = kvpair[1];
     }
   }
-  console.log('key_val:', JSON.stringify(key_val));
   return key_val;
 }
 
-export function validateSlackRequest(payload: Request): boolean {
+export const validateSlackRequest = async (
+  payload: Request,
+): Promise<boolean> => {
   // params needed to verify for slack
   const headerSlackSignature = payload.headers.get('X-Slack-Signature');
   console.log(`Header slack signature: ${headerSlackSignature}`);
   const timestamp = payload.headers.get('X-Slack-Request-Timestamp');
+  console.log('timestamp:', timestamp);
   const signingSecret = process.env.SLACK_SIGNING_SECRET;
   if (!signingSecret) {
     return false;
   }
   const hmac = crypto.createHmac('sha256', signingSecret);
   const [version, hash] = headerSlackSignature?.split('=') ?? [];
-  const baseString = `${version}:${timestamp}:${payload.body}`;
+  const payloadBody = await new Response(payload.body).text();
+  console.log(payloadBody);
+  const baseString = `${version}:${timestamp}:${payloadBody}`;
   console.log('base', JSON.stringify(baseString));
   hmac.update(baseString);
 
@@ -33,7 +37,7 @@ export function validateSlackRequest(payload: Request): boolean {
   const tsCompare = timeSafeCompare(hash, hmac.digest('hex'));
   console.log(tsCompare);
   return true;
-}
+};
 
 function bufferEqual(a: Buffer, b: Buffer) {
   if (a.length !== b.length) {

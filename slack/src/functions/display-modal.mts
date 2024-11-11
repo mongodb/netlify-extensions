@@ -2,7 +2,7 @@
 import axios, { type AxiosResponse } from 'axios';
 import { getQSString, validateSlackRequest } from '../process-slack-req.js';
 import { getReposBranchesCollection } from '../dbConnector.js';
-import { getDeployableRepos } from '../utils/getRepos.js';
+import { getDeployableRepos } from '../getRepos.js';
 import { getDropDownView, type repoOption } from '../utils/build-modal.js';
 
 export const displayRepoOptions = async (
