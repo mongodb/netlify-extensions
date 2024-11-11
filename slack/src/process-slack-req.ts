@@ -48,6 +48,7 @@ function timeSafeCompare(a: string, b: string) {
   const key = crypto.pseudoRandomBytes(32);
   const ah = crypto.createHmac('sha256', key).update(sa).digest();
   const bh = crypto.createHmac('sha256', key).update(sb).digest();
-  console.log(a, b);
+  console.log(`ah ${ah}, bh: ${bh}`);
+  console.log(`a ${ah}, b: ${bh}`);
   return bufferEqual(ah, bh) && a === b;
 }
