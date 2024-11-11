@@ -26,7 +26,7 @@ export const validateSlackRequest = async (
   }
   const hmac = crypto.createHmac('sha256', signingSecret);
   const [version, hash] = headerSlackSignature?.split('=') ?? [];
-  const payloadBody = await new Response(payload.body).text();
+  const payloadBody = payload.body;
   console.log(payloadBody);
   const baseString = `${version}:${timestamp}:${payloadBody}`;
   console.log('base', JSON.stringify(baseString));
