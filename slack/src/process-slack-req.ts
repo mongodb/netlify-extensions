@@ -15,22 +15,22 @@ export function getQSString(qs: string) {
 
 export function validateSlackRequest(payload: Request): boolean {
   // params needed to verify for slack
-  const headerSlackSignature =
-    payload.headers.get('X-Slack-Signature')?.toString() ??
-    payload.headers.get('x-slack-signature')?.toString();
+  const headerSlackSignature = payload.headers.get('X-Slack-Signature');
   console.log(`Header slack signature: ${headerSlackSignature}`);
-  const timestamp =
-    payload.headers.get('X-Slack-Request-Timestamp') ??
-    payload.headers.get('x-slack-request-timestamp');
-  console.log(`Timestamp: ${timestamp}`);
+  const timestamp = payload.headers.get('X-Slack-Request-Timestamp');
   const signingSecret = process.env.SLACK_SIGNING_SECRET;
   if (!signingSecret) {
     return false;
   }
   const hmac = crypto.createHmac('sha256', signingSecret);
   const [version, hash] = headerSlackSignature?.split('=') ?? [];
-  const base = `${version}:${timestamp}:${payload.body}`;
-  hmac.update(base);
+  const baseString = `${version}:${timestamp}:${payload.body}`;
+  console.log('base', baseString);
+  hmac.update(baseString);
+  hmac.digest('hex');
+
+  console.log(`hmac: ${hmac}`);
+
   const tsCompare = timeSafeCompare(hash, hmac.digest('hex'));
   return true;
 }
