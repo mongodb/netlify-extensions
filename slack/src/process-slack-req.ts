@@ -12,10 +12,13 @@ export function getQSString(qs: string) {
   return key_val;
 }
 
-export const validateSlackRequest = async (
-  payload: Request,
-  slackPayload: string,
-): Promise<boolean> => {
+export const validateSlackRequest = async ({
+  requestHeaders,
+  requestBody,
+}: {
+  requestHeaders: Headers;
+  requestBody: string;
+}): Promise<boolean> => {
   // 1. Grab slack signing secret
   const signingSecret = process.env.SLACK_SIGNING_SECRET;
   if (!signingSecret) {
@@ -23,13 +26,13 @@ export const validateSlackRequest = async (
   }
 
   // 2. Get timestamp header from request
-  const timestamp = payload.headers.get('X-Slack-Request-Timestamp');
+  const timestamp = requestHeaders.get('X-Slack-Request-Timestamp');
 
   // 3. Concatenate version number, timestamp, and request body together
-  const headerSlackSignature = payload.headers.get('X-Slack-Signature');
+  const headerSlackSignature = requestHeaders.get('X-Slack-Signature');
   const [version, header_signature] = headerSlackSignature?.split('=') ?? [];
 
-  const baseString = `${version}:${timestamp}:${slackPayload}`;
+  const baseString = `${version}:${timestamp}:${requestBody}`;
 
   //hash the resulting string
   const hmac = crypto.createHmac('sha256', signingSecret);

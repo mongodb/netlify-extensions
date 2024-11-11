@@ -5,10 +5,10 @@ export default async (req: Request) => {
     return new Response('Request received without a body', { status: 401 });
   }
 
-  const slackPayload = await new Response(req.body).text();
+  const requestBody = await new Response(req.body).text();
 
   // This is coming in as urlencoded string, need to decode before parsing
-  const decoded = decodeURIComponent(slackPayload).split('=')[1];
+  const decoded = decodeURIComponent(requestBody).split('=')[1];
   //TODO: create an interface for slack view_submission payloads
   const parsed = JSON.parse(decoded);
   console.log(`parsed: ${parsed}`);

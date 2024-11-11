@@ -28,11 +28,11 @@ export default async (req: Request): Promise<Response> => {
   if (!req.body) {
     return new Response('Event body is undefined', { status: 400 });
   }
-  const slackPayload = await new Response(req.body).text();
-  const key_val = await getQSString(slackPayload);
+  const requestBody = await new Response(req.body).text();
+  const key_val = getQSString(requestBody);
   const trigger_id = key_val.trigger_id;
 
-  if (!validateSlackRequest(req, slackPayload)) {
+  if (!validateSlackRequest({ requestHeaders: req.headers, requestBody })) {
     console.log('Slack request not validated');
     return new Response('Slack request not validated', { status: 400 });
   }
