@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getQSString } from '../process-slack-req.js';
 
 export default async (req: Request) => {
   if (!req?.body) {
@@ -6,6 +7,8 @@ export default async (req: Request) => {
   }
 
   const slackPayload = await new Response(req.body).text();
+  const key_val = getQSString(slackPayload);
+  console.log(`key_val: ${key_val}`);
 
   // This is coming in as urlencoded string, need to decode before parsing
   const decoded = decodeURIComponent(slackPayload).split('=')[1];
