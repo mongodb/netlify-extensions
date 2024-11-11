@@ -25,13 +25,13 @@ export function validateSlackRequest(payload: Request): boolean {
   const hmac = crypto.createHmac('sha256', signingSecret);
   const [version, hash] = headerSlackSignature?.split('=') ?? [];
   const baseString = `${version}:${timestamp}:${payload.body}`;
-  console.log('base', baseString);
+  console.log('base', JSON.stringify(baseString));
   hmac.update(baseString);
-  hmac.digest('hex');
 
-  console.log(`hmac: ${hmac}`);
+  console.log(`hmac: ${JSON.stringify(hmac.digest('hex'))}`);
 
   const tsCompare = timeSafeCompare(hash, hmac.digest('hex'));
+  console.log(timeSafeCompare);
   return true;
 }
 
