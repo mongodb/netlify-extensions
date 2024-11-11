@@ -1,6 +1,6 @@
 import type * as mongodb from 'mongodb';
-import type { ReposBranchesDocument } from '../../search-manifest/src/types.js';
-import { buildRepoGroups } from './utils/build-modal.js';
+import { buildRepoGroups } from './build-modal.js';
+import type { ReposBranchesDocument } from '../../../search-manifest/src/types.js';
 
 export async function getDeployableRepos(
   reposBranchesColl: mongodb.Collection<ReposBranchesDocument>,

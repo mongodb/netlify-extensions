@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { getQSString } from '../process-slack-req.js';
 
 export default async (req: Request) => {
   if (!req?.body) {

@@ -34,7 +34,7 @@ export const validateSlackRequest = async (
 
   console.log(`hmac: ${JSON.stringify(hmac.digest('hex'))}`);
 
-  const tsCompare = timeSafeCompare(hash, hmac.digest('hex'));
+  const tsCompare = timeSafeCompare(hash, `v0=${hmac.digest('hex')}`);
   console.log(tsCompare);
   return true;
 };
