@@ -31,7 +31,7 @@ export function validateSlackRequest(payload: Request): boolean {
   console.log(`hmac: ${JSON.stringify(hmac.digest('hex'))}`);
 
   const tsCompare = timeSafeCompare(hash, hmac.digest('hex'));
-  console.log(timeSafeCompare);
+  console.log(tsCompare);
   return true;
 }
 
@@ -48,5 +48,6 @@ function timeSafeCompare(a: string, b: string) {
   const key = crypto.pseudoRandomBytes(32);
   const ah = crypto.createHmac('sha256', key).update(sa).digest();
   const bh = crypto.createHmac('sha256', key).update(sb).digest();
+  console.log(a, b);
   return bufferEqual(ah, bh) && a === b;
 }
