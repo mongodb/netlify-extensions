@@ -12,6 +12,8 @@ export function getQSString(qs: string) {
   return key_val;
 }
 
+// Refer to Slack API docs on verifying requests from Slack
+// https://api.slack.com/authentication/verifying-requests-from-slack#:~:text=Verify%20requests%20from%20Slack%20with,case%20should%20not%20be%20assumed).
 export const validateSlackRequest = async ({
   requestHeaders,
   requestBody,
@@ -19,22 +21,18 @@ export const validateSlackRequest = async ({
   requestHeaders: Headers;
   requestBody: string;
 }): Promise<boolean> => {
-  // 1. Grab slack signing secret
   const signingSecret = process.env.SLACK_SIGNING_SECRET;
   if (!signingSecret) {
     return false;
   }
 
-  // 2. Get timestamp header from request
   const timestamp = requestHeaders.get('X-Slack-Request-Timestamp');
 
-  // 3. Concatenate version number, timestamp, and request body together
   const headerSlackSignature = requestHeaders.get('X-Slack-Signature');
   const [version, header_signature] = headerSlackSignature?.split('=') ?? [];
 
   const baseString = `${version}:${timestamp}:${requestBody}`;
 
-  //hash the resulting string
   const hmac = crypto.createHmac('sha256', signingSecret);
   hmac.update(baseString);
 

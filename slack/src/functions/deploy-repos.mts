@@ -1,11 +1,15 @@
 import axios from 'axios';
+import { validateSlackRequest } from '../process-slack-req.js';
 
 export default async (req: Request) => {
   if (!req?.body) {
     return new Response('Request received without a body', { status: 401 });
   }
-
   const requestBody = await new Response(req.body).text();
+  if (!validateSlackRequest({ requestHeaders: req.headers, requestBody })) {
+    console.log('Slack request not validated');
+    return new Response('Slack request not validated', { status: 400 });
+  }
 
   // This is coming in as urlencoded string, need to decode before parsing
   const decoded = decodeURIComponent(requestBody).split('=')[1];
