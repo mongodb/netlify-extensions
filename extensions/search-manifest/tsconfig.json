@@ -5,7 +5,7 @@
     "moduleResolution": "bundler",
     "strict": true,
     "paths": {
-      "bson": ["./node_modules/bson/src/"]
+      "bson": ["../../node_modules/.pnpm/bson/src/"]
     }
   },
   "include": ["src"],
