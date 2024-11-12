@@ -4,7 +4,8 @@ import { readFileAsync } from './utils/fs-async';
 import { envVarToBool, Extension } from 'util/extension';
 
 const extension = new Extension({
-  isEnabled: envVarToBool(process.env.REDOC_ENABLED),
+  // TODO: Matt - this was REDOC_ENABLED
+  isEnabled: envVarToBool(process.env.REDOC_TESTING_ENABLED),
 });
 const BUNDLE_PATH = `${process.cwd()}/bundle`;
 const REDOC_CLI_VERSION = '1.2.3';
