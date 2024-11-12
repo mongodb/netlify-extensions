@@ -22,9 +22,9 @@ export const mutRedirectsAndPublish = async (
   if (configEnvironment?.SITE_NAME === 'mongodb-snooty') {
     // Since mongodb-snooty is not a content repo the file structure is different and needs to be treated as such
     await run.command('mkdir -p running-mut/snooty');
-    await run.command(
-      'cp -r AWSCLIV2.pkg build.sh bundle.zip CHANGELOG.md code-of-conduct.md component-factory-transformer docs-landing gatsby-browser.js gatsby-config.js gatsby-ssr.js jest.config.js jest-preprocess.js Makefile __mocks__ netlify.toml node_modules package.json package-lock.json plugins public README.md scripts snooty-parser snooty-parser.zip src static stubs tests running-mut/snooty/',
-    );
+    // await run.command(
+    //   'cp -r AWSCLIV2.pkg build.sh bundle.zip CHANGELOG.md code-of-conduct.md component-factory-transformer docs-landing gatsby-browser.js gatsby-config.js gatsby-ssr.js jest.config.js jest-preprocess.js Makefile __mocks__ netlify.toml node_modules package.json package-lock.json plugins public README.md scripts snooty-parser snooty-parser.zip src static stubs tests running-mut/snooty/',
+    // );
     await run.command(
       `rsync -av --progress  ${process.cwd()} ${process.cwd()}/running-mut --exclude public --exclude node_modules`,
     );
