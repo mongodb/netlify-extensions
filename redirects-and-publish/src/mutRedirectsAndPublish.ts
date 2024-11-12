@@ -8,12 +8,11 @@ export const mutRedirectsAndPublish = async (
   configEnvironment: ConfigEnvironmentVariables,
   run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
-
   // Connect to mongodb and pool.docsets to get bucket
   const docsetEntry = configEnvironment?.DOCSET_ENTRY;
   console.log('Succesfully got docsets entry:', docsetEntry);
-  
-  // We want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh 
+
+  // We want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh
   // We do this so when we run mut-publish we are able to uplaod the correct files with the correct paths
   await run.command('rm -f -r running-mut');
   await run.command('mkdir -p running-mut');
@@ -53,8 +52,13 @@ export const mutRedirectsAndPublish = async (
   try {
     console.log('Running mut-redirects...');
     // TODO: Change hard coded `docs-landing` to whatever repo is being built after DOP-5159 is completed
-    const redirectPath = configEnvironment.SITE_NAME === 'mongodb-snooty' ? 'docs-landing/config/redirects' : '../../config/redirects';
-    await run.command(`${process.cwd()}/mut/mut-redirects ${redirectPath} -o public/.htaccess`);
+    const redirectPath =
+      configEnvironment.SITE_NAME === 'mongodb-snooty'
+        ? 'docs-landing/config/redirects'
+        : '../../config/redirects';
+    await run.command(
+      `${process.cwd()}/mut/mut-redirects ${redirectPath} -o public/.htaccess`,
+    );
   } catch (e) {
     console.log(`Error occurred while running mut-redirects: ${e}`);
   }
@@ -81,7 +85,7 @@ export const mutRedirectsAndPublish = async (
   try {
     console.log('Running mut-publish...');
     if (!docsetEntry?.bucket || !docsetEntry?.prefix || !docsetEntry?.url) {
-      throw new Error();
+      throw new Error('DocsetEntry information missing');
     }
 
     // TODO: In future we change to docsetEntry?.prefix?.[configEnvironment.ENV] and docsetEntry?.url?.[configEnvironment.ENV]
