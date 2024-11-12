@@ -30,7 +30,7 @@ export const mutRedirectsAndPublish = async (
   }
 
   process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
-  // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`;
+  // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
   process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.dotcomstg}`;
   process.env.GATSBY_PARSER_USER = 'buildbot';
   await run.command('npm ci');
@@ -88,7 +88,7 @@ export const mutRedirectsAndPublish = async (
       throw new Error('DocsetEntry information missing');
     }
 
-    // TODO: In future we change to docsetEntry?.prefix?.[configEnvironment.ENV] and docsetEntry?.url?.[configEnvironment.ENV]
+    // TODO: In future we change to docsetEntry?.prefix?.[configEnvironment.ENV] and docsetEntry?.url?.[configEnvironment.ENV] (DOP-5178)
     await run(
       `${process.cwd()}/mut/mut-publish`,
       [
