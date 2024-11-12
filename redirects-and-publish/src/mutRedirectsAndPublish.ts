@@ -34,7 +34,7 @@ export const mutRedirectsAndPublish = async (
   }
 
   await run.command('ls running-mut/snooty');
-  process.chdir(`${process.cwd()}/running-mut/snooty`);
+  process.chdir(`${process.cwd()}/running-mut/snooty/repo`);
   process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
   // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`;
   process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.dotcomstg}`;
