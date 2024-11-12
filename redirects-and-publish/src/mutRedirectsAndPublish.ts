@@ -26,7 +26,7 @@ export const mutRedirectsAndPublish = async (
     //   'cp -r AWSCLIV2.pkg build.sh bundle.zip CHANGELOG.md code-of-conduct.md component-factory-transformer docs-landing gatsby-browser.js gatsby-config.js gatsby-ssr.js jest.config.js jest-preprocess.js Makefile __mocks__ netlify.toml node_modules package.json package-lock.json plugins public README.md scripts snooty-parser snooty-parser.zip src static stubs tests running-mut/snooty/',
     // );
     await run.command(
-      `rsync -av --progress  ${process.cwd()} ${process.cwd()}/running-mut/snooty`,
+      `rsync -av --progress  ${process.cwd()} ${process.cwd()}/running-mut/snooty --exclude node_modules`,
     );
   } else {
     await run.command('cp -r snooty running-mut');
