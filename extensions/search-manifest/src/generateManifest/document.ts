@@ -1,3 +1,4 @@
+// @ts-ignore
 import type { BSON } from 'bson';
 import { JSONPath } from 'jsonpath-plus';
 import type { ManifestEntry, ManifestFacets, Metadata } from '../types';

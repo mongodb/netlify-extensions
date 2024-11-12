@@ -1,5 +1,6 @@
 import { promisify } from 'node:util';
 // Documentation: https://sdk.netlify.com
+// @ts-ignore
 import { BSON } from 'bson';
 import { Document } from './generateManifest/document';
 import { Manifest } from './generateManifest/manifest';
