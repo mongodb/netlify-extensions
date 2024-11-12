@@ -6,7 +6,8 @@
   "scripts": {
     "build:util": "pnpm --filter util build",
     "build:git-changed-files": "pnpm build:util && pnpm --filter git-changed-files build",
-    "lint": "biome ci"
+    "lint": "biome ci",
+    "format": "biome format --write"
   },
   "keywords": [],
   "author": "",
