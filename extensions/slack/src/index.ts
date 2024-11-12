@@ -1,14 +1,17 @@
 // Documentation: https://sdk.netlify.com
 import { NetlifyExtension } from '@netlify/sdk';
-import { Extension } from 'util/extension';
+import { envVarToBool, Extension } from 'util/extension';
 
-const ext = new Extension();
+const ext = new Extension({
+  isEnabled: envVarToBool(process.env.SLACK_ENABLED),
+});
 
 const extension = new NetlifyExtension();
 
 extension.addFunctions('./src/functions', {
   prefix: 'slack',
-  shouldInjectFunction: () => {
+  shouldInjectFunction: ({ name }) => {
+    console.log(name);
     // If the function is not enabled, return early
     return !!process.env.SLACK_ENABLED;
   },
