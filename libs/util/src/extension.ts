@@ -27,6 +27,24 @@ type ExtensionOptions = {
   isEnabled: boolean;
 };
 
+type FunctionsOptions = {
+  /**
+   * A prefix value added to functions. For example, given a prefix value of `my_prefix`, a function
+   * `hello-world.mts` will be named `my_prefix_hello-world`. Used to prevent naming collisions
+   * between functions.
+   */
+  prefix: string;
+  /**
+   * An optional function that can be used to prevent functions from being injected into the user's
+   * site. Receives the name of the function to be injected (excludes file extension).
+   */
+  shouldInjectFunction?:
+    | ((options: {
+        name: string;
+      }) => boolean)
+    | undefined;
+};
+
 export const envVarToBool = (envVar: boolean | string = 'false'): boolean => {
   if (typeof envVar === 'boolean') {
     return envVar;
@@ -34,6 +52,7 @@ export const envVarToBool = (envVar: boolean | string = 'false'): boolean => {
   return JSON.parse(envVar);
 };
 
+// class Extension extends NetlifyExtension
 export class Extension<
   BuildContext extends z.ZodSchema = z.ZodUnknown,
   BuildConfigSchema extends z.ZodSchema = z.ZodUnknown,
@@ -87,5 +106,32 @@ export class Extension<
         },
       },
     );
+  };
+
+  addFunctions = async (
+    path: string,
+    options: FunctionsOptions,
+  ): Promise<void> => {
+    super.addFunctions(path, {
+      prefix: options.prefix,
+      shouldInjectFunction: () => {
+        try {
+          if (!this.isEnabled) {
+            return false;
+          }
+          if (options?.shouldInjectFunction) {
+            return options.shouldInjectFunction({
+              name: options.shouldInjectFunction.name,
+            });
+          }
+          return true;
+        } catch (e) {
+          console.info(
+            `Function injection did not complete successfully. Errored with error: ${e}`,
+          );
+          return false;
+        }
+      },
+    });
   };
 }

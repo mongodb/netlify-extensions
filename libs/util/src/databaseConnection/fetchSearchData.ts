@@ -19,12 +19,12 @@ export const getDocumentsCollection = async ({
   URI: string;
   databaseName: string;
   collectionName: string;
-  extensionName: string;
+  extensionName?: string;
 }): Promise<mongodb.Collection<SearchDocument>> => {
   const dbSession = await getSearchDb({
     URI,
     databaseName,
-    appName: extensionName,
+    appName: extensionName ?? '',
   });
   return dbSession.collection<SearchDocument>(collectionName);
 };
