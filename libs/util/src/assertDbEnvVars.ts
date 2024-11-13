@@ -18,6 +18,7 @@ export type DbConfig = {
   DOCUMENTS_COLLECTION: CollectionName;
   REPOS_BRANCHES_COLLECTION: CollectionName;
   SLACK_SIGNING_SECRET: string;
+  SLACK_AUTH_TOKEN: string;
 };
 
 const assertEnvVars = (vars: DbConfig) => {
@@ -25,8 +26,8 @@ const assertEnvVars = (vars: DbConfig) => {
     .filter(([, value]) => !value)
     .map(([key]) => `- ${key}`)
     .join('\n');
-   if (missingVars)
-     throw new Error(`Missing env var(s) ${JSON.stringify(missingVars)}`);
+  if (missingVars)
+    throw new Error(`Missing env var(s) ${JSON.stringify(missingVars)}`);
   return vars;
 };
 
@@ -44,6 +45,7 @@ export const getDbConfig = (): DbConfig => {
       (process.env.REPOS_BRANCHES_COLLECTION as CollectionName) ??
       'repos_branches',
     SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET as string,
+    SLACK_AUTH_TOKEN: process.env.SLACK_AUTH_TOKEN as string,
   });
 
   return environmentVariables;
