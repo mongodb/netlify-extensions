@@ -1,12 +1,21 @@
 import axios from 'axios';
 import { validateSlackRequest } from '../process-slack-req.js';
+import { getDbConfig } from 'util/assertDbEnvVars';
 
 export default async (req: Request) => {
   if (!req?.body) {
     return new Response('Request received without a body', { status: 401 });
   }
   const requestBody = await new Response(req.body).text();
-  if (!validateSlackRequest({ requestHeaders: req.headers, requestBody })) {
+  const dbEnvVars = getDbConfig();
+
+  if (
+    !validateSlackRequest({
+      requestHeaders: req.headers,
+      requestBody,
+      signingSecret: dbEnvVars.SLACK_SIGNING_SECRET,
+    })
+  ) {
     console.log('Slack request not validated');
     return new Response('Slack request not validated', { status: 400 });
   }
