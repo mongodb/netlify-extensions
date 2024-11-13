@@ -116,9 +116,6 @@ export class Extension<
       prefix: options.prefix,
       shouldInjectFunction: () => {
         try {
-          if (!this.isEnabled) {
-            return false;
-          }
           if (options?.shouldInjectFunction) {
             return options.shouldInjectFunction({
               name: options.shouldInjectFunction.name,
