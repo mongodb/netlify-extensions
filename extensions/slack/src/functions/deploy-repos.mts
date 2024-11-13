@@ -63,6 +63,7 @@ export default async (req: Request) => {
 const sendMessage = async (
   message: string,
   user: string,
+  slackAuthToken: string,
 ): Promise<Response> => {
   try {
     const body = {
@@ -70,13 +71,12 @@ const sendMessage = async (
       text: message,
     };
     console.log('body of message:', message);
-    const slackToken = process.env.SLACK_AUTH_TOKEN;
-    if (!slackToken) {
+    if (!slackAuthToken) {
       throw new Error('No Slack token provided');
     }
     return await axios.post('https://slack.com/api/chat.postMessage', body, {
       headers: {
-        Authorization: [`Bearer ${slackToken}`],
+        Authorization: [`Bearer ${slackAuthToken}`],
         'Content-type': 'application/json; charset=utf-8',
       },
     });

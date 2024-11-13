@@ -43,7 +43,7 @@ export default async (req: Request): Promise<Response> => {
   const response = await displayModal({
     repos: deployableRepos,
     triggerId,
-    slackAuthToken: process.env.SLACK_AUTH_TOKEN as string,
+    slackAuthToken: dbEnvVars.SLACK_AUTH_TOKEN,
   });
 
   if (!response?.data?.ok) {

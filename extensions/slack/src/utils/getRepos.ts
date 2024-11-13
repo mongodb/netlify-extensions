@@ -1,5 +1,5 @@
 import type * as mongodb from 'mongodb';
-import type { ReposBranchesDocument } from '../../../search-manifest/src/types.js';
+import type { ReposBranchesDocument } from 'util/databaseConnection/types';
 import type { branchOption, repoOption } from './build-modal.js';
 import { capitalizeFirstLetter } from './utils.js';
 
