@@ -115,12 +115,16 @@ export class Extension<
     super.addFunctions(path, {
       prefix: options.prefix,
       shouldInjectFunction: () => {
+        console.log('printing a function');
         try {
-          if (options?.shouldInjectFunction) {
-            return options.shouldInjectFunction({
-              name: options.shouldInjectFunction.name,
-            });
-          }
+          // if (!this.isEnabled) {
+          //   return false;
+          // }
+          // if (options?.shouldInjectFunction) {
+          //   return options.shouldInjectFunction({
+          //     name: options.shouldInjectFunction.name,
+          //   });
+          // }
           return true;
         } catch (e) {
           console.info(
