@@ -1,12 +1,7 @@
 // Documentation: https://sdk.netlify.com
-import axios, { type AxiosResponse } from 'axios';
+import { getReposBranchesCollection } from 'util/databaseConnection/fetchReposBranchesData';
 import { getQSString, validateSlackRequest } from '../process-slack-req.js';
-import { getReposBranchesCollection } from '../dbConnector.js';
-import {
-  displayModal,
-  getDropDownView,
-  type repoOption,
-} from '../utils/build-modal.js';
+import { displayModal } from '../utils/build-modal.js';
 import { getDeployableRepos } from '../utils/getRepos.js';
 import { getDbConfig } from 'util/assertDbEnvVars';
 
@@ -21,12 +16,22 @@ export default async (req: Request): Promise<Response> => {
   const dbEnvVars = getDbConfig();
   console.log(Object.keys(dbEnvVars));
 
-  if (!validateSlackRequest({ requestHeaders: req.headers, requestBody })) {
+  if (
+    !validateSlackRequest({
+      requestHeaders: req.headers,
+      requestBody,
+      signingSecret: dbEnvVars.SLACK_SIGNING_SECRET,
+    })
+  ) {
     console.log('Slack request not validated');
     return new Response('Slack request not validated', { status: 400 });
   }
 
-  const reposBranchesCollection = await getReposBranchesCollection();
+  const reposBranchesCollection = await getReposBranchesCollection({
+    URI: dbEnvVars.ATLAS_CLUSTER0_URI,
+    databaseName: 'pool',
+    collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
+  });
 
   const deployableRepos = await getDeployableRepos(reposBranchesCollection);
 

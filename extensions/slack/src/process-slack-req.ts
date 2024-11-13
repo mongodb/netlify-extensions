@@ -17,11 +17,12 @@ export function getQSString(qs: string) {
 export const validateSlackRequest = async ({
   requestHeaders,
   requestBody,
+  signingSecret,
 }: {
   requestHeaders: Headers;
   requestBody: string;
+  signingSecret: string;
 }): Promise<boolean> => {
-  const signingSecret = process.env.SLACK_SIGNING_SECRET;
   if (!signingSecret) {
     return false;
   }
