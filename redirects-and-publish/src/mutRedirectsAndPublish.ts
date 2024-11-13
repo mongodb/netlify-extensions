@@ -85,7 +85,7 @@ export const mutRedirectsAndPublish = async (
   try {
     console.log('Running mut-publish...');
     if (!docsetEntry?.bucket || !docsetEntry?.prefix || !docsetEntry?.url) {
-      throw new Error('DocsetEntry information missing');
+      throw new Error(`DocsetEntry information missing. bucket: ${docsetEntry?.bucket }, ...etc`);
     }
 
     // TODO: In future we change to docsetEntry?.prefix?.[configEnvironment.ENV] and docsetEntry?.url?.[configEnvironment.ENV] (DOP-5178)
