@@ -8,7 +8,7 @@ const ext = new Extension({
 
 const extension = new NetlifyExtension();
 
-ext.addFunctions('./src/functions', {
+extension.addFunctions('./src/functions', {
   prefix: 'slack',
   shouldInjectFunction: ({ name }) => {
     console.log(name);
