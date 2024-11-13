@@ -11,7 +11,7 @@ export default async (req: Request): Promise<Response> => {
   }
   const requestBody = await new Response(req.body).text();
   const key_val = getQSString(requestBody);
-  const trigger_id = key_val.trigger_id;
+  const triggerId = key_val.trigger_id;
 
   const dbEnvVars = getDbConfig();
   console.log(Object.keys(dbEnvVars));
@@ -29,13 +29,20 @@ export default async (req: Request): Promise<Response> => {
 
   const reposBranchesCollection = await getReposBranchesCollection({
     URI: dbEnvVars.ATLAS_CLUSTER0_URI,
+    // TODO: change this conditionally to 'pool' or 'pool_test' depending on which slash command has been triggered once prod deployments are implemented
     databaseName: 'pool',
     collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
+    extensionName: 'SLACK_DISPLAY_MODAL',
   });
 
   const deployableRepos = await getDeployableRepos(reposBranchesCollection);
 
-  const response = await displayModal(deployableRepos, trigger_id);
+  // TODO: change slackauthtoken to be from dbenvvars
+  const response = await displayModal({
+    repos: deployableRepos,
+    triggerId,
+    slackAuthToken: process.env.SLACK_AUTH_TOKEN as string,
+  });
 
   if (!response?.data?.ok) {
     console.log('Response metadata:', response?.data?.response_metadata);

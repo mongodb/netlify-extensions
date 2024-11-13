@@ -4,20 +4,24 @@ import type { ReposBranchesDocument } from '../../../search-manifest/src/types.j
 import { capitalizeFirstLetter } from './utils.js';
 import axios, { type AxiosResponse } from 'axios';
 
-export const displayModal = async (
-  repos: Array<repoOption>,
-  triggerId: string,
-): Promise<AxiosResponse> => {
+export const displayModal = async ({
+  repos,
+  triggerId,
+  slackAuthToken,
+}: {
+  repos: Array<repoOption>;
+  triggerId: string;
+  slackAuthToken: string;
+}): Promise<AxiosResponse> => {
   const repoOptView = getDropDownView(triggerId, repos);
   //TODO: get slack auth token from dbEnvVars argument in buildEventHandlers
-  const slackToken = process.env.SLACK_AUTH_TOKEN;
-  if (!slackToken) {
+  if (!slackAuthToken) {
     throw new Error('No Slack token provided');
   }
   const slackUrl = 'https://slack.com/api/views.open';
   return await axios.post(slackUrl, repoOptView, {
     headers: {
-      Authorization: [`Bearer ${slackToken}`],
+      Authorization: [`Bearer ${slackAuthToken}`],
       'Content-type': 'application/json; charset=utf-8',
     },
   });
