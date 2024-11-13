@@ -5,6 +5,8 @@ import { displayModal } from '../utils/build-modal.js';
 import { getDeployableRepos } from '../utils/getRepos.js';
 import { getDbConfig } from 'util/assertDbEnvVars';
 
+const EXTENSION_NAME = 'SLACK_DISPLAY_MODAL';
+
 export default async (req: Request): Promise<Response> => {
   if (!req.body) {
     return new Response('Event body is undefined', { status: 400 });
@@ -32,7 +34,7 @@ export default async (req: Request): Promise<Response> => {
     // TODO: change this conditionally to 'pool' or 'pool_test' depending on which slash command has been triggered once prod deployments are implemented
     databaseName: 'pool',
     collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
-    extensionName: 'SLACK_DISPLAY_MODAL',
+    extensionName: EXTENSION_NAME,
   });
 
   const deployableRepos = await getDeployableRepos(reposBranchesCollection);
