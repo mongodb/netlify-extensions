@@ -11,12 +11,12 @@ export const getReposBranchesCollection = async ({
   URI: string;
   databaseName: string;
   collectionName: string;
-  extensionName: string;
+  extensionName?: string;
 }): Promise<mongodb.Collection<ReposBranchesDocument>> => {
   const dbSession = await getPoolDb({
     URI,
     databaseName,
-    appName: extensionName,
+    appName: extensionName ?? '',
   });
   return dbSession.collection<ReposBranchesDocument>(collectionName);
 };
