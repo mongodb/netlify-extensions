@@ -30,7 +30,7 @@ export const uploadToS3 = async (
 ) => {
   const client = getClient();
   const fileStream = createReadStream(filepath);
-  if (!(bucketName && fileName)) {
+  if (!bucketName || !fileName) {
     throw new Error('Missing bucketname or filename');
   }
 

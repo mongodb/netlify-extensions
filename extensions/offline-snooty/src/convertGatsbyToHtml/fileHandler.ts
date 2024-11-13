@@ -4,8 +4,7 @@ import { promises as fsPromises } from 'node:fs';
 function updateToRelativePaths(nodeList: Node[], prefix: string) {
   // for links: href = relativePath + href + index.html
   // for images: src = relativePath + src
-  for (let index = 0; index < nodeList.length; index++) {
-    const node = nodeList[index];
+  for (const node of nodeList) {
     if (node instanceof HTMLAnchorElement) {
       if (!node['href'].startsWith('/')) {
         continue;
@@ -29,6 +28,7 @@ export const handleHtmlFile = async (
   filepath: string,
   relativePath: string,
 ) => {
+  console.log('handlehtmlfile ', filepath)
   // update the DOM. change paths for links and images
   // first open the file. as a DOM string.
   const html = (await fsPromises.readFile(filepath)).toString();
@@ -40,6 +40,8 @@ export const handleHtmlFile = async (
   const images = document.querySelectorAll('img');
   // TODO: should handle background-image url as well
   updateToRelativePaths([...links, ...images], relativePath ?? './');
+
+  console.log('writing file html ', filepath);
 
   await fsPromises.writeFile(filepath, document.documentElement.innerHTML);
 };

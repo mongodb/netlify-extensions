@@ -5,7 +5,7 @@ export const createSnootyCopy = async (
   targetPath: string,
 ) => {
   await run.command(
-    `rsync -av --progress  ${process.cwd()}/snooty ${targetPath} --exclude public --exclude node_modules`,
+    `rsync -av ${process.cwd()}/snooty ${targetPath} --exclude public --exclude node_modules`,
   );
 
   const offlineSnootyPath = `${targetPath}/snooty`;
