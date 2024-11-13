@@ -5,16 +5,11 @@
  * @param path full directory path of gatsby output
  */
 
-import {
-  existsSync,
-  lstatSync,
-  readdirSync,
-  promises as fsPromises,
-} from "node:fs";
-import { join } from "node:path";
-import { create } from "tar";
-import { handleHtmlFile, renameFile } from "./fileHandler";
-import { IMAGE_EXT } from "./imageExtensions";
+import { existsSync, promises as fsPromises } from 'node:fs';
+import { join } from 'node:path';
+import { create } from 'tar';
+import { handleHtmlFile } from './fileHandler';
+import { IMAGE_EXT } from './imageExtensions';
 
 type fileUpdateLog = {
   processedHtmlFiles: string[];
@@ -22,51 +17,89 @@ type fileUpdateLog = {
   filePathsPerDir: { [key: string]: string[] };
 };
 
-// travels into a directory, and handles each file.
-// each file type handler should handle what to do with current file
+// get all full directory pathnames leading up to current path
+function getParentPaths(directoryPath: string): string[] {
+  const res: string[] = [];
+  let isRoot = false;
+  let currentDirectory = directoryPath;
+  while (!isRoot) {
+    res.push(currentDirectory);
+    const currentParts = currentDirectory.split('/');
+    currentDirectory = currentParts.slice(0, -1).join('/');
+    // note: can update this to be read from original rootDirectoryPath of scanFileTree.
+    isRoot =
+      currentParts[currentParts.length - 1] === 'public' &&
+      currentParts[currentParts.length - 2] === 'snooty';
+  }
+
+  return res;
+}
+
+// traverses into a directory, and handles each file.
+// each file type handler should handle what to do with current file type
 async function scanFileTree(
   directoryPath: string,
-  relativePath: string,
+  pathToRoot: string,
   fileUpdateLog: fileUpdateLog = {
     processedHtmlFiles: [],
     removedFiles: [],
     filePathsPerDir: {},
-  }
+  },
 ) {
   if (!existsSync(directoryPath)) {
     console.log(`no directory at ${directoryPath}`);
+    return fileUpdateLog;
+  }
+  if (!fileUpdateLog.filePathsPerDir[directoryPath]) {
+    fileUpdateLog.filePathsPerDir[directoryPath] = [];
   }
 
-  const files = readdirSync(directoryPath);
+  const files = await fsPromises.readdir(directoryPath);
   for (const file of files) {
     const filename = join(directoryPath, file);
-    const stat = lstatSync(filename);
-    const extName = filename.split(".").pop() ?? "";
+    const stat = await fsPromises.stat(filename);
+
+    const extName = filename.split('.').pop() ?? '';
     if (stat.isDirectory()) {
-      scanFileTree(filename, "../" + relativePath, fileUpdateLog); //recurse
-    } else if (extName.endsWith("html")) {
-      await handleHtmlFile(filename, relativePath);
-      fileUpdateLog.processedHtmlFiles.push(filename);
+      scanFileTree(filename, '../' + pathToRoot, fileUpdateLog); //recurse
+    } else if (extName.endsWith('html')) {
+      await handleHtmlFile(filename, pathToRoot || './');
+      const allParentPaths = getParentPaths(directoryPath);
+      for (const parentPath of allParentPaths) {
+        fileUpdateLog.filePathsPerDir[parentPath].push(filename);
+      }
     } else if (IMAGE_EXT.has(extName)) {
       continue;
     } else {
       // delete the file
-      await fsPromises.rm(file);
+      await fsPromises.rm(filename);
+      fileUpdateLog.removedFiles.push(filename);
     }
   }
+  return fileUpdateLog;
 }
 
 export const convertGatsbyToHtml = async (
-  path: string,
-  fileName: string
+  gatsbyOutputPath: string,
+  fileName: string,
 ): Promise<void> => {
-  await scanFileTree(path, "");
+  const log = await scanFileTree(gatsbyOutputPath, '');
+  console.log('>>>>>>>>>> converty gatsby results <<<<<<<<<<<<<');
+  console.log(JSON.stringify(log));
+
+  // remove empty directories
+  for (const [path, filenames] of Object.entries(log.filePathsPerDir)) {
+    if (!filenames.length) {
+      await fsPromises.rm(path, { recursive: true, force: true });
+    }
+  }
+
   await create(
     {
       gzip: true,
       file: fileName,
-      cwd: path,
+      cwd: gatsbyOutputPath,
     },
-    ["./"]
+    ['./'],
   );
 };
