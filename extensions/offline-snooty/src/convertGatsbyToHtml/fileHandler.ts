@@ -1,22 +1,47 @@
-import { NEW_SNOOTY_PATH } from '..';
+import { HTMLAnchorElement, HTMLImageElement, Node, Window } from "happy-dom";
+import { promises as fsPromises } from "node:fs";
 
-const OUTPUT_DIR = 'public';
-const BASE_PATH = `${NEW_SNOOTY_PATH}/snooty/${OUTPUT_DIR}/`;
-
-const getRelativePathToRoot = (filepath: string) => {
-  const filePathParts = filepath.split('/');
-  let relativePath = '';
-  for (let index = filePathParts.length - 2; index >= 0; index--) {
-    const pathPart = filePathParts[index];
-    if (pathPart === OUTPUT_DIR) {
-      break;
+function updateToRelativePaths(nodeList: Node[], prefix: string) {
+  // for links: href = relativePath + href + index.html
+  // for images: src = relativePath + src
+  for (let index = 0; index < nodeList.length; index++) {
+    const node = nodeList[index];
+    if (node instanceof HTMLAnchorElement) {
+      if (!node["href"].startsWith("/")) {
+        continue;
+      }
+      node["href"] = (prefix + node["href"] + "/index.html").replace(
+        /\/+/,
+        "/"
+      );
+    } else if (node instanceof HTMLImageElement) {
+      if (!node["src"].startsWith("/")) {
+        continue;
+      }
+      node["src"] = (prefix + node["src"]).replace(/\/+/, "/");
     }
-    relativePath += '../';
   }
-  return relativePath ? relativePath : './';
+}
+
+export const handleHtmlFile = async (
+  filepath: string,
+  relativePath: string
+) => {
+  // update the DOM. change paths for links and images
+  // first open the file. as a DOM string.
+  const html = (await fsPromises.readFile(filepath)).toString();
+  const window = new Window();
+  const document = window.document;
+  document.write(html);
+
+  const links = document.querySelectorAll("a");
+  const images = document.querySelectorAll("img");
+  updateToRelativePaths([...links, ...images], relativePath ?? "./");
+  document.toString();
+  await fsPromises.writeFile(filepath, document.toString());
+  console.log(`wrote new html ${filepath}`);
 };
 
-export const handleHtmlFile = async (filepath: string) => {
-  // TODO: DOP-5167 use happy-dom to manipulate HTML file.
-  //
-};
+export const renameFile = async (filepath: string, relativePath: string) => {};
+
+export const deleteFile = async (filePath: string) => {};

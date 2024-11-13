@@ -5,10 +5,16 @@
  * @param path full directory path of gatsby output
  */
 
-import { existsSync, lstatSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
-import { create } from 'tar';
-import { handleHtmlFile } from './fileHandler';
+import {
+  existsSync,
+  lstatSync,
+  readdirSync,
+  promises as fsPromises,
+} from "node:fs";
+import { join } from "node:path";
+import { create } from "tar";
+import { handleHtmlFile, renameFile } from "./fileHandler";
+import { IMAGE_EXT } from "./imageExtensions";
 
 type fileUpdateLog = {
   processedHtmlFiles: string[];
@@ -20,11 +26,12 @@ type fileUpdateLog = {
 // each file type handler should handle what to do with current file
 async function scanFileTree(
   directoryPath: string,
+  relativePath: string,
   fileUpdateLog: fileUpdateLog = {
     processedHtmlFiles: [],
     removedFiles: [],
     filePathsPerDir: {},
-  },
+  }
 ) {
   if (!existsSync(directoryPath)) {
     console.log(`no directory at ${directoryPath}`);
@@ -34,28 +41,32 @@ async function scanFileTree(
   for (const file of files) {
     const filename = join(directoryPath, file);
     const stat = lstatSync(filename);
+    const extName = filename.split(".").pop() ?? "";
     if (stat.isDirectory()) {
-      scanFileTree(filename, fileUpdateLog); //recurse
-    } else if (filename.endsWith('.html')) {
-      await handleHtmlFile(filename);
+      scanFileTree(filename, "../" + relativePath, fileUpdateLog); //recurse
+    } else if (extName.endsWith("html")) {
+      await handleHtmlFile(filename, relativePath);
       fileUpdateLog.processedHtmlFiles.push(filename);
+    } else if (IMAGE_EXT.has(extName)) {
+      continue;
     } else {
-      // TODO: DOP-5167: handle other file types
+      // delete the file
+      await fsPromises.rm(file);
     }
   }
 }
 
 export const convertGatsbyToHtml = async (
   path: string,
-  fileName: string,
+  fileName: string
 ): Promise<void> => {
-  await scanFileTree(path);
+  await scanFileTree(path, "");
   await create(
     {
       gzip: true,
       file: fileName,
       cwd: path,
     },
-    ['./'],
+    ["./"]
   );
 };
