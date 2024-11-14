@@ -90,16 +90,18 @@ export const convertGatsbyToHtml = async (
   gatsbyOutputPath: string,
   fileName: string,
 ): Promise<void> => {
-  const log = await scanFileTree(gatsbyOutputPath, '');
-  console.log('>>>>>>>>>> converty gatsby results <<<<<<<<<<<<<');
-  console.log(JSON.stringify(log));
+  // const log = await scanFileTree(gatsbyOutputPath, '');
+  console.log(
+    '>>>>>>>>>> converty gatsby results (skipped to test upload full output) <<<<<<<<<<<<<',
+  );
+  // console.log(JSON.stringify(log));
 
   // remove empty directories
-  for (const [path, filenames] of Object.entries(log.filePathsPerDir)) {
-    if (!filenames.length) {
-      await fsPromises.rm(path, { recursive: true, force: true });
-    }
-  }
+  // for (const [path, filenames] of Object.entries(log.filePathsPerDir)) {
+  //   if (!filenames.length) {
+  //     await fsPromises.rm(path, { recursive: true, force: true });
+  //   }
+  // }
 
   await create(
     {
