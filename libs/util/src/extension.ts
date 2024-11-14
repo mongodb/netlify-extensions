@@ -108,10 +108,7 @@ export class Extension<
     );
   };
 
-  addFunctions = async (
-    path: string,
-    options: FunctionsOptions,
-  ): Promise<void> => {
+  addFunctions = (path: string, options: FunctionsOptions): void => {
     console.log(' Currently in the overriden add function method');
     console.log(path);
     console.log(options.prefix);
