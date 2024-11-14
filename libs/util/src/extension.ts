@@ -112,11 +112,12 @@ export class Extension<
     path: string,
     options: FunctionsOptions,
   ): Promise<void> => {
-    console.log('in the overriden add function method');
+    console.log(' Currently in the overriden add function method');
     super.addFunctions(path, {
       prefix: options.prefix,
       shouldInjectFunction: () => {
         console.log('printing a function');
+        return true;
         try {
           // if (!this.isEnabled) {
           //   return false;
