@@ -58,7 +58,7 @@ async function scanFileTree(
   }
 
   const files = await fsPromises.readdir(directoryPath);
-  for await (const file of files) {
+  for (const file of files) {
     const filename = join(directoryPath, file);
     const stat = await fsPromises.stat(filename);
 
@@ -68,7 +68,7 @@ async function scanFileTree(
     );
 
     if (stat.isDirectory()) {
-      return scanFileTree(filename, '../' + pathToRoot, fileUpdateLog); //recurse
+      scanFileTree(filename, '../' + pathToRoot, fileUpdateLog); //recurse
     } else if (extName.endsWith('html')) {
       await handleHtmlFile(filename, pathToRoot || './');
       const allParentPaths = getParentPaths(directoryPath);
