@@ -5,11 +5,11 @@
  * @param path full directory path of gatsby output
  */
 
-import { existsSync, promises as fsPromises } from "node:fs";
-import { join } from "node:path";
-import { create } from "tar";
-import { handleHtmlFile } from "./fileHandler";
-import { IMAGE_EXT } from "./imageExtensions";
+import { existsSync, promises as fsPromises } from 'node:fs';
+import { join } from 'node:path';
+import { create } from 'tar';
+import { handleHtmlFile } from './fileHandler';
+import { IMAGE_EXT } from './imageExtensions';
 
 type fileUpdateLog = {
   processedHtmlFiles: string[];
@@ -30,12 +30,12 @@ function getParentPaths(directoryPath: string): string[] {
   let currentDirectory = directoryPath;
   while (!isRoot) {
     res.push(currentDirectory);
-    const currentParts = currentDirectory.split("/");
-    currentDirectory = currentParts.slice(0, -1).join("/");
+    const currentParts = currentDirectory.split('/');
+    currentDirectory = currentParts.slice(0, -1).join('/');
     // note: can update this to be read from original rootDirectoryPath of scanFileTree.
     isRoot =
-      currentParts[currentParts.length - 1] === "public" &&
-      currentParts[currentParts.length - 2] === "snooty";
+      currentParts[currentParts.length - 1] === 'public' &&
+      currentParts[currentParts.length - 2] === 'snooty';
   }
 
   return res;
@@ -52,20 +52,21 @@ async function scanFileTree(directoryPath: string, pathToRoot: string) {
     log.filePathsPerDir[directoryPath] = [];
   }
 
-  const files = await fsPromises.readdir(directoryPath);
+  const files = await fsPromises.readdir(directoryPath, { recursive: true });
   for (const file of files) {
     const filename = join(directoryPath, file);
     const stat = await fsPromises.stat(filename);
 
-    const extName = filename.split(".").pop() ?? "";
+    const extName = filename.split('.').pop() ?? '';
     console.log(
-      `extName ${extName} of filename ${filename} isDIrectory ${stat.isDirectory()}`
+      `extName ${extName} of filename ${filename} isDirectory ${stat.isDirectory()}`,
     );
 
     if (stat.isDirectory()) {
-      scanFileTree(filename, "../" + pathToRoot); //recurse
-    } else if (extName.endsWith("html")) {
-      await handleHtmlFile(filename, pathToRoot || "./");
+      // scanFileTree(filename, "../" + pathToRoot); //recurse
+      console.log('this is a directory, skip recursion ', filename);
+    } else if (extName.endsWith('html')) {
+      await handleHtmlFile(filename, pathToRoot || './');
       const allParentPaths = getParentPaths(directoryPath);
       for (const parentPath of allParentPaths) {
         log.filePathsPerDir[parentPath].push(filename);
@@ -75,7 +76,7 @@ async function scanFileTree(directoryPath: string, pathToRoot: string) {
     } else {
       // delete the file
       await fsPromises.rm(filename);
-      console.log("skipping removing file ", filename);
+      console.log('removing file ', filename);
 
       log.removedFiles.push(filename);
     }
@@ -84,10 +85,10 @@ async function scanFileTree(directoryPath: string, pathToRoot: string) {
 
 export const convertGatsbyToHtml = async (
   gatsbyOutputPath: string,
-  fileName: string
+  fileName: string,
 ): Promise<void> => {
-  await scanFileTree(gatsbyOutputPath, "");
-  console.log(">>>>>>>>>> converted gatsby results <<<<<<<<<<<<<");
+  await scanFileTree(gatsbyOutputPath, '');
+  console.log('>>>>>>>>>> converted gatsby results <<<<<<<<<<<<<');
   // console.log(JSON.stringify(log));
 
   // remove empty directories
@@ -103,6 +104,6 @@ export const convertGatsbyToHtml = async (
       file: fileName,
       cwd: gatsbyOutputPath,
     },
-    ["./"]
+    ['./'],
   );
 };
