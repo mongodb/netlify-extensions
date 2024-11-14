@@ -44,4 +44,6 @@ export const handleHtmlFile = async (
   console.log('writing file html ', filepath);
 
   await fsPromises.writeFile(filepath, document.documentElement.innerHTML);
+
+  await window.happyDOM.close();
 };
