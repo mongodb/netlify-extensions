@@ -64,6 +64,9 @@ async function scanFileTree(directoryPath: string, pathToRoot: string) {
 
     if (stat.isDirectory()) {
       // scanFileTree(filename, "../" + pathToRoot); //recurse
+      if (!log.filePathsPerDir[filename]) {
+        log.filePathsPerDir[filename] = [];
+      }
       console.log('this is a directory, skip recursion ', filename);
     } else if (extName.endsWith('html')) {
       await handleHtmlFile(filename, pathToRoot || './');
