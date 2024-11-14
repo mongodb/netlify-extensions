@@ -79,7 +79,9 @@ async function scanFileTree(
       continue;
     } else {
       // delete the file
-      await fsPromises.rm(filename);
+      // await fsPromises.rm(filename);
+      console.log('skipping removing file ', filename);
+
       fileUpdateLog.removedFiles.push(filename);
     }
   }
@@ -90,11 +92,10 @@ export const convertGatsbyToHtml = async (
   gatsbyOutputPath: string,
   fileName: string,
 ): Promise<void> => {
-  // const log = await scanFileTree(gatsbyOutputPath, '');
-  console.log(
-    '>>>>>>>>>> converty gatsby results (skipped to test upload full output) <<<<<<<<<<<<<',
-  );
-  // console.log(JSON.stringify(log));
+  const log = await scanFileTree(gatsbyOutputPath, '');
+  console.log('>>>>>>>>>> converted gatsby results <<<<<<<<<<<<<');
+  console.log(JSON.stringify(log));
+  console.log('skipping removing directories');
 
   // remove empty directories
   // for (const [path, filenames] of Object.entries(log.filePathsPerDir)) {
