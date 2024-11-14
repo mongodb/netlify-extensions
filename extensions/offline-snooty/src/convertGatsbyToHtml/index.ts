@@ -6,10 +6,11 @@
  */
 
 import { existsSync, promises as fsPromises } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { create } from 'tar';
 import { handleHtmlFile } from './fileHandler';
 import { IMAGE_EXT } from './imageExtensions';
+import { PUBLIC_OUTPUT_PATH } from '..';
 
 type fileUpdateLog = {
   processedHtmlFiles: string[];
@@ -26,16 +27,14 @@ const log: fileUpdateLog = {
 // get all full directory pathnames leading up to current path
 function getParentPaths(filename: string): string[] {
   const res: string[] = [];
-  let isRoot = false;
-  let currentDirectory = String(filename);
+  let currentDirectory = dirname(filename);
+  let isRoot = currentDirectory === PUBLIC_OUTPUT_PATH;
   while (!isRoot) {
     res.push(currentDirectory);
     const currentParts = currentDirectory.split('/');
     currentDirectory = currentParts.slice(0, -1).join('/');
     // note: can update this to be read from original rootfilename of scanFileTree.
-    isRoot =
-      currentParts[currentParts.length - 1] === 'public' &&
-      currentParts[currentParts.length - 2] === 'snooty';
+    isRoot = currentDirectory === PUBLIC_OUTPUT_PATH;
   }
 
   return res;
@@ -43,7 +42,7 @@ function getParentPaths(filename: string): string[] {
 
 // traverses into a directory, and handles each file.
 // each file type handler should handle what to do with current file type
-async function scanFileTree(directoryPath: string, pathToRoot: string) {
+async function scanFileTree(directoryPath: string) {
   if (!existsSync(directoryPath)) {
     console.error(`no directory at ${directoryPath}`);
     return;
@@ -61,8 +60,9 @@ async function scanFileTree(directoryPath: string, pathToRoot: string) {
     if (stat.isDirectory() || IMAGE_EXT.has(extName)) {
       continue;
     } else if (extName.endsWith('html')) {
-      await handleHtmlFile(filename, pathToRoot || './');
       const allParentPaths = getParentPaths(filename);
+      const pathBackToRoot = '../'.repeat(allParentPaths.length);
+      await handleHtmlFile(filename, pathBackToRoot || './');
       for (const parentPath of allParentPaths) {
         if (!log.filePathsPerDir[parentPath]) {
           log.filePathsPerDir[parentPath] = [];
@@ -83,13 +83,13 @@ export const convertGatsbyToHtml = async (
   gatsbyOutputPath: string,
   fileName: string,
 ): Promise<void> => {
-  await scanFileTree(gatsbyOutputPath, '');
+  await scanFileTree(gatsbyOutputPath);
   console.log('>>>>>>>>>> converted gatsby results <<<<<<<<<<<<<');
   console.log(JSON.stringify(log));
 
   // remove empty directories
   for (const [path, filenames] of Object.entries(log.filePathsPerDir)) {
-    if (!filenames.length) {
+    if (!filenames.length && path !== PUBLIC_OUTPUT_PATH) {
       await fsPromises.rm(path, { recursive: true, force: true });
     }
   }

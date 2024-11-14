@@ -11,7 +11,8 @@ import {
 } from './uploadToS3/utils';
 
 const extension = new NetlifyExtension();
-export const NEW_SNOOTY_PATH = `${process.cwd()}/snooty-offline`;
+const NEW_SNOOTY_PATH = `${process.cwd()}/snooty-offline`;
+export const PUBLIC_OUTPUT_PATH = `${NEW_SNOOTY_PATH}/snooty/public`;
 
 // run this extension after the build and deploy are successful
 extension.addBuildEventHandler(
@@ -38,7 +39,7 @@ extension.addBuildEventHandler(
       console.log('... creating snooty copy');
       await createSnootyCopy(run, NEW_SNOOTY_PATH);
       console.log('... converting gatsby to html');
-      await convertGatsbyToHtml(`${NEW_SNOOTY_PATH}/snooty/public`, fileName);
+      await convertGatsbyToHtml(PUBLIC_OUTPUT_PATH, fileName);
       console.log('... uploading to AWS S3 ', bucketName, fileName);
       await uploadToS3(`${process.cwd()}/${fileName}`, bucketName, fileName);
       console.log('... uploaded to AWS S3');
