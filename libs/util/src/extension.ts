@@ -116,7 +116,6 @@ export class Extension<
       path,
       {
         prefix: 'my_extension',
-        shouldInjectFunction: () => typeof 'hello' === 'string',
       },
       // {
       //   console.log('printing a function');
