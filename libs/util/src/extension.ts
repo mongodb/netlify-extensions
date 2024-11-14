@@ -113,28 +113,35 @@ export class Extension<
     options: FunctionsOptions,
   ): Promise<void> => {
     console.log(' Currently in the overriden add function method');
-    super.addFunctions(path, {
-      prefix: options.prefix,
-      shouldInjectFunction: () => {
-        console.log('printing a function');
-        return true;
-        try {
-          // if (!this.isEnabled) {
-          //   return false;
-          // }
-          // if (options?.shouldInjectFunction) {
-          //   return options.shouldInjectFunction({
-          //     name: options.shouldInjectFunction.name,
-          //   });
-          // }
-          return true;
-        } catch (e) {
-          console.info(
-            `Function injection did not complete successfully. Errored with error: ${e}`,
-          );
-          return false;
-        }
+    console.log(path);
+    console.log(options.prefix);
+    super.addFunctions(
+      path,
+      {
+        prefix: 'my_extension',
+        shouldInjectFunction: ({ name }) => typeof 'hello' === 'string',
       },
-    });
+      // {
+      //   console.log('printing a function');
+      //   return true;
+      //   try {
+      // if (!this.isEnabled) {
+      //   return false;
+      // }
+      // if (options?.shouldInjectFunction) {
+      //   return options.shouldInjectFunction({
+      //     name: options.shouldInjectFunction.name,
+      //   });
+      // }
+      //   return true;
+      // } catch (e) {
+      //   console.info(
+      //     `Function injection did not complete successfully. Errored with error: ${e}`,
+      //   );
+      //   return false;
+      // }
+      // },
+      // }
+    );
   };
 }
