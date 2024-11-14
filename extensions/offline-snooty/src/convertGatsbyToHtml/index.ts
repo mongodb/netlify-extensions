@@ -24,15 +24,15 @@ const log: fileUpdateLog = {
 };
 
 // get all full directory pathnames leading up to current path
-function getParentPaths(directoryPath: string): string[] {
+function getParentPaths(filename: string): string[] {
   const res: string[] = [];
   let isRoot = false;
-  let currentDirectory = directoryPath;
+  let currentDirectory = String(filename);
   while (!isRoot) {
     res.push(currentDirectory);
     const currentParts = currentDirectory.split('/');
     currentDirectory = currentParts.slice(0, -1).join('/');
-    // note: can update this to be read from original rootDirectoryPath of scanFileTree.
+    // note: can update this to be read from original rootfilename of scanFileTree.
     isRoot =
       currentParts[currentParts.length - 1] === 'public' &&
       currentParts[currentParts.length - 2] === 'snooty';
@@ -56,26 +56,19 @@ async function scanFileTree(directoryPath: string, pathToRoot: string) {
   for (const file of files) {
     const filename = join(directoryPath, file);
     const stat = await fsPromises.stat(filename);
-
     const extName = filename.split('.').pop() ?? '';
-    console.log(
-      `extName ${extName} of filename ${filename} isDirectory ${stat.isDirectory()}`,
-    );
 
-    if (stat.isDirectory()) {
-      // scanFileTree(filename, "../" + pathToRoot); //recurse
-      if (!log.filePathsPerDir[filename]) {
-        log.filePathsPerDir[filename] = [];
-      }
-      console.log('this is a directory, skip recursion ', filename);
+    if (stat.isDirectory() || IMAGE_EXT.has(extName)) {
+      continue;
     } else if (extName.endsWith('html')) {
       await handleHtmlFile(filename, pathToRoot || './');
-      const allParentPaths = getParentPaths(directoryPath);
+      const allParentPaths = getParentPaths(filename);
       for (const parentPath of allParentPaths) {
+        if (!log.filePathsPerDir[parentPath]) {
+          log.filePathsPerDir[parentPath] = [];
+        }
         log.filePathsPerDir[parentPath].push(filename);
       }
-    } else if (IMAGE_EXT.has(extName)) {
-      continue;
     } else {
       // delete the file
       await fsPromises.rm(filename);
@@ -92,7 +85,7 @@ export const convertGatsbyToHtml = async (
 ): Promise<void> => {
   await scanFileTree(gatsbyOutputPath, '');
   console.log('>>>>>>>>>> converted gatsby results <<<<<<<<<<<<<');
-  // console.log(JSON.stringify(log));
+  console.log(JSON.stringify(log));
 
   // remove empty directories
   for (const [path, filenames] of Object.entries(log.filePathsPerDir)) {
