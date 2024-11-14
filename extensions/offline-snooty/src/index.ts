@@ -35,12 +35,13 @@ extension.addBuildEventHandler(
     });
 
     try {
-      // console.log('... creating snooty copy');
+      console.log('... creating snooty copy');
       await createSnootyCopy(run, NEW_SNOOTY_PATH);
       console.log('... converting gatsby to html');
       await convertGatsbyToHtml(`${NEW_SNOOTY_PATH}/snooty/public`, fileName);
-      console.log('... uploading to HTML');
+      console.log('... uploading to AWS S3');
       await uploadToS3(`${process.cwd()}/${fileName}`, bucketName, fileName);
+      console.log('... uploaded to AWS S3');
       // TODO: update atlas collection repos_branches to signal offline availability
     } catch (e) {
       console.error(e);

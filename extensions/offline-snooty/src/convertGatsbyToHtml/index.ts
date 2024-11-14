@@ -46,11 +46,8 @@ async function scanFileTree(
     filePathsPerDir: {},
   },
 ) {
-  console.log('scanFileTree');
-  console.log(`directoryPath ${directoryPath}`);
-
   if (!existsSync(directoryPath)) {
-    console.log(`no directory at ${directoryPath}`);
+    console.error(`no directory at ${directoryPath}`);
     return fileUpdateLog;
   }
   if (!fileUpdateLog.filePathsPerDir[directoryPath]) {
@@ -79,7 +76,7 @@ async function scanFileTree(
       continue;
     } else {
       // delete the file
-      // await fsPromises.rm(filename);
+      await fsPromises.rm(filename);
       console.log('skipping removing file ', filename);
 
       fileUpdateLog.removedFiles.push(filename);
@@ -95,14 +92,13 @@ export const convertGatsbyToHtml = async (
   const log = await scanFileTree(gatsbyOutputPath, '');
   console.log('>>>>>>>>>> converted gatsby results <<<<<<<<<<<<<');
   console.log(JSON.stringify(log));
-  console.log('skipping removing directories');
 
   // remove empty directories
-  // for (const [path, filenames] of Object.entries(log.filePathsPerDir)) {
-  //   if (!filenames.length) {
-  //     await fsPromises.rm(path, { recursive: true, force: true });
-  //   }
-  // }
+  for (const [path, filenames] of Object.entries(log.filePathsPerDir)) {
+    if (!filenames.length) {
+      await fsPromises.rm(path, { recursive: true, force: true });
+    }
+  }
 
   await create(
     {
