@@ -28,7 +28,7 @@ export const handleHtmlFile = async (
   filepath: string,
   relativePath: string,
 ) => {
-  console.log('handlehtmlfile ', filepath)
+  console.log('handlehtmlfile ', filepath);
   // update the DOM. change paths for links and images
   // first open the file. as a DOM string.
   const html = (await fsPromises.readFile(filepath)).toString();

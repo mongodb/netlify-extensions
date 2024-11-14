@@ -46,6 +46,9 @@ async function scanFileTree(
     filePathsPerDir: {},
   },
 ) {
+  console.log('scanFileTree');
+  console.log(`directoryPath ${directoryPath}`);
+
   if (!existsSync(directoryPath)) {
     console.log(`no directory at ${directoryPath}`);
     return fileUpdateLog;
@@ -60,6 +63,10 @@ async function scanFileTree(
     const stat = await fsPromises.stat(filename);
 
     const extName = filename.split('.').pop() ?? '';
+    console.log(
+      `extName ${extName} of filename ${filename} isDIrectory ${stat.isDirectory()}`,
+    );
+
     if (stat.isDirectory()) {
       return scanFileTree(filename, '../' + pathToRoot, fileUpdateLog); //recurse
     } else if (extName.endsWith('html')) {
