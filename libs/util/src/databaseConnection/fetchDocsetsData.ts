@@ -1,22 +1,22 @@
 import type * as mongodb from 'mongodb';
-import { getPoolDb } from './atlasClusterConnector';
+import { getPoolDb } from './clusterZeroConnector';
 import type { DocsetsDocument } from './types';
 
 export const getDocsetsCollection = async ({
-  URI,
+  clusterZeroURI,
   databaseName,
   collectionName,
   extensionName,
 }: {
-  URI: string;
+  clusterZeroURI: string;
   databaseName: string;
   collectionName: string;
-  extensionName: string;
+  extensionName?: string;
 }): Promise<mongodb.Collection<DocsetsDocument>> => {
   const dbSession = await getPoolDb({
-    URI,
+    clusterZeroURI,
     databaseName,
-    appName: extensionName,
+    appName: extensionName ?? '',
   });
   return dbSession.collection<DocsetsDocument>(collectionName);
 };

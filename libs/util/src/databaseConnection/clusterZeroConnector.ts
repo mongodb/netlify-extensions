@@ -1,29 +1,20 @@
-import * as mongodb from 'mongodb';
+import type * as mongodb from 'mongodb';
+import { teardown, dbClient } from './clusterConnector';
 
 let clusterZeroClient: mongodb.MongoClient;
-
-export const teardown = async (client: mongodb.MongoClient): Promise<void> => {
-  await client.close();
-};
-
-// Handles memoization of db object, and initial connection logic if needs to be initialized
-const dbClient = async (uri: string): Promise<mongodb.MongoClient> => {
-  const client = new mongodb.MongoClient(uri);
-  try {
-    await client.connect();
-    return client;
-  } catch (error) {
-    throw new Error(`Error at client connection: ${error} `);
-  }
-};
 
 export const getPoolDb = async ({
   clusterZeroURI,
   databaseName,
-}: { clusterZeroURI: string; databaseName: string }): Promise<mongodb.Db> => {
+  appName,
+}: {
+  clusterZeroURI: string;
+  databaseName: string;
+  appName: string;
+}): Promise<mongodb.Db> => {
   if (!clusterZeroClient) {
     console.info('Creating new instance of Cluster Zero client');
-    clusterZeroClient = await dbClient(clusterZeroURI);
+    clusterZeroClient = await dbClient({ uri: clusterZeroURI, appName });
   }
   return clusterZeroClient.db(databaseName);
 };
