@@ -5,20 +5,17 @@ function updateToRelativePaths(nodeList: Node[], prefix: string) {
   // for links: href = relativePath + href + index.html
   // for images: src = relativePath + src
   for (const node of nodeList) {
-    if (node instanceof HTMLAnchorElement) {
-      if (!node['href'].startsWith('/')) {
-        continue;
-      }
+    if (node instanceof HTMLAnchorElement && node['href'].startsWith('/')) {
       // TODO: strip hash and query portions
       const targetHref = (prefix + node['href'] + '/index.html').replaceAll(
         /\/+/g,
         '/',
       );
       node.setAttribute('href', targetHref);
-    } else if (node instanceof HTMLImageElement) {
-      if (!node['src'].startsWith('/')) {
-        continue;
-      }
+    } else if (
+      node instanceof HTMLImageElement &&
+      node['src'].startsWith('/')
+    ) {
       node['src'] = (prefix + node['src']).replace(/\/+/, '/');
     }
   }
