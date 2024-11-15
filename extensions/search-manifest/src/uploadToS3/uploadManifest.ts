@@ -25,7 +25,7 @@ export const uploadManifestToS3 = async ({
   AWS_S3_ACCESS_KEY_ID: string;
   AWS_S3_SECRET_ACCESS_KEY: string;
 }) => {
-  //TODO: maybe also ensure there isn't a double trailing slash here to begin with ?? (altho idk y there would be)
+  // TODO: possibly also ensure there isn't a double trailing slash here to begin with ?? (although idk why there would be)
   const prefix = assertTrailingSlash(uploadParams.prefix);
   const key = prefix + uploadParams.fileName;
   const client = connectToS3(AWS_S3_ACCESS_KEY_ID, AWS_S3_SECRET_ACCESS_KEY);

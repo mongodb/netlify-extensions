@@ -12,6 +12,7 @@ export const connectToS3 = (
       accessKeyId: AWS_S3_ACCESS_KEY_ID,
       secretAccessKey: AWS_S3_SECRET_ACCESS_KEY,
     },
+    // TODO: Make this a constant and/or env var?
     region: 'us-east-2',
   });
   return client;

@@ -19,9 +19,7 @@ export const getSearchProperties = async ({
   connectionInfo: CollectionConnectionInfo;
 }) => {
   //TODO: change based on environment
-  const url = assertTrailingSlash(
-    docsetEntry.url?.dotcomprd + docsetEntry.prefix.dotcomprd,
-  );
+  const url = assertTrailingSlash(docsetEntry.url + docsetEntry.prefix);
 
   const version = branchEntry.urlSlug ?? branchEntry.gitBranchName;
   const searchProperty = `${repoEntry.search?.categoryName ?? repoEntry}-${version}`;

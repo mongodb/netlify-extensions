@@ -5,7 +5,7 @@ import type {
   BranchEntry,
   ReposBranchesDocument,
 } from 'util/databaseConnection/types';
-import type { ConfigEnvironmentVariables } from 'populate-metadata/updateConfig';
+import type { ConfigEnvironmentVariables } from 'build/util/types';
 import type { S3UploadParams } from 'util/assertDbEnvVars';
 import type { NetlifyPluginUtils } from '@netlify/build';
 
@@ -35,7 +35,7 @@ const generateAndUploadManifests = async ({
   const branchName = configEnvironment.BRANCH;
   const repoName = configEnvironment.SITE_NAME;
   if (!repoName || !branchName) {
-    //check that an environment variable for repo name was set
+    // Check that an environment variable for repo name was set
     throw new Error(
       'Repo or branch name was not found, manifest cannot be uploaded to Atlas or S3 ',
     );
@@ -101,9 +101,6 @@ const generateAndUploadManifests = async ({
     console.log('=========== Manifests uploaded to Atlas =================');
   } catch (e) {
     console.log('Manifest could not be uploaded', e);
-  } finally {
-    await closePoolDb();
-    await closeSearchDb();
   }
 };
 

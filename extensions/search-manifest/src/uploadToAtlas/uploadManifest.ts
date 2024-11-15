@@ -3,7 +3,10 @@ import type { Manifest } from '../generateManifest/manifest';
 import { generateHash, joinUrl } from '../utils';
 import { getDocumentsCollection } from 'util/databaseConnection/fetchSearchData';
 import type { SearchDocument } from 'util/databaseConnection/fetchSearchData';
-import type { CollectionConnectionInfo } from 'util/databaseConnection/atlasClusterConnector';
+import {
+  closeSearchDb,
+  type CollectionConnectionInfo,
+} from 'util/databaseConnection/atlasClusterConnector';
 
 type RefreshInfo = {
   deleted: number;
@@ -57,8 +60,8 @@ export const uploadManifest = async ({
   searchProperty: string;
   connectionInfo: CollectionConnectionInfo;
 }) => {
-  //check that manifest documents exist
-  //TODO: maybe check other manifest properties as well?
+  // Check that manifest documents exist
+  //TODO: Should we check for other manifest properties as well?
   if (!manifest?.documents?.length) {
     return Promise.reject(new Error('Invalid manifest'));
   }
@@ -89,11 +92,11 @@ export const uploadManifest = async ({
 
   //TODO: make sure url of manifest doesn't have excess leading slashes(as done in getManifests)
 
-  //check property types
-  console.info('Starting transaction');
+  // Assert property types
   assert.strictEqual(typeof manifest.global, 'boolean');
   assert.strictEqual(typeof hash, 'string');
   assert.ok(hash);
+  console.info('Starting transaction');
 
   try {
     if (operations.length > 0) {
@@ -114,6 +117,6 @@ export const uploadManifest = async ({
       `Error writing upserts to Search.documents collection with error ${e}`,
     );
   } finally {
-    // await closeSearchDb();
+    await closeSearchDb();
   }
 };
