@@ -1,14 +1,10 @@
 // Documentation: https://sdk.netlify.com
 import { NetlifyExtension } from '@netlify/sdk';
-import { envVarToBool, Extension } from 'util/extension';
 
-const ext = new Extension({
-  isEnabled: envVarToBool(process.env.SLACK_ENABLED),
-});
-
+// TODO: Change this to use derived Extension class once "addFunctions" implementation is ready
 const extension = new NetlifyExtension();
 
-ext.addFunctions('./src/functions', {
+extension.addFunctions('./src/functions', {
   prefix: 'slack',
   shouldInjectFunction: ({ name }) => {
     console.log(`name is ${name}`);
@@ -16,14 +12,5 @@ ext.addFunctions('./src/functions', {
     return !!process.env.SLACK_ENABLED;
   },
 });
-
-// extension.addFunctions('./src/functions', {
-//   prefix: 'slack',
-//   shouldInjectFunction: ({ name }) => {
-//     console.log(name);
-//     // If the function is not enabled, return early
-//     return !!process.env.SLACK_ENABLED;
-//   },
-// });
 
 export { extension };
