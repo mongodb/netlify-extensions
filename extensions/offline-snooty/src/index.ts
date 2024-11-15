@@ -22,17 +22,16 @@ extension.addBuildEventHandler(
     if (!process.env.OFFLINE_SNOOTY_ENABLED) {
       return;
     }
+
+    const environment = netlifyConfig.build.environment as Record<
+      string,
+      string | DocsetsDocument | ReposBranchesDocument | BranchEntry
+    >;
     const { bucketName, fileName } = readEnvConfigs({
-      env: netlifyConfig.build.environment.ENV ?? '',
-      docsetEntry:
-        (netlifyConfig.build.environment
-          .DOCSET_ENTRY as unknown as DocsetsDocument) ?? {},
-      repoEntry:
-        (netlifyConfig.build.environment
-          .REPO_ENTRY as unknown as ReposBranchesDocument) ?? {},
-      branchEntry:
-        (netlifyConfig.build.environment
-          .BRANCH_ENTRY as unknown as BranchEntry) ?? {},
+      env: (environment.ENV as string) ?? '',
+      docsetEntry: (environment.DOCSET_ENTRY as DocsetsDocument) ?? {},
+      repoEntry: (environment.REPO_ENTRY as ReposBranchesDocument) ?? {},
+      branchEntry: (environment.BRANCH_ENTRY as BranchEntry) ?? {},
     });
 
     try {

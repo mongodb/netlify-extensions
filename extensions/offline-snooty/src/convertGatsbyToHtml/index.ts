@@ -12,13 +12,13 @@ import { handleHtmlFile } from './fileHandler';
 import { IMAGE_EXT } from './imageExtensions';
 import { PUBLIC_OUTPUT_PATH } from '..';
 
-type fileUpdateLog = {
+type FileUpdateLog = {
   processedHtmlFiles: string[];
   removedFiles: string[];
   filePathsPerDir: { [key: string]: string[] };
 };
 
-const log: fileUpdateLog = {
+const log: FileUpdateLog = {
   processedHtmlFiles: [],
   removedFiles: [],
   filePathsPerDir: {},
@@ -88,11 +88,13 @@ export const convertGatsbyToHtml = async (
   console.log(JSON.stringify(log));
 
   // remove empty directories
-  for (const [path, filenames] of Object.entries(log.filePathsPerDir)) {
-    if (!filenames.length && path !== PUBLIC_OUTPUT_PATH) {
-      await fsPromises.rm(path, { recursive: true, force: true });
-    }
-  }
+  await Promise.all(
+    Object.entries(log.filePathsPerDir).map(async ([path, filenames]) => {
+      if (!filenames.length && path !== PUBLIC_OUTPUT_PATH) {
+        return fsPromises.rm(path, { recursive: true, force: true });
+      }
+    }),
+  );
 
   await create(
     {
