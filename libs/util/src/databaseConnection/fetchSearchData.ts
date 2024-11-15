@@ -1,28 +1,20 @@
 import type * as mongodb from 'mongodb';
-import { getSearchDb } from './atlasClusterConnector';
-
-export interface SearchDocument {
-  url: string;
-  slug: string;
-  lastModified: Date;
-  manifestRevisionId: string;
-  searchProperty: Array<string>;
-  includeInGlobalSearch: boolean;
-}
+import { getSearchDb } from './searchClusterConnector';
+import type { SearchDocument } from './types';
 
 export const getDocumentsCollection = async ({
-  URI,
+  searchURI,
   databaseName,
   collectionName,
   extensionName,
 }: {
-  URI: string;
+  searchURI: string;
   databaseName: string;
   collectionName: string;
   extensionName?: string;
 }): Promise<mongodb.Collection<SearchDocument>> => {
   const dbSession = await getSearchDb({
-    URI,
+    searchURI,
     databaseName,
     appName: extensionName ?? '',
   });
