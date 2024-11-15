@@ -1,12 +1,10 @@
 import type {
-  BranchEntry,
   DbConfig,
-  DocsetsDocument,
   Environments,
   PoolDbName,
-  ReposBranchesDocument,
 } from 'util/databaseConnection/types';
 import { getProperties } from './getProperties';
+import type { ConfigEnvironmentVariables } from 'util/extension';
 
 export type SearchDbName = 'search' | 'search-test' | 'search-stage';
 
@@ -16,21 +14,6 @@ export type SnootyDbName =
   | 'snooty_dotcomstg'
   | 'snooty_prod'
   | 'snooty_dotcomprd';
-
-export type ConfigEnvironmentVariables = Partial<{
-  BRANCH: string;
-  SITE_NAME: string;
-  INCOMING_HOOK_URL: string;
-  INCOMING_HOOK_TITLE: string;
-  INCOMING_HOOK_BODY: string;
-  ENV: Environments;
-  REPO_ENTRY: ReposBranchesDocument;
-  DOCSET_ENTRY: DocsetsDocument;
-  BRANCH_ENTRY: BranchEntry;
-  POOL_DB_NAME: PoolDbName;
-  SEARCH_DB_NAME: SearchDbName;
-  SNOOTY_DB_NAME: SnootyDbName;
-}>;
 
 const getDbNames = (
   env: Environments,
@@ -66,6 +49,33 @@ const getDbNames = (
   }
 };
 
+export const determineEnvironment = ({
+  isBuildHookDeploy,
+  siteName,
+}: { isBuildHookDeploy: boolean; siteName: string }) => {
+  // Check if this was an engineering build or writer's build; writer's builds by default are all builds not built on the "mongodb-snooty" site
+  // Environment is either dotcomprd or prd if it is a writer build
+
+  const frontendSites = [
+    'docs-frontend-stg',
+    'docs-frontend-dotcomstg',
+    'docs-frontend-dotcomprd',
+  ];
+  const isFrontendBuild = frontendSites.includes(siteName);
+
+  let env: Environments;
+  if (!isFrontendBuild) {
+    env = 'prd';
+  } else if (isBuildHookDeploy) {
+    if (siteName === 'docs-frontend-dotcomprd') {
+      env = 'dotcomprd';
+      // TODO: check hook url??
+    } else if (siteName === 'docs-frontend-dotcomstg') {
+      env = 'dotcomstg';
+      // TODO: check hook url??
+    }
+  } else env = 'stg';
+};
 export const updateConfig = async ({
   configEnvironment,
   dbEnvVars,
@@ -73,42 +83,23 @@ export const updateConfig = async ({
   configEnvironment: ConfigEnvironmentVariables;
   dbEnvVars: DbConfig;
 }): Promise<void> => {
-  // Check if repo name and branch name have been set as environment variables through Netlify UI
-  // Allows overwriting of database name values for testing
-  const branchName = process.env.BRANCH_NAME ?? configEnvironment.BRANCH;
-
-  const repoName =
-    process.env.REPO_NAME ?? process.env.REPOSITORY_URL?.split('/')?.pop();
-
-  if (!branchName || !repoName) {
-    throw new Error('Repo name or branch name missing from deploy');
-  }
-
   // Checks if build was triggered by a webhook
   // TODO: add more specific logic dependent on hook title, url, body, etc. once Slack deploy apps have been implemented
-  const isWebhookDeploy = !!(
+  const isBuildHookDeploy = !!(
     configEnvironment.INCOMING_HOOK_URL &&
     configEnvironment.INCOMING_HOOK_TITLE &&
     configEnvironment.INCOMING_HOOK_BODY
   );
+  const env = determineEnvironment({
+    isBuildHookDeploy,
+    siteName: configEnvironment.SITE_NAME as string,
+  });
 
-  // Check if this was an engineering build or writer's build; writer's builds by default are all builds not built on the "mongodb-snooty" site
-  // Environment is either dotcomprd or prd if it is a writer build
-  const isFrontendBuild = configEnvironment.SITE_NAME === 'mongodb-snooty';
-  const isFrontendStagingBuild = isWebhookDeploy || branchName === 'main';
-  const env =
-    (process.env.ENV as Environments) ??
-    (isFrontendBuild
-      ? isFrontendStagingBuild
-        ? 'dotcomstg'
-        : 'stg'
-      : isWebhookDeploy
-        ? 'dotcomprd'
-        : 'prd');
+  const buildEnvironment = (process.env.ENV as Environments) ?? env;
 
-  configEnvironment.ENV = env;
+  configEnvironment.ENV = buildEnvironment;
 
-  const { snootyDb, searchDb, poolDb } = getDbNames(env);
+  const { snootyDb, searchDb, poolDb } = getDbNames(buildEnvironment);
 
   // Check if values for the database names have been set as environment variables through Netlify UI
   // Allows overwriting of database name values for testing
@@ -121,18 +112,37 @@ export const updateConfig = async ({
   configEnvironment.SNOOTY_DB_NAME =
     (process.env.SNOOTY_DB_NAME as SnootyDbName) ?? snootyDb;
 
+  // Check if repo name and branch name have been set as environment variables through Netlify UI
+  // Allows overwriting of database name values for testing
+  let branchName: string;
+  let repoName: string;
+  if (buildEnvironment !== 'dotcomstg' && buildEnvironment !== 'dotcomprd') {
+    branchName =
+      process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
+    repoName =
+      process.env.REPO_NAME ??
+      (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
+  } else {
+    // Branch name and repo name to deploy sent as values in Build Hook payload if in dotcomprd or dotcomstg environments
+    [branchName, repoName] = configEnvironment?.INCOMING_HOOK_BODY?.split(
+      '',
+    ) as string[];
+  }
+
+  if (!branchName || !repoName) {
+    throw new Error('Repo name or branch name missing from deploy');
+  }
   const { repo, docsetEntry } = await getProperties({
     branchName,
     repoName,
     dbEnvVars,
     poolDbName: configEnvironment.POOL_DB_NAME,
-    environment: env,
+    environment: buildEnvironment,
   });
 
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
-  process.env.SNOOTY_ENV = env;
-  process.env.PATH_PREFIX = docsetEntry.prefix[env];
-  console.log('PATH PREFIX:', process.env.PATH_PREFIX);
+  process.env.SNOOTY_ENV = buildEnvironment;
+  process.env.PATH_PREFIX = docsetEntry.prefix[buildEnvironment];
 
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
