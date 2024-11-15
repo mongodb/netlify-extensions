@@ -4,19 +4,15 @@ import type {
   DocsetsDocument,
   BranchEntry,
   ReposBranchesDocument,
+  SearchDBName,
 } from 'util/databaseConnection/types';
-import type { ConfigEnvironmentVariables } from 'build/util/types';
-import type { S3UploadParams } from 'util/assertDbEnvVars';
+import type { ConfigEnvironmentVariables } from 'util/extension';
+import type { S3UploadParams } from 'util/s3Connection/types';
 import type { NetlifyPluginUtils } from '@netlify/build';
-
 import { getSearchProperties } from './uploadToAtlas/getProperties';
-import {
-  closePoolDb,
-  closeSearchDb,
-} from 'util/databaseConnection/atlasClusterConnector';
 import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
 import { envVarToBool, Extension } from 'util/extension';
-import type { DbConfig } from 'util/databaseConnection/types';
+import type { StaticEnvVars } from 'util/assertDbEnvVars';
 
 const EXTENSION_NAME = 'search-manifest';
 
@@ -27,7 +23,7 @@ const generateAndUploadManifests = async ({
 }: {
   configEnvironment: ConfigEnvironmentVariables;
   run: NetlifyPluginUtils['run'];
-  dbEnvVars: DbConfig;
+  dbEnvVars: StaticEnvVars;
 }) => {
   // Get content repo zipfile as AST representation
   await run.command('unzip -o bundle.zip');
@@ -47,8 +43,8 @@ const generateAndUploadManifests = async ({
 
   // TODO: Should we make this into its own type??
   const searchConnectionInfo = {
-    URI: dbEnvVars.ATLAS_SEARCH_URI,
-    databaseName: configEnvironment.SEARCH_DB_NAME as string,
+    searchURI: dbEnvVars.ATLAS_SEARCH_URI,
+    databaseName: configEnvironment.SEARCH_DB_NAME as SearchDBName,
     collectionName: dbEnvVars.DOCUMENTS_COLLECTION,
     extensionName: EXTENSION_NAME,
   };

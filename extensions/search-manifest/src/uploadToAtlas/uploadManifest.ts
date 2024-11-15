@@ -2,11 +2,11 @@ import assert from 'node:assert';
 import type { Manifest } from '../generateManifest/manifest';
 import { generateHash, joinUrl } from '../utils';
 import { getDocumentsCollection } from 'util/databaseConnection/fetchSearchData';
-import type { SearchDocument } from 'util/databaseConnection/fetchSearchData';
-import {
-  closeSearchDb,
-  type CollectionConnectionInfo,
-} from 'util/databaseConnection/atlasClusterConnector';
+import { closeSearchDb } from 'util/databaseConnection/searchClusterConnector';
+import type {
+  SearchClusterConnectionInfo,
+  SearchDocument,
+} from 'util/databaseConnection/types';
 
 type RefreshInfo = {
   deleted: number;
@@ -58,7 +58,7 @@ export const uploadManifest = async ({
 }: {
   manifest: Manifest;
   searchProperty: string;
-  connectionInfo: CollectionConnectionInfo;
+  connectionInfo: SearchClusterConnectionInfo;
 }) => {
   // Check that manifest documents exist
   //TODO: Should we check for other manifest properties as well?

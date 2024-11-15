@@ -1,5 +1,5 @@
 import { PutObjectCommand, type S3Client } from '@aws-sdk/client-s3';
-import type { S3UploadParams } from 'util/assertDbEnvVars';
+import type { S3UploadParams } from 'util/s3Connection/types';
 import { assertTrailingSlash } from '../utils';
 import { connectToS3 } from './connectToS3';
 
