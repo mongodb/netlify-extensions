@@ -1,8 +1,17 @@
 import assert from 'node:assert';
 import type { Manifest } from '../generateManifest/manifest';
-import type { RefreshInfo, SearchDocument } from '../types';
 import { generateHash, joinUrl } from '../utils';
-import { getDocumentsCollection } from './searchConnector';
+import { getDocumentsCollection } from 'util/databaseConnection/fetchSearchData';
+import type { SearchDocument } from 'util/databaseConnection/fetchSearchData';
+import type { CollectionConnectionInfo } from 'util/databaseConnection/atlasClusterConnector';
+
+type RefreshInfo = {
+  deleted: number;
+  upserted: number;
+  modified: number;
+  dateStarted: Date;
+  elapsedMS: number;
+};
 
 const composeUpserts = async (
   manifest: Manifest,
@@ -39,16 +48,23 @@ const composeUpserts = async (
   });
 };
 
-export const uploadManifest = async (
-  manifest: Manifest,
-  searchProperty: string,
-) => {
+export const uploadManifest = async ({
+  manifest,
+  searchProperty,
+  connectionInfo,
+}: {
+  manifest: Manifest;
+  searchProperty: string;
+  connectionInfo: CollectionConnectionInfo;
+}) => {
   //check that manifest documents exist
   //TODO: maybe check other manifest properties as well?
   if (!manifest?.documents?.length) {
     return Promise.reject(new Error('Invalid manifest'));
   }
-  const documentsColl = await getDocumentsCollection();
+  const documentsColl = await getDocumentsCollection({
+    ...connectionInfo,
+  });
 
   const status: RefreshInfo = {
     deleted: 0,

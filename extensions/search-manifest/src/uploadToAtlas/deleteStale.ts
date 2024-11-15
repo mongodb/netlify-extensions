@@ -1,4 +1,5 @@
-import { getDocumentsCollection } from './searchConnector';
+import type { CollectionConnectionInfo } from 'util/databaseConnection/atlasClusterConnector';
+import { getDocumentsCollection } from 'util/databaseConnection/fetchSearchData';
 
 export const deleteStaleDocuments = async ({
   searchProperty,
@@ -20,8 +21,11 @@ export const deleteStaleDocuments = async ({
   };
 };
 
-export const deleteStaleProperties = async (searchProperty: string) => {
-  const documentsColl = await getDocumentsCollection();
+export const deleteStaleProperties = async (
+  searchProperty: string,
+  connectionInfo: CollectionConnectionInfo,
+) => {
+  const documentsColl = await getDocumentsCollection({ ...connectionInfo });
   console.debug(`Removing all documents with stale property ${searchProperty}`);
   const query = { searchProperty: { $regex: searchProperty } };
   const status = await documentsColl?.deleteMany(query);
