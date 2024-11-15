@@ -8,8 +8,16 @@ import {
   NetlifyExtension,
 } from '@netlify/sdk';
 import type z from 'zod';
-import type { DbConfig } from './databaseConnection/types';
-import { getDbConfig } from './assertDbEnvVars';
+import type {
+  BranchEntry,
+  DocsetsDocument,
+  Environments,
+  PoolDBName,
+  ReposBranchesDocument,
+  SearchDBName,
+  SnootyDBName,
+} from './databaseConnection/types';
+import { getDbConfig, type StaticEnvVars } from './assertDbEnvVars';
 
 type BuildHookWithEnvVars<
   DbConfig,
@@ -65,19 +73,19 @@ export class Extension<
   z.ZodUnknown
 > {
   isEnabled: boolean;
-  dbEnvVars: DbConfig;
+  staticEnvVars: StaticEnvVars;
 
   constructor({ isEnabled }: ExtensionOptions) {
     super();
     this.isEnabled = isEnabled;
     console.log(`Extension enabled: ${this.isEnabled}`);
-    this.dbEnvVars = getDbConfig();
+    this.staticEnvVars = getDbConfig();
   }
 
   addBuildEventHandler = async (
     type: BuildHookType,
     func: BuildHookWithEnvVars<
-      DbConfig,
+      StaticEnvVars,
       Zod.infer<BuildContext>,
       Zod.infer<BuildConfigSchema>
     >,
@@ -86,7 +94,7 @@ export class Extension<
     super.addBuildEventHandler(
       type,
       async (args) => {
-        const dbEnvVars = this.dbEnvVars;
+        const dbEnvVars = this.staticEnvVars;
         try {
           await func({ dbEnvVars, ...args });
         } catch (e) {
@@ -135,3 +143,18 @@ export class Extension<
     });
   };
 }
+
+export type ConfigEnvironmentVariables = Partial<{
+  BRANCH: string;
+  SITE_NAME: string;
+  INCOMING_HOOK_URL: string;
+  INCOMING_HOOK_TITLE: string;
+  INCOMING_HOOK_BODY: string;
+  ENV: Environments;
+  REPO_ENTRY: ReposBranchesDocument;
+  DOCSET_ENTRY: DocsetsDocument;
+  BRANCH_ENTRY: BranchEntry;
+  POOL_DB_NAME: PoolDBName;
+  SEARCH_DB_NAME: SearchDBName;
+  SNOOTY_DB_NAME: SnootyDBName;
+}>;
