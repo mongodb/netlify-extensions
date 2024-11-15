@@ -18,9 +18,8 @@ export const getSearchProperties = async ({
   repoEntry: ReposBranchesDocument;
   connectionInfo: SearchClusterConnectionInfo;
 }) => {
-  //TODO: change based on environment
   const url = assertTrailingSlash(
-    docsetEntry.url.dotcomprd + docsetEntry.prefix.dotcomprd,
+    Object.values(docsetEntry.url)[0] + Object.values(docsetEntry.prefix)[0],
   );
 
   const version = branchEntry.urlSlug ?? branchEntry.gitBranchName;

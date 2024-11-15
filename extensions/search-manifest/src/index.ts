@@ -39,9 +39,9 @@ const generateAndUploadManifests = async ({
 
   const manifest = await generateManifest();
 
-  console.log('=========== finished generating manifests ================');
+  console.log('=========== Finished generating manifests ================');
 
-  // TODO: Should we make this into its own type??
+  // TODO: Should this be made into its own type
   const searchConnectionInfo = {
     searchURI: dbEnvVars.ATLAS_SEARCH_URI,
     databaseName: configEnvironment.SEARCH_DB_NAME as SearchDBName,
@@ -68,9 +68,12 @@ const generateAndUploadManifests = async ({
 
   console.log('=========== Uploading Manifests to S3=================');
   const uploadParams: S3UploadParams = {
-    bucket: 'docs-search-indexes-test',
-    //TODO: change prefix based on environments
-    prefix: 'search-indexes/ab-testing',
+    //TODO: change based on environments
+    bucket:
+      configEnvironment.ENV === 'dotcomstg'
+        ? 'docs-search-indexes-test/preprd'
+        : 'docs-search-indexes-test/prd',
+    prefix: 'search-indexes/',
     fileName: `${projectName}-${branchName}.json`,
     manifest: manifest.export(),
   };
@@ -108,11 +111,17 @@ const extension = new Extension({
 extension.addBuildEventHandler(
   'onSuccess',
   async ({ utils: { run }, netlifyConfig, dbEnvVars }) => {
+    console.log(process.env.ENV);
     await generateAndUploadManifests({
       configEnvironment: netlifyConfig?.build?.environment,
       run,
       dbEnvVars,
     });
+  },
+  {
+    if: () => {
+      return process.env.ENV === 'dotcomstg' || process.env.ENV === 'dotcomprd';
+    },
   },
 );
 
