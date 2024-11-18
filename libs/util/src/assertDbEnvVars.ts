@@ -2,36 +2,30 @@ export type Environments = 'dev' | 'stg' | 'dotcomstg' | 'prd' | 'dotcomprd';
 
 export type CollectionName = 'repos_branches' | 'docsets' | 'documents';
 
-export type S3UploadParams = {
-  bucket: string;
-  prefix: string;
-  fileName: string;
-  manifest: string;
-};
-
-export type DbConfig = {
+export type StaticEnvVars = {
   ATLAS_CLUSTER0_URI: string;
   ATLAS_SEARCH_URI: string;
   AWS_S3_ACCESS_KEY_ID: string;
   AWS_S3_SECRET_ACCESS_KEY: string;
   DOCSETS_COLLECTION: CollectionName;
-  DOCUMENTS_COLLECTION: CollectionName;
+  DOCUMENTS_COLLECTION: string;
   REPOS_BRANCHES_COLLECTION: CollectionName;
+  SLACK_AUTH_TOKEN: string;
   SLACK_SIGNING_SECRET: string;
   SLACK_AUTH_TOKEN: string;
 };
 
-const assertEnvVars = (vars: DbConfig) => {
+const assertEnvVars = (vars: StaticEnvVars) => {
   const missingVars = Object.entries(vars)
     .filter(([, value]) => !value)
     .map(([key]) => `- ${key}`)
     .join('\n');
-  // if (missingVars)
-  // throw new Error(`Missing env var(s) ${JSON.stringify(missingVars)}`);
+  if (missingVars)
+    throw new Error(`Missing env var(s) ${JSON.stringify(missingVars)}`);
   return vars;
 };
 
-export const getDbConfig = (): DbConfig => {
+export const getDbConfig = (): StaticEnvVars => {
   const environmentVariables = assertEnvVars({
     ATLAS_CLUSTER0_URI: `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@${process.env.MONGO_ATLAS_CLUSTER0_HOST}/?retryWrites=true&w=majority`,
     ATLAS_SEARCH_URI: `mongodb+srv://${process.env.MONGO_ATLAS_USERNAME}:${process.env.MONGO_ATLAS_PASSWORD}@${process.env.MONGO_ATLAS_SEARCH_HOST}/?retryWrites=true&w=majority`,

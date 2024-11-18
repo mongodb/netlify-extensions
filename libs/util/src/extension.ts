@@ -8,8 +8,16 @@ import {
   NetlifyExtension,
 } from '@netlify/sdk';
 import type z from 'zod';
-import type { DbConfig } from './databaseConnection/types';
-import { getDbConfig } from './assertDbEnvVars';
+import type {
+  BranchEntry,
+  DocsetsDocument,
+  Environments,
+  PoolDBName,
+  ReposBranchesDocument,
+  SearchDBName,
+  SnootyDBName,
+} from './databaseConnection/types';
+import { getDbConfig, type StaticEnvVars } from './assertDbEnvVars';
 
 type BuildHookWithEnvVars<
   DbConfig,
@@ -65,19 +73,19 @@ export class Extension<
   z.ZodUnknown
 > {
   isEnabled: boolean;
-  dbEnvVars: DbConfig;
+  staticEnvVars: StaticEnvVars;
 
   constructor({ isEnabled }: ExtensionOptions) {
     super();
     this.isEnabled = isEnabled;
     console.log(`Extension enabled: ${this.isEnabled}`);
-    this.dbEnvVars = getDbConfig();
+    this.staticEnvVars = getDbConfig();
   }
 
   addBuildEventHandler = async (
     type: BuildHookType,
     func: BuildHookWithEnvVars<
-      DbConfig,
+      StaticEnvVars,
       Zod.infer<BuildContext>,
       Zod.infer<BuildConfigSchema>
     >,
@@ -86,7 +94,7 @@ export class Extension<
     super.addBuildEventHandler(
       type,
       async (args) => {
-        const dbEnvVars = this.dbEnvVars;
+        const dbEnvVars = this.staticEnvVars;
         try {
           await func({ dbEnvVars, ...args });
         } catch (e) {
@@ -108,36 +116,46 @@ export class Extension<
     );
   };
 
-  addFunctions = (path: string, options: FunctionsOptions): void => {
-    console.log(' Currently in the overriden add function method');
-    console.log(path);
-    console.log(options.prefix);
-    super.addFunctions(
-      path,
-      {
-        prefix: 'my_extension',
+
+  addFunctions = async (
+    path: string,
+    options: FunctionsOptions,
+  ): Promise<void> => {
+    super.addFunctions(path, {
+      prefix: options.prefix,
+      shouldInjectFunction: () => {
+        try {
+          if (!this.isEnabled) {
+            return false;
+          }
+          if (options?.shouldInjectFunction) {
+            return options.shouldInjectFunction({
+              name: options.shouldInjectFunction.name,
+            });
+          }
+          return true;
+        } catch (e) {
+          console.info(
+            `Function injection did not complete successfully. Errored with error: ${e}`,
+          );
+          return false;
+        }
       },
-      // {
-      //   console.log('printing a function');
-      //   return true;
-      //   try {
-      // if (!this.isEnabled) {
-      //   return false;
-      // }
-      // if (options?.shouldInjectFunction) {
-      //   return options.shouldInjectFunction({
-      //     name: options.shouldInjectFunction.name,
-      //   });
-      // }
-      //   return true;
-      // } catch (e) {
-      //   console.info(
-      //     `Function injection did not complete successfully. Errored with error: ${e}`,
-      //   );
-      //   return false;
-      // }
-      // },
-      // }
-    );
+    });
   };
 }
+
+export type ConfigEnvironmentVariables = Partial<{
+  BRANCH: string;
+  SITE_NAME: string;
+  INCOMING_HOOK_URL: string;
+  INCOMING_HOOK_TITLE: string;
+  INCOMING_HOOK_BODY: string;
+  ENV: Environments;
+  REPO_ENTRY: ReposBranchesDocument;
+  DOCSET_ENTRY: DocsetsDocument;
+  BRANCH_ENTRY: BranchEntry;
+  POOL_DB_NAME: PoolDBName;
+  SEARCH_DB_NAME: SearchDBName;
+  SNOOTY_DB_NAME: SnootyDBName;
+}>;

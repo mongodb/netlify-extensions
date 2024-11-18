@@ -1,20 +1,20 @@
 import type * as mongodb from 'mongodb';
-import { getPoolDb } from './atlasClusterConnector';
+import { getPoolDb } from './clusterZeroConnector';
 import type { ReposBranchesDocument } from './types';
 
 export const getReposBranchesCollection = async ({
-  URI,
+  clusterZeroURI,
   databaseName,
   collectionName,
   extensionName,
 }: {
-  URI: string;
+  clusterZeroURI: string;
   databaseName: string;
   collectionName: string;
   extensionName?: string;
 }): Promise<mongodb.Collection<ReposBranchesDocument>> => {
   const dbSession = await getPoolDb({
-    URI,
+    clusterZeroURI,
     databaseName,
     appName: extensionName ?? '',
   });
