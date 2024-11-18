@@ -56,7 +56,8 @@ export default async (req: Request) => {
     const jobTitle = `Slack deploy: ${individualRepo}, by ${user}`;
     if (repoName && branchName) {
       // TODO: add other conditionals here to deploy based on branchName
-      if (repoName === 'docs-landing' && branchName === 'master') {
+      if (repoName === 'Docs-landing' && branchName === 'master') {
+        console.log('Deploying master branch of docs-landing');
         // Currently: sends build hook to deploy to docs-frontend-stg site, builds docs-landing master by default
         // TODO: DOP-5202, Send conditionally to build hooks of different sites ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal request received from
         const resp = await axios.post(
