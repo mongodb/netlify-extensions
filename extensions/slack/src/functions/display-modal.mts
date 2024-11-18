@@ -16,7 +16,6 @@ export default async (req: Request): Promise<Response> => {
   const triggerId = key_val.trigger_id;
 
   const dbEnvVars = getDbConfig();
-  console.log(Object.keys(dbEnvVars));
 
   if (
     !validateSlackRequest({
@@ -29,6 +28,8 @@ export default async (req: Request): Promise<Response> => {
     return new Response('Slack request not validated', { status: 400 });
   }
 
+  console.log(JSON.stringify(dbEnvVars));
+  console.log('URI:', dbEnvVars.ATLAS_CLUSTER0_URI);
   const reposBranchesCollection = await getReposBranchesCollection({
     URI: dbEnvVars.ATLAS_CLUSTER0_URI,
     // TODO: DOP-5202, Change this conditionally to 'pool' or 'pool_test' depending on which slash command has been triggered
