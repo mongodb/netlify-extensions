@@ -13,7 +13,7 @@ export const getSearchDb = async ({
   appName: string;
 }): Promise<mongodb.Db> => {
   if (!searchClusterClient) {
-    console.info('Creating new instance of Cluster Zero client');
+    console.info('Creating new instance of Search Cluster client');
     searchClusterClient = await dbClient({ uri: searchURI, appName });
   }
   return searchClusterClient.db(databaseName);
