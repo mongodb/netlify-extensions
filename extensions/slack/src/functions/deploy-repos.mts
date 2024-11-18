@@ -44,6 +44,8 @@ export default async (req: Request) => {
   //   parsed?.user?.id,
   // );
 
+  // TODO: send branch name, payload in POST request in DOP-5015
+  // Send conditionally to build hooks of different sites ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on wwhich modal request received from
   for (let i = 0; i < selected?.length; i++) {
     const { repoName, branchName } = selected[i].value.split('/');
     // TODO: add job title to title of deploy
