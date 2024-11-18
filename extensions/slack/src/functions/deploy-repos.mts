@@ -50,8 +50,12 @@ export default async (req: Request) => {
   // );
 
   // TODO: send branch name, payload in POST request, DOP-5201
+  console.log(`Selected repos: ${JSON.stringify(selectedRepos)}`);
+
   for (const individualRepo of selectedRepos) {
     const { repoName, branchName } = individualRepo.value.split('/');
+    console.log('Individual repo', individualRepo.value);
+
     // TODO: add job title to title of deploy
     const jobTitle = `Slack deploy: ${individualRepo}, by ${user}`;
     if (repoName && branchName) {
