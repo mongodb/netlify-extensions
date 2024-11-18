@@ -10,8 +10,8 @@ export const dbClient = async ({
   appName,
 }: { uri: string; appName: string }): Promise<mongodb.MongoClient> => {
   console.log(`Creating new client for ${appName}`);
-  const client = new mongodb.MongoClient(uri, { appName });
   try {
+    const client = new mongodb.MongoClient(uri, { appName });
     await client.connect();
     return client;
   } catch (error) {

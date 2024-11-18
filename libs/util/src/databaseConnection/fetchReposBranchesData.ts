@@ -18,5 +18,8 @@ export const getReposBranchesCollection = async ({
     databaseName,
     appName: extensionName ?? '',
   });
+  console.log(
+    `Returning new instance of collection ${collectionName} of database ${databaseName}`,
+  );
   return dbSession.collection<ReposBranchesDocument>(collectionName);
 };
