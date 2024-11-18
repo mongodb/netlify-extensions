@@ -31,7 +31,7 @@ export default async (req: Request): Promise<Response> => {
 
   const reposBranchesCollection = await getReposBranchesCollection({
     URI: dbEnvVars.ATLAS_CLUSTER0_URI,
-    // TODO: change this conditionally to 'pool' or 'pool_test' depending on which slash command has been triggered once prod deployments are implemented
+    // TODO: DOP-5202, Change this conditionally to 'pool' or 'pool_test' depending on which slash command has been triggered
     databaseName: 'pool',
     collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
     extensionName: EXTENSION_NAME,
@@ -39,7 +39,6 @@ export default async (req: Request): Promise<Response> => {
 
   const deployableRepos = await getDeployableRepos(reposBranchesCollection);
 
-  // TODO: change slackauthtoken to be from dbenvvars
   const response = await displayModal({
     repos: deployableRepos,
     triggerId,

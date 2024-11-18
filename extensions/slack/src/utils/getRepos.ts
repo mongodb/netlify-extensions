@@ -32,13 +32,13 @@ export const buildRepoGroups = async (
           value: `${repoName}/${branchName}`,
         });
       }
+      // Sorts the options by version number
       const sortedOptions = sortOptions(options);
       const repoOption = {
         label: {
           type: 'plain_text',
           text: capitalizeFirstLetter(repoName),
         },
-        //sort the options by version number
         options: sortedOptions,
       };
       repoOptions.push(repoOption);

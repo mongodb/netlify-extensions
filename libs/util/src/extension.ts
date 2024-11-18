@@ -116,33 +116,32 @@ export class Extension<
     );
   };
 
-
-  addFunctions = async (
-    path: string,
-    options: FunctionsOptions,
-  ): Promise<void> => {
-    super.addFunctions(path, {
-      prefix: options.prefix,
-      shouldInjectFunction: () => {
-        try {
-          if (!this.isEnabled) {
-            return false;
-          }
-          if (options?.shouldInjectFunction) {
-            return options.shouldInjectFunction({
-              name: options.shouldInjectFunction.name,
-            });
-          }
-          return true;
-        } catch (e) {
-          console.info(
-            `Function injection did not complete successfully. Errored with error: ${e}`,
-          );
-          return false;
-        }
-      },
-    });
-  };
+  // addFunctions = async (
+  //   path: string,
+  //   options: FunctionsOptions,
+  // ): Promise<void> => {
+  //   super.addFunctions(path, {
+  //     prefix: options.prefix,
+  //     shouldInjectFunction: () => {
+  //       try {
+  //         if (!this.isEnabled) {
+  //           return false;
+  //         }
+  //         if (options?.shouldInjectFunction) {
+  //           return options.shouldInjectFunction({
+  //             name: options.shouldInjectFunction.name,
+  //           });
+  //         }
+  //         return true;
+  //       } catch (e) {
+  //         console.info(
+  //           `Function injection did not complete successfully. Errored with error: ${e}`,
+  //         );
+  //         return false;
+  //       }
+  //     },
+  //   });
+  // };
 }
 
 export type ConfigEnvironmentVariables = Partial<{

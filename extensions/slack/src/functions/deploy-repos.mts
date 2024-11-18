@@ -16,18 +16,23 @@ export default async (req: Request) => {
       signingSecret: dbEnvVars.SLACK_SIGNING_SECRET,
     })
   ) {
-    console.log('Slack request not validated');
-    return new Response('Slack request not validated', { status: 400 });
+    console.log(
+      '401 Status Returned: eSlack request not validated, client may not be authorized',
+    );
+    return new Response(
+      'Slack request not validated, client may not be authorized',
+      { status: 401 },
+    );
   }
 
-  // This is coming in as urlencoded string, need to decode before parsing
+  // Decodes request body (a url encoded string) before parsing
   const decoded = decodeURIComponent(requestBody).split('=')[1];
-  //TODO: create an interface for slack view_submission payloads
+  // TODO: Create an interface for slack view_submission payloads
   const parsed = JSON.parse(decoded);
 
   const user = parsed?.user?.username;
   const stateValues = parsed?.view?.state?.values;
-  const selected =
+  const selectedRepos =
     stateValues?.block_repo_option?.repo_option?.selected_options;
 
   if (parsed?.type !== 'view_submission') {
@@ -38,22 +43,22 @@ export default async (req: Request) => {
     return response;
   }
 
-  // TODO: send message to user that their job has been enqueued
+  // TODO: Send message to user that their job has been enqueued (DOP-5096)
   // const messageResponse = await sendMessage(
   //   'this is a test message',
   //   parsed?.user?.id,
   // );
 
-  // TODO: send branch name, payload in POST request in DOP-5015
-  // Send conditionally to build hooks of different sites ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on wwhich modal request received from
-  for (let i = 0; i < selected?.length; i++) {
-    const { repoName, branchName } = selected[i].value.split('/');
+  // TODO: send branch name, payload in POST request, DOP-5201
+  for (const individualRepo of selectedRepos) {
+    const { repoName, branchName } = individualRepo.value.split('/');
     // TODO: add job title to title of deploy
-    const jobTitle = `Slack deploy: ${selected[i].value}, by ${user}`;
+    const jobTitle = `Slack deploy: ${individualRepo}, by ${user}`;
     if (repoName && branchName) {
       // TODO: add other conditionals here to deploy based on branchName
       if (repoName === 'docs-landing' && branchName === 'master') {
-        // Send build hook to deploy MongoDB-snooty site which builds docs-landing master
+        // Currently: sends build hook to deploy to docs-frontend-stg site, builds docs-landing master by default
+        // TODO: DOP-5202, Send conditionally to build hooks of different sites ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal request received from
         const resp = await axios.post(
           'https://api.netlify.com/build_hooks/6723eca38897343993c049b5?trigger_branch=master&trigger_title=testing+deployHook+title',
         );
@@ -62,6 +67,7 @@ export default async (req: Request) => {
   }
 };
 
+// Send message to user that their job has been enqueued (DOP-5096)
 const sendMessage = async (
   message: string,
   user: string,

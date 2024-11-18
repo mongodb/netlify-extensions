@@ -1,7 +1,3 @@
-import type * as mongodb from 'mongodb';
-import type { ReposBranchesDocument } from '../../../search-manifest/src/types.js';
-
-import { capitalizeFirstLetter } from './utils.js';
 import axios, { type AxiosResponse } from 'axios';
 
 export const displayModal = async ({
@@ -14,7 +10,6 @@ export const displayModal = async ({
   slackAuthToken: string;
 }): Promise<AxiosResponse> => {
   const repoOptView = getDropDownView(triggerId, repos);
-  //TODO: get slack auth token from dbEnvVars argument in buildEventHandlers
   if (!slackAuthToken) {
     throw new Error('No Slack token provided');
   }
