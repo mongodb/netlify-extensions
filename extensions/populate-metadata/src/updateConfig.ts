@@ -46,9 +46,7 @@ export const determineEnvironment = ({
   isBuildHookDeploy,
   siteName,
 }: { isBuildHookDeploy: boolean; siteName: string }): Environments => {
-  // Check if this was an engineering build or writer's build; writer's builds by default are all builds not built on the "mongodb-snooty" site
-  // Environment is either dotcomprd or prd if it is a writer build
-
+  // Check if this was an engineer's build or writer's build
   const frontendSites = [
     'docs-frontend-stg',
     'docs-frontend-dotcomstg',
@@ -56,17 +54,17 @@ export const determineEnvironment = ({
   ];
   const isFrontendBuild = frontendSites.includes(siteName);
 
+  //Writer's builds = prd, everything not built on a site with 'Snooty' as git source
   if (!isFrontendBuild) {
     return 'prd';
   }
   if (isBuildHookDeploy) {
+    //TODO: DOP-5201, check hook URL
     if (siteName === 'docs-frontend-dotcomprd') {
       return 'dotcomprd';
-      // TODO: check hook url??
     }
     if (siteName === 'docs-frontend-dotcomstg') {
       return 'dotcomstg';
-      // TODO: check hook url??
     }
   }
   return 'stg';
@@ -79,7 +77,7 @@ export const updateConfig = async ({
   dbEnvVars: StaticEnvVars;
 }): Promise<void> => {
   // Checks if build was triggered by a webhook
-  // TODO: DOP-5201, add more specific logic dependent on hook title, url, body, etc. once Slack deploy apps have been implemented
+  // TODO: DOP-5201, add specific logic dependent on hook title, url, body, etc. once Slack deploy apps have been implemented
   const isBuildHookDeploy = !!(
     configEnvironment.INCOMING_HOOK_URL && configEnvironment.INCOMING_HOOK_TITLE
   );
