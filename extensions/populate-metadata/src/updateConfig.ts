@@ -56,6 +56,8 @@ export const determineEnvironment = ({
   ];
   const isFrontendBuild = frontendSites.includes(siteName);
 
+  console.log(siteName, isBuildHookDeploy, isFrontendBuild);
+
   if (!isFrontendBuild) {
     return 'prd';
   }
