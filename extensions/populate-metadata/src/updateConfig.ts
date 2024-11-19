@@ -45,7 +45,7 @@ const getDbNames = (
 export const determineEnvironment = ({
   isBuildHookDeploy,
   siteName,
-}: { isBuildHookDeploy: boolean; siteName: string }) => {
+}: { isBuildHookDeploy: boolean; siteName: string }): Environments => {
   // Check if this was an engineering build or writer's build; writer's builds by default are all builds not built on the "mongodb-snooty" site
   // Environment is either dotcomprd or prd if it is a writer build
 
@@ -56,18 +56,20 @@ export const determineEnvironment = ({
   ];
   const isFrontendBuild = frontendSites.includes(siteName);
 
-  let env: Environments;
   if (!isFrontendBuild) {
-    env = 'prd';
-  } else if (isBuildHookDeploy) {
+    return 'prd';
+  }
+  if (isBuildHookDeploy) {
     if (siteName === 'docs-frontend-dotcomprd') {
-      env = 'dotcomprd';
-      // TODO: check hook url??
-    } else if (siteName === 'docs-frontend-dotcomstg') {
-      env = 'dotcomstg';
+      return 'dotcomprd';
       // TODO: check hook url??
     }
-  } else env = 'stg';
+    if (siteName === 'docs-frontend-dotcomstg') {
+      return 'dotcomstg';
+      // TODO: check hook url??
+    }
+  }
+  return 'stg';
 };
 export const updateConfig = async ({
   configEnvironment,
