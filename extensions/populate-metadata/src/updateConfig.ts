@@ -87,6 +87,9 @@ export const updateConfig = async ({
     configEnvironment.INCOMING_HOOK_TITLE &&
     configEnvironment.INCOMING_HOOK_BODY
   );
+  console.log(
+    `hook url: ${configEnvironment.INCOMING_HOOK_URL}, hook title: ${configEnvironment.INCOMING_HOOK_TITLE}, hook body: ${configEnvironment.INCOMING_HOOK_BODY}`,
+  );
   const env = determineEnvironment({
     isBuildHookDeploy,
     siteName: configEnvironment.SITE_NAME as string,
