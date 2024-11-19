@@ -54,8 +54,6 @@ export default async (req: Request) => {
 
   for (const individualRepo of selectedRepos) {
     const [repoName, branchName] = individualRepo.value.split('/');
-
-    // TODO: add job title to title of deploy
     const jobTitle = `Slack deploy: ${individualRepo}, by ${user}`;
     if (repoName && branchName) {
       // TODO: add other conditionals here to deploy based on branchName
@@ -65,7 +63,7 @@ export default async (req: Request) => {
         // Currently: sends build hook to deploy to docs-frontend-stg site, builds docs-landing master by default
         // TODO: DOP-5202, Send conditionally to build hooks of different sites ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal request received from
         const resp = await axios.post(
-          'https://api.netlify.com/build_hooks/6723eca38897343993c049b5?trigger_branch=master&trigger_title=testing+deployHook+title',
+          `https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=testing+deployHook+${jobTitle}`,
         );
       }
     }
