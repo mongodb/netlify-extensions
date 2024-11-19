@@ -112,7 +112,7 @@ extension.addBuildEventHandler(
   'onSuccess',
   async ({ utils: { run }, netlifyConfig, dbEnvVars }) => {
     console.log(process.env.ENV);
-    await generateAndUploadManifests({
+    generateAndUploadManifests({
       configEnvironment: netlifyConfig?.build?.environment,
       run,
       dbEnvVars,
