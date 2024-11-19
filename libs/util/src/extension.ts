@@ -116,6 +116,7 @@ export class Extension<
     );
   };
 
+  // TODO: addFunctions implementation to be fixed later (DOP-5200); currently does not behave as expected
   // addFunctions = async (
   //   path: string,
   //   options: FunctionsOptions,

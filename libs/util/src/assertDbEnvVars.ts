@@ -10,8 +10,8 @@ export type StaticEnvVars = {
   DOCSETS_COLLECTION: CollectionName;
   DOCUMENTS_COLLECTION: string;
   REPOS_BRANCHES_COLLECTION: CollectionName;
-  SLACK_SIGNING_SECRET: string;
   SLACK_AUTH_TOKEN: string;
+  SLACK_SIGNING_SECRET: string;
 };
 
 const assertEnvVars = (vars: StaticEnvVars) => {
