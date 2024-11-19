@@ -59,7 +59,8 @@ async function scanFileTree(directoryPath: string) {
 
     if (stat.isDirectory() || IMAGE_EXT.has(extName)) {
       continue;
-    } else if (extName.endsWith('html')) {
+    }
+    if (extName.endsWith('html')) {
       const allParentPaths = getParentPaths(filename);
       const pathBackToRoot = '../'.repeat(allParentPaths.length);
       await handleHtmlFile(filename, pathBackToRoot || './');
