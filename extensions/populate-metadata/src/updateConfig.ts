@@ -56,8 +56,6 @@ export const determineEnvironment = ({
   ];
   const isFrontendBuild = frontendSites.includes(siteName);
 
-  console.log(siteName, isBuildHookDeploy, isFrontendBuild);
-
   if (!isFrontendBuild) {
     return 'prd';
   }
@@ -83,13 +81,9 @@ export const updateConfig = async ({
   // Checks if build was triggered by a webhook
   // TODO: add more specific logic dependent on hook title, url, body, etc. once Slack deploy apps have been implemented
   const isBuildHookDeploy = !!(
-    configEnvironment.INCOMING_HOOK_URL &&
-    configEnvironment.INCOMING_HOOK_TITLE &&
-    configEnvironment.INCOMING_HOOK_BODY
+    configEnvironment.INCOMING_HOOK_URL && configEnvironment.INCOMING_HOOK_TITLE
   );
-  console.log(
-    `hook url: ${configEnvironment.INCOMING_HOOK_URL}, hook title: ${configEnvironment.INCOMING_HOOK_TITLE}, hook body: ${configEnvironment.INCOMING_HOOK_BODY}`,
-  );
+
   const env = determineEnvironment({
     isBuildHookDeploy,
     siteName: configEnvironment.SITE_NAME as string,
