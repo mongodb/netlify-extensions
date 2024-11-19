@@ -72,6 +72,7 @@ export type PoolDBName = 'pool' | 'pool_test';
 export type SnootyDBName =
   | 'test'
   | 'snooty_dev'
+  | 'snooty_prod'
   | 'snooty_dotcomstg'
   | 'snooty_dotcomprd';
 

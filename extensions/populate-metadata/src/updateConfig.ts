@@ -1,23 +1,16 @@
 import type {
-  DbConfig,
   Environments,
-  PoolDbName,
+  PoolDBName,
+  SnootyDBName,
+  SearchDBName,
 } from 'util/databaseConnection/types';
 import { getProperties } from './getProperties';
 import type { ConfigEnvironmentVariables } from 'util/extension';
-
-export type SearchDbName = 'search' | 'search-test' | 'search-stage';
-
-export type SnootyDbName =
-  | 'snooty_dev'
-  | 'snooty_stage'
-  | 'snooty_dotcomstg'
-  | 'snooty_prod'
-  | 'snooty_dotcomprd';
+import type { StaticEnvVars } from 'util/assertDbEnvVars';
 
 const getDbNames = (
   env: Environments,
-): { snootyDb: SnootyDbName; searchDb: SearchDbName; poolDb: PoolDbName } => {
+): { snootyDb: SnootyDBName; searchDb: SearchDBName; poolDb: PoolDBName } => {
   switch (env) {
     case 'dotcomstg':
       return {
@@ -42,7 +35,7 @@ const getDbNames = (
     // Default to 'stg' databases
     default:
       return {
-        snootyDb: 'snooty_stage',
+        snootyDb: 'snooty_dev',
         searchDb: 'search-test',
         poolDb: 'pool_test',
       };
@@ -81,7 +74,7 @@ export const updateConfig = async ({
   dbEnvVars,
 }: {
   configEnvironment: ConfigEnvironmentVariables;
-  dbEnvVars: DbConfig;
+  dbEnvVars: StaticEnvVars;
 }): Promise<void> => {
   // Checks if build was triggered by a webhook
   // TODO: add more specific logic dependent on hook title, url, body, etc. once Slack deploy apps have been implemented
@@ -104,13 +97,13 @@ export const updateConfig = async ({
   // Check if values for the database names have been set as environment variables through Netlify UI
   // Allows overwriting of database name values for testing
   configEnvironment.POOL_DB_NAME =
-    (process.env.POOL_DB_NAME as PoolDbName) ?? poolDb;
+    (process.env.POOL_DB_NAME as PoolDBName) ?? poolDb;
 
   configEnvironment.SEARCH_DB_NAME =
-    (process.env.SEARCH_DB_NAME as SearchDbName) ?? searchDb;
+    (process.env.SEARCH_DB_NAME as SearchDBName) ?? searchDb;
 
   configEnvironment.SNOOTY_DB_NAME =
-    (process.env.SNOOTY_DB_NAME as SnootyDbName) ?? snootyDb;
+    (process.env.SNOOTY_DB_NAME as SnootyDBName) ?? snootyDb;
 
   // Check if repo name and branch name have been set as environment variables through Netlify UI
   // Allows overwriting of database name values for testing
