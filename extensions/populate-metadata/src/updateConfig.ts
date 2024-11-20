@@ -114,6 +114,7 @@ export const updateConfig = async ({
     repoName =
       process.env.REPO_NAME ??
       (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
+    process.env.REPO_NAME = 'docs_java';
   } else {
     branchName =
       process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
