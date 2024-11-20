@@ -81,7 +81,11 @@ export const updateConfig = async ({
   const isBuildHookDeploy = !!(
     configEnvironment.INCOMING_HOOK_URL && configEnvironment.INCOMING_HOOK_TITLE
   );
-
+  console.log(
+    configEnvironment.INCOMING_HOOK_URL,
+    configEnvironment.INCOMING_HOOK_TITLE,
+  );
+  console.log(configEnvironment.SITE_NAME);
   const env = determineEnvironment({
     isBuildHookDeploy,
     siteName: configEnvironment.SITE_NAME as string,
@@ -124,6 +128,9 @@ export const updateConfig = async ({
     // [branchName, repoName] = configEnvironment?.INCOMING_HOOK_BODY?.split(
     //   '',
     // ) as string[];
+    //process.env.BRANCH_NAME = branchName
+    //process.env.REPO_NAME = repoName;
+    //process.env.ORG_NAME = orgName;
   }
 
   if (!branchName || !repoName) {
