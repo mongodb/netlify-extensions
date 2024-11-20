@@ -126,9 +126,6 @@ export const updateConfig = async ({
     // ) as string[];
   }
 
-  process.env.REPO_NAME = 'docs-java';
-  repoName = 'docs-java';
-
   if (!branchName || !repoName) {
     throw new Error('Repo name or branch name missing from deploy');
   }
