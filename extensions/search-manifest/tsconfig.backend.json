@@ -15,5 +15,6 @@
         "bson": ["../../node_modules/bson/src/"]
       }
     },
+    "include": ["src"],
     "exclude": ["dist/", "src/ui/"]
   }
