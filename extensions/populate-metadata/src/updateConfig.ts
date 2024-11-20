@@ -80,6 +80,7 @@ export const updateConfig = async ({
 
   const repoName =
     process.env.REPO_NAME ?? process.env.REPOSITORY_URL?.split('/')?.pop();
+  process.env.BRANCH_NAME = branchName;
   process.env.REPO_NAME = repoName;
 
   if (!branchName || !repoName) {
