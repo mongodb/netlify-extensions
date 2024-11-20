@@ -15,14 +15,14 @@ const getDbNames = (
     case 'dotcomstg':
       return {
         snootyDb: 'snooty_dotcomstg',
-        searchDb: 'search-stage',
+        searchDb: 'search-staging',
         poolDb: 'pool_test',
       };
 
     case 'prd':
       return {
         snootyDb: 'snooty_prod',
-        searchDb: 'search-stage',
+        searchDb: 'search-test',
         poolDb: 'pool',
       };
 
@@ -42,7 +42,7 @@ const getDbNames = (
   }
 };
 
-export const determineEnvironment = ({
+const determineEnvironment = ({
   isBuildHookDeploy,
   siteName,
 }: { isBuildHookDeploy: boolean; siteName: string }): Environments => {
@@ -53,7 +53,6 @@ export const determineEnvironment = ({
     'docs-frontend-dotcomprd',
   ];
   const isFrontendBuild = frontendSites.includes(siteName);
-  console.log(isFrontendBuild, isBuildHookDeploy);
 
   //Writer's builds = prd, everything not built on a site with 'Snooty' as git source
   if (!isFrontendBuild) {
@@ -65,7 +64,6 @@ export const determineEnvironment = ({
       return 'dotcomprd';
     }
     if (siteName === 'docs-frontend-dotcomstg') {
-      console.log(siteName === 'docs-frontend-dotcomstg');
       return 'dotcomstg';
     }
   }
@@ -83,7 +81,6 @@ export const updateConfig = async ({
   const isBuildHookDeploy = !!(
     configEnvironment.INCOMING_HOOK_URL && configEnvironment.INCOMING_HOOK_TITLE
   );
-  console.log(configEnvironment.SITE_NAME);
   const env = determineEnvironment({
     isBuildHookDeploy,
     siteName: configEnvironment.SITE_NAME as string,
