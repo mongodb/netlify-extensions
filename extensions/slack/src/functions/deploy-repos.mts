@@ -54,7 +54,7 @@ export default async (req: Request) => {
 
   for (const individualRepo of selectedRepos) {
     const [repoName, branchName] = individualRepo.value.split('/');
-    const jobTitle = `Slack deploy: ${individualRepo}, by ${user}`;
+    const jobTitle = `Slack deploy: ${repoName}, ${branchName}, by ${user}`;
     if (repoName && branchName) {
       // TODO: add other conditionals here to deploy based on branchName
       console.log(`deploying branch ${branchName} of repo ${repoName}`);
