@@ -58,16 +58,13 @@ export default async (req: Request) => {
     if (repoName && branchName) {
       // TODO: add other conditionals here to deploy based on branchName
       console.log(`deploying branch ${branchName} of repo ${repoName}`);
-      if (repoName === 'docs-landing' && branchName === 'master') {
-        console.log('Deploying master branch of docs-landing');
-        // Currently: sends build hook to deploy to docs-frontend-stg site, builds docs-landing master by default
-        // TODO: DOP-5202, Send conditionally to build hooks of different sites ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal request received from
-        const resp = await axios.post(
-          `https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=testing+deployHook+${JSON.stringify(jobTitle)}`,
-          { repoName: repoName, branchName: branchName },
-        );
-        console.log(resp);
-      }
+      // Currently: sends build hook to deploy to docs-frontend-stg site, builds docs-landing master by default
+      // TODO: DOP-5202, Send conditionally to build hooks of different sites ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal request received from
+      const resp = await axios.post(
+        `https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+${JSON.stringify(jobTitle)}`,
+        { repoName: repoName, branchName: branchName },
+      );
+      console.log(resp);
     }
   }
 };
