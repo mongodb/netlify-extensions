@@ -57,14 +57,13 @@ export default async (req: Request) => {
     const jobTitle = `Slack deploy: repoName ${repoName}, branchName ${branchName}, by ${user}`;
     if (repoName && branchName) {
       // TODO: add other conditionals here to deploy based on branchName
-      console.log(`deploying branch ${branchName} of repo ${repoName}`);
-      // Currently: sends build hook to deploy to docs-frontend-stg site, builds docs-landing master by default
+      console.log(`Deploying branch ${branchName} of repo ${repoName}`);
+      // Currently: sends build hook to deploy to docs-frontend-dotcomstg site
       // TODO: DOP-5202, Send conditionally to build hooks of different sites ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal request received from
       const resp = await axios.post(
-        `https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+${JSON.stringify(jobTitle)}`,
+        `https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+${jobTitle}`,
         { repoName: repoName, branchName: branchName },
       );
-      console.log(resp);
     }
   }
 };
