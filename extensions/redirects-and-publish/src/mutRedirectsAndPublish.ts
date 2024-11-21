@@ -1,4 +1,4 @@
-import type { ConfigEnvironmentVariables } from './types';
+import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { NetlifyPluginUtils } from '@netlify/build';
 
 const MUT_VERSION = process.env.MUT_VERSION;
