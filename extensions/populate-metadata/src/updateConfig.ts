@@ -128,8 +128,8 @@ export const updateConfig = async ({
     branchName = JSON.parse(
       configEnvironment?.INCOMING_HOOK_BODY as string,
     )?.branchName;
-    // process.env.BRANCH_NAME = branchName;
-    // process.env.REPO_NAME = repoName;
+    process.env.BRANCH_NAME = branchName;
+    process.env.REPO_NAME = repoName;
     console.log(JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string));
     console.log(branchName, repoName);
   }
@@ -152,6 +152,7 @@ export const updateConfig = async ({
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
   configEnvironment.DOCSET_ENTRY = docsetEntry;
+  process.env.ORG_NAME = docsetEntry;
   configEnvironment.BRANCH_ENTRY = branch?.pop();
 
   console.info(
