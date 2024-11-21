@@ -25,6 +25,7 @@
     "@netlify/netlify-plugin-netlify-extension": "^1.0.3",
     "@tsconfig/node18": "^18.2.4",
     "@tsconfig/recommended": "^1.0.7",
+    "util": "workspace:*",
     "@tsconfig/strictest": "^2.0.5",
     "@tsconfig/vite-react": "^3.0.2",
     "@types/node": "^22.9.1",
