@@ -1,6 +1,11 @@
 export type Environments = 'dev' | 'stg' | 'dotcomstg' | 'prd' | 'dotcomprd';
 
-export type CollectionName = 'repos_branches' | 'docsets' | 'documents';
+export type CollectionName =
+  | 'repos_branches'
+  | 'docsets'
+  | 'documents'
+  | 'projects'
+  | 'metadata';
 
 export type StaticEnvVars = {
   ATLAS_CLUSTER0_URI: string;
@@ -9,6 +14,7 @@ export type StaticEnvVars = {
   AWS_S3_SECRET_ACCESS_KEY: string;
   DOCSETS_COLLECTION: CollectionName;
   DOCUMENTS_COLLECTION: string;
+  PROJECTS_COLLECTION: CollectionName;
   REPOS_BRANCHES_COLLECTION: CollectionName;
   SLACK_AUTH_TOKEN: string;
   SLACK_SIGNING_SECRET: string;
@@ -34,6 +40,8 @@ export const getDbConfig = (): StaticEnvVars => {
       (process.env.DOCSETS_COLLECTION as CollectionName) ?? 'docsets',
     DOCUMENTS_COLLECTION:
       (process.env.DOCUMENTS_COLLECTION as CollectionName) ?? 'documents',
+    PROJECTS_COLLECTION:
+      (process.env.PROJECTS_COLLECTION as CollectionName) ?? 'projects',
     REPOS_BRANCHES_COLLECTION:
       (process.env.REPOS_BRANCHES_COLLECTION as CollectionName) ??
       'repos_branches',

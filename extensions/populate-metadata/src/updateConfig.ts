@@ -150,7 +150,7 @@ export const updateConfig = async ({
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
   configEnvironment.DOCSET_ENTRY = docsetEntry;
-  process.env.ORG_NAME = docsetEntry;
+  // process.env.ORG_NAME = docsetEntry;
   configEnvironment.BRANCH_ENTRY = branch?.pop();
 
   console.info(
