@@ -65,13 +65,14 @@ export interface SearchDocument {
   includeInGlobalSearch: boolean;
 }
 
-export type SearchDBName = 'search' | 'search-test' | 'search-stage';
+export type SearchDBName = 'search' | 'search-test' | 'search-staging';
 
 export type PoolDBName = 'pool' | 'pool_test';
 
 export type SnootyDBName =
   | 'test'
   | 'snooty_dev'
+  | 'snooty_prod'
   | 'snooty_dotcomstg'
   | 'snooty_dotcomprd';
 

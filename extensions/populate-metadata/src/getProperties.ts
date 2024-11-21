@@ -1,17 +1,13 @@
-import type { DbConfig, Environments } from './assertDbEnvVars';
-import {
-  type CollectionConnectionInfo,
-  closePoolDb,
-} from '../../../libs/util/src/databaseConnection/atlasClusterConnector';
-import {
-  type DocsetsDocument,
-  getDocsetsCollection,
-} from '../../../libs/util/src/databaseConnection/fetchDocsetsData';
-import {
-  type ReposBranchesDocument,
-  getReposBranchesCollection,
-} from '../../../libs/util/src/databaseConnection/fetchReposBranchesData';
-import type { PoolDbName } from './updateConfig';
+import type { StaticEnvVars, Environments } from 'util/assertDbEnvVars';
+import { closePoolDb } from 'util/databaseConnection/clusterZeroConnector';
+import { getDocsetsCollection } from 'util/databaseConnection/fetchDocsetsData';
+import { getReposBranchesCollection } from '../../../libs/util/src/databaseConnection/fetchReposBranchesData';
+import type {
+  PoolDBName,
+  DocsetsDocument,
+  ReposBranchesDocument,
+  clusterZeroConnectionInfo,
+} from 'util/databaseConnection/types';
 const EXTENSION_NAME = 'populate-metadata-extension';
 
 const getEnvProjection = (env?: Environments) => {
@@ -23,7 +19,7 @@ const getDocsetEntry = async ({
   projectName,
   environment,
 }: {
-  docsetsConnectionInfo: CollectionConnectionInfo;
+  docsetsConnectionInfo: clusterZeroConnectionInfo;
   projectName: string;
   environment: Environments;
 }): Promise<DocsetsDocument> => {
@@ -58,7 +54,7 @@ const getRepoEntry = async ({
 }: {
   repoName: string;
   branchName: string;
-  connectionInfo: CollectionConnectionInfo;
+  connectionInfo: clusterZeroConnectionInfo;
 }): Promise<ReposBranchesDocument> => {
   const reposBranches = await getReposBranchesCollection({
     ...connectionInfo,
@@ -101,12 +97,12 @@ export const getProperties = async ({
 }: {
   branchName: string;
   repoName: string;
-  dbEnvVars: DbConfig;
-  poolDbName: PoolDbName;
+  dbEnvVars: StaticEnvVars;
+  poolDbName: PoolDBName;
   environment: Environments;
 }): Promise<{ repo: ReposBranchesDocument; docsetEntry: DocsetsDocument }> => {
   const repoBranchesConnectionInfo = {
-    URI: dbEnvVars.ATLAS_CLUSTER0_URI,
+    clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
     databaseName: poolDbName,
     collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
     extensionName: EXTENSION_NAME,
@@ -119,7 +115,7 @@ export const getProperties = async ({
   });
 
   const docsetsConnectionInfo = {
-    URI: dbEnvVars.ATLAS_CLUSTER0_URI,
+    clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
     databaseName: poolDbName,
     collectionName: dbEnvVars.DOCSETS_COLLECTION,
     extensionName: EXTENSION_NAME,
