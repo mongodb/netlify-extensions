@@ -121,20 +121,18 @@ export const updateConfig = async ({
     //   (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
 
     // TODO: DOP-5201, Branch name and repo name to deploy sent as values in Build Hook payload if in dotcomprd or dotcomstg environments
-    console.log(`incoming hook body ${configEnvironment?.INCOMING_HOOK_BODY}`);
+    console.log(`Incoming hook body ${configEnvironment?.INCOMING_HOOK_BODY}`);
     repoName = JSON.parse(
       configEnvironment?.INCOMING_HOOK_BODY as string,
     )?.repoName;
     branchName = JSON.parse(
       configEnvironment?.INCOMING_HOOK_BODY as string,
     )?.branchName;
-    process.env.BRANCH_NAME = branchName;
-    process.env.REPO_NAME = repoName;
-    console.log(JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string));
-    console.log(branchName, repoName);
-  }
+    // process.env.BRANCH_NAME = branchName;
+    // process.env.REPO_NAME = repoName;
+    process.env.BRANCH_NAME = 'master';
+    process.env.REPO_NAME = 'docs-relational-migrator';
 
-  if (!branchName || !repoName) {
     throw new Error('Repo name or branch name missing from deploy');
   }
   const { repo, docsetEntry } = await getProperties({
