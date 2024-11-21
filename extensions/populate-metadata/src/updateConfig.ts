@@ -120,6 +120,7 @@ export const updateConfig = async ({
       process.env.REPO_NAME ??
       (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
     // TODO: DOP-5201, Branch name and repo name to deploy sent as values in Build Hook payload if in dotcomprd or dotcomstg environments
+    console.log(`incoming hook body ${configEnvironment?.INCOMING_HOOK_BODY}`);
     // [branchName, repoName] = configEnvironment?.INCOMING_HOOK_BODY?.split(
     //   '',
     // ) as string[];
