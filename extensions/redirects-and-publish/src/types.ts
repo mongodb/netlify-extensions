@@ -1,5 +1,5 @@
 import type { WithId } from 'mongodb';
-import type { Environments } from 'util/src/assertDbEnvVars';
+import type { Environments } from 'util/assertDbEnvVars';
 
 type EnvironmentConfig = {
   dev: string;
