@@ -135,13 +135,15 @@ export const updateConfig = async ({
 
     throw new Error('Repo name or branch name missing from deploy');
   }
-  const { repo, docsetEntry } = await getProperties({
+  const { repo, docsetEntry, metadataEntry } = await getProperties({
     branchName,
     repoName,
     dbEnvVars,
     poolDbName: configEnvironment.POOL_DB_NAME,
     environment: buildEnvironment,
   });
+
+  console.log(metadataEntry);
 
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = buildEnvironment;

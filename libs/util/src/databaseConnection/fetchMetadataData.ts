@@ -2,7 +2,7 @@ import type * as mongodb from 'mongodb';
 import { getPoolDb } from './clusterZeroConnector';
 import type { ProjectMetadataDocument } from './types';
 
-export const getMetadataCollection = async ({
+export const getProjectsCollection = async ({
   clusterZeroURI,
   databaseName,
   collectionName,
