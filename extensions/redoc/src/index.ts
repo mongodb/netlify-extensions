@@ -1,7 +1,8 @@
+import { envVarToBool, Extension } from 'util/extension';
+
 import { deserialize } from 'bson';
 import { buildOpenAPIPages } from './build-pages';
 import { readFileAsync } from './utils/fs-async';
-import { envVarToBool, Extension } from 'util/extension';
 
 const extension = new Extension({
   isEnabled: envVarToBool(process.env.REDOC_ENABLED),
