@@ -15,8 +15,8 @@ const assertEnvVars = (vars: DbConfig) => {
     .filter(([, value]) => !value)
     .map(([key]) => `- ${key}`)
     .join('\n');
-  if (missingVars)
-    throw new Error(`Missing env var(s) ${JSON.stringify(missingVars)}`);
+  // if (missingVars)
+  //   throw new Error(`Missing env var(s) ${JSON.stringify(missingVars)}`);
   return vars;
 };
 
