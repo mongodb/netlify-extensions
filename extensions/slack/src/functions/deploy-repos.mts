@@ -17,7 +17,7 @@ export default async (req: Request) => {
     })
   ) {
     console.log(
-      '401 Status Returned: eSlack request not validated, client may not be authorized',
+      '401 Status Returned: Slack request not validated, client may not be authorized',
     );
     return new Response(
       'Slack request not validated, client may not be authorized',
