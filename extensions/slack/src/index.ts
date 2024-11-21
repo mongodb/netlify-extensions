@@ -7,7 +7,7 @@ const extension = new NetlifyExtension();
 extension.addFunctions('./src/functions', {
   prefix: 'slack',
   shouldInjectFunction: ({ name }) => {
-    console.log(`name is ${name}`);
+    console.log(`Function ${name} injected`);
     // If the function is not enabled, return early
     return !!process.env.SLACK_ENABLED;
   },
