@@ -135,8 +135,8 @@ export const updateConfig = async ({
   }
   process.env.BRANCH_NAME = 'master';
   branchName = 'master';
-  repoName = 'docs-relational-migrator';
-  process.env.REPO_NAME = 'docs-relational-migrator';
+  repoName = 'docs-cpp';
+  process.env.REPO_NAME = 'docs-cpp';
   const { repo, docsetEntry, metadataEntry } = await getProperties({
     branchName,
     repoName,
