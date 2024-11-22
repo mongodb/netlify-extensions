@@ -93,4 +93,4 @@ export type SnootyDBName =
   | 'snooty_dotcomstg'
   | 'snooty_dotcomprd';
 
-export type ClusterZeroDBName = PoolDBName | 'docs_metadata' | SnootyDBName;
+export type ClusterZeroDBName = PoolDBName | MetadataDBName | SnootyDBName;

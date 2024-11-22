@@ -10,6 +10,7 @@ import type {
   ReposBranchesDocument,
   clusterZeroConnectionInfo,
   ProjectMetadataDocument,
+  ClusterZeroDBName,
 } from 'util/databaseConnection/types';
 import type { nativeEnum } from 'zod';
 const EXTENSION_NAME = 'populate-metadata-extension';
@@ -173,7 +174,7 @@ export const getProperties = async ({
 
   const projectMetadataConnectionInfo = {
     clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
-    databaseName: dbEnvVars.METADATA_DB_NAME,
+    databaseName: dbEnvVars.METADATA_DB_NAME as ClusterZeroDBName,
     collectionName: dbEnvVars.PROJECTS_COLLECTION,
     extensionName: EXTENSION_NAME,
   };
