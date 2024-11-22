@@ -6,9 +6,7 @@ export default async (req: Request) => {
   if (!req?.body) {
     return new Response('Request received without a body', { status: 401 });
   }
-  console.log(`request: ${req}`);
   const requestBody = await new Response(req.body).text();
-  console.log(`requestBody: ${requestBody}`);
   const dbEnvVars = getDbConfig();
 
   if (
@@ -31,6 +29,7 @@ export default async (req: Request) => {
   const decoded = decodeURIComponent(requestBody).split('=')[1];
   // TODO: Create an interface for slack view_submission payloads
   const parsed = JSON.parse(decoded);
+  console.log(`parsedBody: ${parsed}`);
 
   const user = parsed?.user?.username;
   const stateValues = parsed?.view?.state?.values;
