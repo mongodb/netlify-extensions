@@ -135,8 +135,8 @@ export const updateConfig = async ({
   }
   process.env.BRANCH_NAME = 'master';
   branchName = 'master';
-  repoName = 'docs-cpp';
-  process.env.REPO_NAME = 'docs-cpp';
+  repoName = 'docs-bi-connector';
+  configEnvironment.REPO_NAME = 'docs-bi-connector';
   const { repo, docsetEntry, metadataEntry } = await getProperties({
     branchName,
     repoName,
