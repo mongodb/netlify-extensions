@@ -130,13 +130,15 @@ export const updateConfig = async ({
     )?.branchName;
     process.env.BRANCH_NAME = branchName;
     process.env.REPO_NAME = repoName;
-
-    throw new Error('Repo name or branch name missing from deploy');
+    if (!repoName || !branchName) {
+      throw new Error('Repo name or branch name missing from deploy');
+    }
   }
   process.env.BRANCH_NAME = 'master';
   branchName = 'master';
   repoName = 'docs-bi-connector';
   configEnvironment.REPO_NAME = 'docs-bi-connector';
+  console.log(process.env.REPO_NAME, configEnvironment.REPO_NAME);
   const { repo, docsetEntry, metadataEntry } = await getProperties({
     branchName,
     repoName,
