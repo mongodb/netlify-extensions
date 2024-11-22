@@ -10,7 +10,7 @@ export interface EnvironmentConfig {
 
 export interface DocsetsDocument {
   project: string;
-  bucket: string;
+  bucket: EnvironmentConfig;
   url: EnvironmentConfig;
   prefix: EnvironmentConfig;
 }
