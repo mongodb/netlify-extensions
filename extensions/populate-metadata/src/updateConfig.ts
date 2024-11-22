@@ -147,8 +147,8 @@ export const updateConfig = async ({
     poolDbName: configEnvironment.POOL_DB_NAME,
     environment: buildEnvironment,
   });
-
-  process.env.ORG = metadataEntry.github.organization;
+  console.log(metadataEntry);
+  configEnvironment.ORG = metadataEntry.github.organization;
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = buildEnvironment;
   process.env.PATH_PREFIX = docsetEntry.prefix[buildEnvironment];
