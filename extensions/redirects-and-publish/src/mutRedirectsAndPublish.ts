@@ -50,6 +50,7 @@ export const mutRedirectsAndPublish = async (
   try {
     console.log('Running mut-redirects...');
     // TODO: Change hard coded `docs-landing` to whatever repo is being built after DOP-5159 is completed
+    console.log('the repo name is', process.env.REPO_NAME);
     const redirectPath = 'docs-landing/config/redirects';
     await run.command(
       `${process.cwd()}/mut/mut-redirects ${redirectPath} -o public/.htaccess`,
