@@ -13,6 +13,7 @@ export const getProjectsCollection = async ({
   collectionName: string;
   extensionName?: string;
 }): Promise<mongodb.Collection<ProjectMetadataDocument>> => {
+  console.log(clusterZeroURI, databaseName, extensionName);
   const dbSession = await getPoolDb({
     clusterZeroURI,
     databaseName,
