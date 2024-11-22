@@ -137,7 +137,6 @@ export const updateConfig = async ({
   branchName = 'master';
   repoName = 'docs-cpp';
   process.env.REPO_NAME = 'docs-cpp';
-  configEnvironment.REPO_NAME = 'docs-cpp';
   const { repo, docsetEntry, metadataEntry } = await getProperties({
     branchName,
     repoName,
