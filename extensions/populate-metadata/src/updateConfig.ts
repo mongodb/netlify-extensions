@@ -128,13 +128,15 @@ export const updateConfig = async ({
     branchName = JSON.parse(
       configEnvironment?.INCOMING_HOOK_BODY as string,
     )?.branchName;
-    // process.env.BRANCH_NAME = branchName;
-    // process.env.REPO_NAME = repoName;
-    process.env.BRANCH_NAME = 'master';
-    process.env.REPO_NAME = 'docs-relational-migrator';
+    process.env.BRANCH_NAME = branchName;
+    process.env.REPO_NAME = repoName;
 
     throw new Error('Repo name or branch name missing from deploy');
   }
+  process.env.BRANCH_NAME = 'master';
+  branchName = 'master';
+  repoName = 'docs-relational-migrator';
+  process.env.REPO_NAME = 'docs-relational-migrator';
   const { repo, docsetEntry, metadataEntry } = await getProperties({
     branchName,
     repoName,
