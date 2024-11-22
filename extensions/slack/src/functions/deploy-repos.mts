@@ -6,7 +6,9 @@ export default async (req: Request) => {
   if (!req?.body) {
     return new Response('Request received without a body', { status: 401 });
   }
+  console.log(`request: ${req}`);
   const requestBody = await new Response(req.body).text();
+  console.log(`requestBody: ${requestBody}`);
   const dbEnvVars = getDbConfig();
 
   if (
