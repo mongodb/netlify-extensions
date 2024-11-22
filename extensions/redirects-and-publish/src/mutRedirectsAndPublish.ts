@@ -17,17 +17,14 @@ export const mutRedirectsAndPublish = async (
   await run.command('rm -f -r running-mut');
   await run.command('mkdir -p running-mut');
 
-  if (configEnvironment?.SITE_NAME === 'mongodb-snooty') {
-    // Since mongodb-snooty is not a content repo the file structure is different and needs to be treated as such
+  // TODO: this should also happen for dotcomprd if configEnvironment.ENV == dotcomstg or (dotcomprd)
+  if (configEnvironment?.ENV === 'dotcomstg') {
     await run.command('mkdir -p running-mut/snooty');
     await run.command(
       `rsync -q -i -av --progress  ${process.cwd()} ${process.cwd()}/running-mut/snooty --exclude node_modules --exclude .cache --exclude running-mut`,
     );
     process.chdir(`${process.cwd()}/running-mut/snooty/repo`);
-  } else {
-    await run.command('cp -r snooty running-mut');
-    process.chdir(`${process.cwd()}/running-mut/snooty`);
-  }
+  } 
 
   process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
   // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
@@ -52,10 +49,8 @@ export const mutRedirectsAndPublish = async (
   try {
     console.log('Running mut-redirects...');
     // TODO: Change hard coded `docs-landing` to whatever repo is being built after DOP-5159 is completed
-    const redirectPath =
-      configEnvironment.SITE_NAME === 'mongodb-snooty'
-        ? 'docs-landing/config/redirects'
-        : '../../config/redirects';
+    console.log('the repo name is', process.env.REPO_NAME);
+    const redirectPath = 'docs-landing/config/redirects';
     await run.command(
       `${process.cwd()}/mut/mut-redirects ${redirectPath} -o public/.htaccess`,
     );
