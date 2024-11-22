@@ -128,16 +128,17 @@ export const updateConfig = async ({
     branchName = JSON.parse(
       configEnvironment?.INCOMING_HOOK_BODY as string,
     )?.branchName;
-    process.env.BRANCH_NAME = branchName;
-    process.env.REPO_NAME = repoName;
+
     if (!repoName || !branchName) {
       throw new Error('Repo name or branch name missing from deploy');
     }
+    configEnvironment.BRANCH_NAME = branchName;
+    configEnvironment.REPO_NAME = repoName;
   }
-  process.env.BRANCH_NAME = 'master';
-  branchName = 'master';
-  repoName = 'docs-bi-connector';
-  configEnvironment.REPO_NAME = 'docs-bi-connector';
+  // process.env.BRANCH_NAME = 'master';
+  // branchName = 'master';
+  // repoName = 'docs-bi-connector';
+  // configEnvironment.REPO_NAME = 'docs-bi-connector';
   console.log(process.env.REPO_NAME, configEnvironment.REPO_NAME);
   const { repo, docsetEntry, metadataEntry } = await getProperties({
     branchName,
