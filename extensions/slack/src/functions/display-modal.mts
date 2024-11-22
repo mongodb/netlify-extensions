@@ -14,8 +14,6 @@ export default async (req: Request): Promise<Response> => {
   const requestBody = await new Response(req.body).text();
   const key_val = getQSString(requestBody);
   const triggerId = key_val.trigger_id;
-  console.log(`key_val: ${JSON.stringify(key_val)}`);
-  console.log(`trigger_id: ${triggerId}`);
   const dbEnvVars = getDbConfig();
 
   if (
