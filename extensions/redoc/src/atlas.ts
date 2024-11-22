@@ -1,5 +1,6 @@
 import { COLLECTION_NAME, db } from './utils/db';
 
+// do we want to change this line
 const env = process.env.SNOOTY_ENV ?? '';
 
 const OAS_FILE_SERVER =

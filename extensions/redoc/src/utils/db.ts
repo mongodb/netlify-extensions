@@ -21,6 +21,7 @@ export const teardown = async () => {
 };
 
 const getDbName = () => {
+  // should I replace this with configEnv.ENV
   const env = process.env.SNOOTY_ENV ?? '';
 
   switch (env) {

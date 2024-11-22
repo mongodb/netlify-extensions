@@ -16,7 +16,8 @@ export const mutRedirectsAndPublish = async (
   // We do this so when we run mut-publish we are able to uplaod the correct files with the correct paths
   await run.command('rm -f -r running-mut');
   await run.command('mkdir -p running-mut');
-
+  
+  // TODO: check if configEnvironment.ENV == dotcomstg or (dotcomprd)
   if (configEnvironment?.SITE_NAME === 'mongodb-snooty') {
     // Since mongodb-snooty is not a content repo the file structure is different and needs to be treated as such
     await run.command('mkdir -p running-mut/snooty');
