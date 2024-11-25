@@ -4,12 +4,14 @@ export const displayModal = async ({
   repos,
   triggerId,
   slackAuthToken,
+  slackCommand,
 }: {
   repos: Array<repoOption>;
   triggerId: string;
   slackAuthToken: string;
+  slackCommand: string;
 }): Promise<AxiosResponse> => {
-  const repoOptView = getDropDownView(triggerId, repos);
+  const repoOptView = getDropDownView({ triggerId, repos, slackCommand });
   if (!slackAuthToken) {
     throw new Error('No Slack token provided');
   }
@@ -22,13 +24,19 @@ export const displayModal = async ({
   });
 };
 
-export function getDropDownView(
-  triggerId: string,
-  repos: Array<repoOption>,
-): dropdownView {
+export function getDropDownView({
+  triggerId,
+  repos,
+  slackCommand,
+}: {
+  triggerId: string;
+  repos: Array<repoOption>;
+  slackCommand: string;
+}): dropdownView {
   return {
     trigger_id: triggerId,
     view: {
+      private_metadata: slackCommand,
       type: 'modal',
       title: {
         type: 'plain_text',
@@ -93,6 +101,7 @@ export type dropdownView = {
     title: slackBlock;
     submit: slackBlock;
     close: slackBlock;
+    private_metadata: string;
     blocks: [
       {
         type: 'input';

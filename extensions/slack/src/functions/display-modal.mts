@@ -15,8 +15,7 @@ export default async (req: Request): Promise<Response> => {
   const key_val = getQSString(requestBody);
   console.log(`key val: ${JSON.stringify(key_val)}`);
   const triggerId = key_val.trigger_id;
-  const command = key_val.command;
-  console.log(command, decodeURIComponent(command));
+  const command = decodeURIComponent(key_val.command);
   const dbEnvVars = getDbConfig();
 
   if (
@@ -44,6 +43,7 @@ export default async (req: Request): Promise<Response> => {
     repos: deployableRepos,
     triggerId,
     slackAuthToken: dbEnvVars.SLACK_AUTH_TOKEN,
+    slackCommand: command,
   });
 
   if (!response?.data?.ok) {
