@@ -30,7 +30,7 @@ export default async (req: Request) => {
   // TODO: Create an interface for slack view_submission payloads
   const parsed = JSON.parse(decoded);
   console.log(JSON.stringify(parsed));
-  console.log(`keys: ${parsed.keys()}`);
+  console.log(`keys: ${Object.keys(parsed)}`);
 
   const user = parsed?.user?.username;
   const stateValues = parsed?.view?.state?.values;
