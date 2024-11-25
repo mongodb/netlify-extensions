@@ -32,11 +32,6 @@ export default async (req: Request) => {
   console.log(JSON.stringify(parsed));
   console.log(`keys: ${Object.keys(parsed)}`);
 
-  const user = parsed?.user?.username;
-  const stateValues = parsed?.view?.state?.values;
-  const selectedRepos =
-    stateValues?.block_repo_option?.repo_option?.selected_options;
-
   if (parsed?.type !== 'view_submission') {
     const response = new Response(
       'Form not submitted, will not process request',
@@ -44,6 +39,13 @@ export default async (req: Request) => {
     );
     return response;
   }
+
+  const slackCommand = parsed.view?.private_metadata;
+
+  const user = parsed.user?.username;
+  const stateValues = parsed.view?.state?.values;
+  const selectedRepos =
+    stateValues?.block_repo_option?.repo_option?.selected_options;
 
   // TODO: Send message to user that their job has been enqueued (DOP-5096)
   // const messageResponse = await sendMessage(
@@ -60,13 +62,25 @@ export default async (req: Request) => {
     if (repoName && branchName) {
       // TODO: add other conditionals here to deploy based on branchName
       console.log(`Deploying branch ${branchName} of repo ${repoName}`);
-      // Currently: sends build hook to deploy to docs-frontend-dotcomstg site
-      // TODO: DOP-5202, Send conditionally to build hooks of different sites ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal request received from
-      const resp = await axios.post(
-        `https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+${jobTitle}`,
-        { repoName: repoName, branchName: branchName },
-      );
+      if (slackCommand === '/netlify-test-deploy') {
+        // Currently: sends build hook to deploy to docs-frontend-dotcomstg site
+        // TODO: DOP-5202, Send conditionally to build hooks of different sites ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal request received from
+        // change value of slash commands and their associated build hooks to env vars retrieved from dbEnvVars
+        const resp = await axios.post(
+          `https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+${jobTitle}`,
+          { repoName: repoName, branchName: branchName },
+        );
+        return;
+      }
+      if (slackCommand === '/netlify-deploy') {
+        const resp = await axios.post(
+          `https://api.netlify.com/build_hooks/6744e9fd3344dd3955ccf135?trigger_branch=main&trigger_title=deployHook+${jobTitle}`,
+          { repoName: repoName, branchName: branchName },
+        );
+        return;
+      }
     }
+    throw new Error('Missing branchName or repoName');
   }
 };
 
