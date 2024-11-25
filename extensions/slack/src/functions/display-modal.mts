@@ -13,6 +13,7 @@ export default async (req: Request): Promise<Response> => {
   }
   const requestBody = await new Response(req.body).text();
   const key_val = getQSString(requestBody);
+  console.log(`key val: ${JSON.stringify(key_val)}`);
   const triggerId = key_val.trigger_id;
   const dbEnvVars = getDbConfig();
 
