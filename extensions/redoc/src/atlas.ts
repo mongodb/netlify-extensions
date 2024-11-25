@@ -1,17 +1,5 @@
 import { COLLECTION_NAME, db } from './utils/db';
-
-// do we want to change this line
-const env = process.env.SNOOTY_ENV ?? '';
-
-const OAS_FILE_SERVER =
-  env === 'dotcomprd'
-    ? 'https://mongodb-mms-prod-build-server.s3.amazonaws.com/openapi/'
-    : 'https://mongodb-mms-build-server.s3.amazonaws.com/openapi/';
-
-const GIT_HASH_URL =
-  env === 'dotcomprd'
-    ? 'https://cloud.mongodb.com/version'
-    : 'https://cloud-dev.mongodb.com/version';
+import type { ConfigEnvironmentVariables } from 'util/extension';
 
 export interface OASFile {
   api: string;
@@ -23,8 +11,8 @@ export interface OASFile {
 
 export type OASFilePartial = Pick<OASFile, 'gitHash' | 'versions'>;
 
-export const findLastSavedVersionData = async (apiKeyword: string) => {
-  const dbSession = await db();
+export const findLastSavedVersionData = async (apiKeyword: string, configEnvironment: ConfigEnvironmentVariables) => {
+  const dbSession = await db(configEnvironment);
   try {
     const projection = { gitHash: 1, versions: 1 };
     const filter = { api: apiKeyword };
@@ -42,6 +30,7 @@ interface AtlasSpecUrlParams {
   apiVersion?: string;
   resourceVersion?: string;
   latestResourceVersion?: string;
+  configEnvironment?: ConfigEnvironmentVariables;
 }
 
 export const getAtlasSpecUrl = async ({
@@ -49,7 +38,21 @@ export const getAtlasSpecUrl = async ({
   apiVersion,
   resourceVersion,
   latestResourceVersion,
+  configEnvironment
 }: AtlasSpecUrlParams) => {
+  // get the environemnt from netlify
+  const env = configEnvironment?.ENV ?? '';
+
+  const OAS_FILE_SERVER =
+    env === 'dotcomprd'
+      ? 'https://mongodb-mms-prod-build-server.s3.amazonaws.com/openapi/'
+      : 'https://mongodb-mms-build-server.s3.amazonaws.com/openapi/';
+
+  const GIT_HASH_URL =
+    env === 'dotcomprd'
+      ? 'https://cloud.mongodb.com/version'
+      : 'https://cloud-dev.mongodb.com/version';
+      
   // Currently, the only expected API fetched programmatically is the Cloud Admin API,
   // but it's possible to have more in the future with varying processes.
   const keywords = ['cloud'];
@@ -71,6 +74,7 @@ export const getAtlasSpecUrl = async ({
   let successfulGitHash = true;
 
   try {
+    const { fetchGitHash, resetGitHashCache } = createFetchGitHash(GIT_HASH_URL);
     const gitHash = await fetchGitHash();
     oasFileURL = `${OAS_FILE_SERVER}${gitHash}${versionExtension}.json`;
 
@@ -82,7 +86,7 @@ export const getAtlasSpecUrl = async ({
     const unsuccessfulOasFileURL = oasFileURL;
     successfulGitHash = false;
 
-    const res = await findLastSavedVersionData(apiKeyword);
+    const res = await findLastSavedVersionData(apiKeyword, configEnvironment);
     if (res) {
       ensureSavedVersionDataMatches(res.versions, apiVersion, resourceVersion);
       oasFileURL = `${OAS_FILE_SERVER}${res.gitHash}${versionExtension}.json`;
@@ -131,7 +135,7 @@ function ensureSavedVersionDataMatches(
   }
 }
 
-function createFetchGitHash() {
+function createFetchGitHash(GIT_HASH_URL: string) {
   let gitHashCache: string;
   return {
     fetchGitHash: async () => {
@@ -154,4 +158,4 @@ function createFetchGitHash() {
   };
 }
 
-const { fetchGitHash, resetGitHashCache } = createFetchGitHash();
+
