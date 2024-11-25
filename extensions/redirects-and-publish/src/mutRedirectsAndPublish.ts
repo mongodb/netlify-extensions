@@ -8,9 +8,11 @@ export const mutRedirectsAndPublish = async (
   configEnvironment: ConfigEnvironmentVariables,
   run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
-  console.log('THE CONFIGENVIR IS', configEnvironment);
   // Connect to mongodb and pool.docsets to get bucket
   const docsetEntry = configEnvironment?.DOCSET_ENTRY;
+  if (!docsetEntry) {
+    throw new Error ("Unable to retrive DOCSET_ENTRY");
+  }
   console.log('Succesfully got docsets entry:', docsetEntry);
 
   // We want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh
