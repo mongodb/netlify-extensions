@@ -51,9 +51,8 @@ export const mutRedirectsAndPublish = async (
     console.log('Running mut-redirects...');
     // TODO: Change hard coded `docs-landing` to whatever repo is being built after DOP-5159 is completed
     console.log('the repo name is', process.env.REPO_NAME);
-    const redirectPath = 'docs-landing/config/redirects';
     await run.command(
-      `${process.cwd()}/mut/mut-redirects ${redirectPath} -o public/.htaccess`,
+      `${process.cwd()}/mut/mut-redirects ${process.env.REPO_NAME}/config/redirects -o public/.htaccess`,
     );
   } catch (e) {
     console.log(`Error occurred while running mut-redirects: ${e}`);
