@@ -8,6 +8,7 @@ export const mutRedirectsAndPublish = async (
   configEnvironment: ConfigEnvironmentVariables,
   run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
+  console.log('THE CONFIGENVIR IS', configEnvironment);
   // Connect to mongodb and pool.docsets to get bucket
   const docsetEntry = configEnvironment?.DOCSET_ENTRY;
   console.log('Succesfully got docsets entry:', docsetEntry);
