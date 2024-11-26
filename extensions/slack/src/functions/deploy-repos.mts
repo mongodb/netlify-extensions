@@ -38,9 +38,8 @@ export default async (req: Request) => {
     return response;
   }
 
-  const slackCommand = parsed.view?.private_metadata;
+  const slackCommand = parsed.view?.callback_id;
 
-  console.log(parsed.view?.callback_id);
   const user = parsed.user?.username;
   const stateValues = parsed.view?.state?.values;
   const selectedRepos =
