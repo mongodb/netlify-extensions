@@ -28,12 +28,9 @@ export default async (req: Request): Promise<Response> => {
     return new Response('Slack request not validated', { status: 400 });
   }
 
-  const dbName = command === '/netlify-test-deploy' ? 'pool_test' : 'pool';
-  console.log(dbName);
   const reposBranchesCollection = await getReposBranchesCollection({
     clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
-    // TODO: DOP-5202, Change this conditionally to 'pool' or 'pool_test' depending on which slash command has been triggered
-    databaseName: dbName,
+    databaseName: command === '/netlify-test-deploy' ? 'pool_test' : 'pool',
     collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
     extensionName: EXTENSION_NAME,
   });
