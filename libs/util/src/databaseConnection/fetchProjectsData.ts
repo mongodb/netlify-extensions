@@ -1,6 +1,6 @@
 import type * as mongodb from 'mongodb';
 import { getClusterZeroDb } from './clusterZeroConnector';
-import type { ProjectMetadataDocument } from './types';
+import type { ProjectsDocument } from './types';
 
 // Get Projects collection of Docs_metadata database
 export const getProjectsCollection = async ({
@@ -13,11 +13,11 @@ export const getProjectsCollection = async ({
   databaseName: string;
   collectionName: string;
   extensionName?: string;
-}): Promise<mongodb.Collection<ProjectMetadataDocument>> => {
+}): Promise<mongodb.Collection<ProjectsDocument>> => {
   const dbSession = await getClusterZeroDb({
     clusterZeroURI,
     databaseName,
     appName: extensionName ?? '',
   });
-  return dbSession.collection<ProjectMetadataDocument>(collectionName);
+  return dbSession.collection<ProjectsDocument>(collectionName);
 };

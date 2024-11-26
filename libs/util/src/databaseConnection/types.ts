@@ -1,3 +1,5 @@
+import type { ObjectId } from 'mongodb';
+
 export type Environments = 'dev' | 'stg' | 'dotcomstg' | 'prd' | 'dotcomprd';
 
 export type EnvironmentConfig = {
@@ -65,7 +67,7 @@ export type SearchDocument = {
   includeInGlobalSearch: boolean;
 };
 
-export type ProjectMetadataDocument = {
+export type ProjectsDocument = {
   name: string;
   owner: string;
   baseUrl: string;
@@ -76,6 +78,25 @@ export type ProjectMetadataDocument = {
   jira: {
     component: string;
   };
+};
+
+export type OASFilesDocument = {
+  api: string;
+  fileContent: string;
+  gitHash: string;
+  version: Record<string, Array<string>>;
+};
+
+export type DocumentsDocument = {
+  page_id: string;
+  filename: string;
+  ast: any;
+  source: string;
+  static_assets: Array<any>;
+  github_username: string;
+  facets?: Array<Record<string, any>>;
+  build_id: ObjectId;
+  created_at: Date;
 };
 
 export type OrganizationName = 'mongodb' | '10gen';

@@ -16,6 +16,7 @@ import type {
   ReposBranchesDocument,
   SearchDBName,
   SnootyDBName,
+  ProjectsDocument,
 } from './databaseConnection/types';
 import { getDbConfig, type StaticEnvVars } from './assertDbEnvVars';
 
@@ -144,8 +145,11 @@ export class Extension<
   };
 }
 
+export type GithubOrganizations = 'MongoDB' | '10gen';
 export type ConfigEnvironmentVariables = Partial<{
-  BRANCH: string;
+  BRANCH_NAME: string;
+  REPO_NAME: string;
+  ORG: GithubOrganizations;
   SITE_NAME: string;
   INCOMING_HOOK_URL: string;
   INCOMING_HOOK_TITLE: string;
@@ -154,6 +158,7 @@ export type ConfigEnvironmentVariables = Partial<{
   REPO_ENTRY: ReposBranchesDocument;
   DOCSET_ENTRY: DocsetsDocument;
   BRANCH_ENTRY: BranchEntry;
+  PROJECTS_ENTRY: ProjectsDocument;
   POOL_DB_NAME: PoolDBName;
   SEARCH_DB_NAME: SearchDBName;
   SNOOTY_DB_NAME: SnootyDBName;
