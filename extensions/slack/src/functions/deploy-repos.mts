@@ -29,8 +29,6 @@ export default async (req: Request) => {
   const decoded = decodeURIComponent(requestBody).split('=')[1];
   // TODO: Create an interface for slack view_submission payloads
   const parsed = JSON.parse(decoded);
-  console.log(JSON.stringify(parsed));
-  console.log(`keys: ${Object.keys(parsed)}`);
 
   if (parsed?.type !== 'view_submission') {
     const response = new Response(
@@ -53,7 +51,6 @@ export default async (req: Request) => {
   //   parsed?.user?.id,
   // );
 
-  // TODO: send branch name, payload in POST request, DOP-5201
   console.log(`Selected repos: ${JSON.stringify(selectedRepos)}`);
 
   for (const individualRepo of selectedRepos) {
