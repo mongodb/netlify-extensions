@@ -37,6 +37,7 @@ export function getDropDownView({
     trigger_id: triggerId,
     view: {
       private_metadata: slackCommand,
+      callback_id: 'testing id',
       type: 'modal',
       title: {
         type: 'plain_text',
@@ -102,6 +103,7 @@ export type dropdownView = {
     submit: slackBlock;
     close: slackBlock;
     private_metadata: string;
+    callback_id: string;
     blocks: [
       {
         type: 'input';
