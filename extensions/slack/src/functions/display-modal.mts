@@ -13,7 +13,6 @@ export default async (req: Request): Promise<Response> => {
   }
   const requestBody = await new Response(req.body).text();
   const key_val = getQSString(requestBody);
-  console.log(`key val: ${JSON.stringify(key_val)}`);
   const triggerId = key_val.trigger_id;
   const command = decodeURIComponent(key_val.command);
   const dbEnvVars = getDbConfig();
@@ -29,10 +28,12 @@ export default async (req: Request): Promise<Response> => {
     return new Response('Slack request not validated', { status: 400 });
   }
 
+  const dbName = command === '/netlify-test-deploy' ? 'pool_test' : 'pool';
+  console.log(dbName);
   const reposBranchesCollection = await getReposBranchesCollection({
     clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
     // TODO: DOP-5202, Change this conditionally to 'pool' or 'pool_test' depending on which slash command has been triggered
-    databaseName: 'pool',
+    databaseName: dbName,
     collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
     extensionName: EXTENSION_NAME,
   });
