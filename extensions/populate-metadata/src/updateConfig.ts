@@ -54,12 +54,11 @@ const determineEnvironment = ({
   ];
   const isFrontendBuild = frontendSites.includes(siteName);
 
-  //Writer's builds = prd, everything not built on a site with 'Snooty' as git source
+  //Writer's builds = prd, everything not built on a frontend site (a site with 'Snooty' as git source)
   if (!isFrontendBuild) {
     return 'prd';
   }
   if (isBuildHookDeploy) {
-    //TODO: DOP-5201, check hook URL
     if (siteName === 'docs-frontend-dotcomprd') {
       return 'dotcomprd';
     }
@@ -77,7 +76,6 @@ export const updateConfig = async ({
   dbEnvVars: StaticEnvVars;
 }): Promise<void> => {
   // Checks if build was triggered by a webhook
-  // TODO: DOP-5201, add specific logic dependent on hook title, url, body, etc. once Slack deploy apps have been implemented
   const isBuildHookDeploy = !!(
     configEnvironment.INCOMING_HOOK_URL && configEnvironment.INCOMING_HOOK_TITLE
   );
@@ -114,13 +112,6 @@ export const updateConfig = async ({
       process.env.REPO_NAME ??
       (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
   } else {
-    // branchName =
-    //   process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
-    // repoName =
-    //   process.env.REPO_NAME ??
-    //   (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
-
-    // TODO: DOP-5201, Branch name and repo name to deploy sent as values in Build Hook payload if in dotcomprd or dotcomstg environments
     console.log(`Incoming hook body ${configEnvironment?.INCOMING_HOOK_BODY}`);
     repoName = JSON.parse(
       configEnvironment?.INCOMING_HOOK_BODY as string,
@@ -147,7 +138,6 @@ export const updateConfig = async ({
     poolDbName: configEnvironment.POOL_DB_NAME,
     environment: buildEnvironment,
   });
-  console.log(metadataEntry);
   configEnvironment.ORG = metadataEntry.github.organization;
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = buildEnvironment;
@@ -168,6 +158,8 @@ export const updateConfig = async ({
     configEnvironment.DOCSET_ENTRY,
     '\n BRANCH ENTRY: ',
     configEnvironment.BRANCH_ENTRY,
+    '\n METADATA ENTRY: ',
+    configEnvironment.METADATA_ENTRY,
     '\n POOL DB NAME: ',
     configEnvironment.POOL_DB_NAME,
     '\n SEARCH DB NAME: ',

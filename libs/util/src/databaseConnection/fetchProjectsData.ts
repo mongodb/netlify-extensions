@@ -1,7 +1,8 @@
 import type * as mongodb from 'mongodb';
-import { getPoolDb } from './clusterZeroConnector';
+import { getClusterZeroDb } from './clusterZeroConnector';
 import type { ProjectMetadataDocument } from './types';
 
+// Get Projects collection of Docs_metadata database
 export const getProjectsCollection = async ({
   clusterZeroURI,
   databaseName,
@@ -13,7 +14,7 @@ export const getProjectsCollection = async ({
   collectionName: string;
   extensionName?: string;
 }): Promise<mongodb.Collection<ProjectMetadataDocument>> => {
-  const dbSession = await getPoolDb({
+  const dbSession = await getClusterZeroDb({
     clusterZeroURI,
     databaseName,
     appName: extensionName ?? '',
