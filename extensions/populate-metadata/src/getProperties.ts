@@ -1,8 +1,8 @@
 import type { StaticEnvVars, Environments } from 'util/assertDbEnvVars';
-import { closePoolDb } from 'util/databaseConnection/clusterZeroConnector';
+import { closeClusterZeroDb } from 'util/databaseConnection/clusterZeroConnector';
 import { getDocsetsCollection } from 'util/databaseConnection/fetchDocsetsData';
 import { getReposBranchesCollection } from 'util/databaseConnection/fetchReposBranchesData';
-import { getProjectsCollection } from 'util/databaseConnection/fetchMetadataData';
+import { getProjectsCollection } from 'util/databaseConnection/fetchProjectsData';
 
 import type {
   PoolDBName,
@@ -12,7 +12,6 @@ import type {
   ProjectMetadataDocument,
   ClusterZeroDBName,
 } from 'util/databaseConnection/types';
-import type { nativeEnum } from 'zod';
 const EXTENSION_NAME = 'populate-metadata-extension';
 
 const getEnvProjection = (env?: Environments) => {
@@ -184,7 +183,7 @@ export const getProperties = async ({
     projectName: repo.project,
   });
 
-  closePoolDb();
+  closeClusterZeroDb();
 
   return { repo, docsetEntry, metadataEntry };
 };

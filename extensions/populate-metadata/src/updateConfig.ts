@@ -126,11 +126,7 @@ export const updateConfig = async ({
     configEnvironment.BRANCH_NAME = branchName;
     configEnvironment.REPO_NAME = repoName;
   }
-  // process.env.BRANCH_NAME = 'master';
-  // branchName = 'master';
-  // repoName = 'docs-bi-connector';
-  // configEnvironment.REPO_NAME = 'docs-bi-connector';
-  console.log(process.env.REPO_NAME, configEnvironment.REPO_NAME);
+
   const { repo, docsetEntry, metadataEntry } = await getProperties({
     branchName,
     repoName,
@@ -146,7 +142,6 @@ export const updateConfig = async ({
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
   configEnvironment.DOCSET_ENTRY = docsetEntry;
-  // process.env.ORG_NAME = docsetEntry;
   configEnvironment.BRANCH_ENTRY = branch?.pop();
 
   console.info(
