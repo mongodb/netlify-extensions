@@ -30,6 +30,7 @@ export default async (req: Request): Promise<Response> => {
 
   const reposBranchesCollection = await getReposBranchesCollection({
     clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
+    // TODO: DOP-5214, store these values as env var constants
     databaseName: command === '/netlify-test-deploy' ? 'pool_test' : 'pool',
     collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
     extensionName: EXTENSION_NAME,
