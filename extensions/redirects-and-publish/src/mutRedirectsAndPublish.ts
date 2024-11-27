@@ -14,6 +14,9 @@ export const mutRedirectsAndPublish = async (
   if (!docsetEntry) {
     throw new Error ("Unable to retrive DOCSET_ENTRY");
   }
+  if (!branchEntry) {
+    throw new Error ("Unable to retrive BRANCH_ENTRY");
+  }
   console.log('Succesfully got docsets entry:', docsetEntry);
 
   // TODOOOOO
