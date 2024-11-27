@@ -1,4 +1,4 @@
-import type { ConfigEnvironmentVariables } from './types';
+import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { NetlifyPluginUtils } from '@netlify/build';
 
 const MUT_VERSION = process.env.MUT_VERSION;
@@ -85,7 +85,9 @@ export const mutRedirectsAndPublish = async (
   try {
     console.log('Running mut-publish...');
     if (!docsetEntry?.bucket || !docsetEntry?.prefix || !docsetEntry?.url) {
-      throw new Error(`DocsetEntry information missing. bucket: ${docsetEntry?.bucket }, ...etc`);
+      throw new Error(
+        `DocsetEntry information missing. bucket: ${docsetEntry?.bucket}, ...etc`,
+      );
     }
 
     // TODO: In future we change to docsetEntry?.prefix?.[configEnvironment.ENV] and docsetEntry?.url?.[configEnvironment.ENV] (DOP-5178)

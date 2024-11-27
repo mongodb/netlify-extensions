@@ -1,12 +1,12 @@
 [build]
-command = "netlify-extension build"
+command = "pnpm build"
 publish = ".ntli/site/static"
-
-[dev]
-command = "netlify-extension dev"
 
 [functions]
 directory = "src/endpoints"
+
+[dev]
+command = "netlify-extension dev"
 
 [[plugins]]
 package = "@netlify/netlify-plugin-netlify-extension"

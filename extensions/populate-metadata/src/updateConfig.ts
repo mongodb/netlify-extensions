@@ -55,6 +55,7 @@ const determineEnvironment = ({
   const isFrontendBuild = frontendSites.includes(siteName);
 
   //Writer's builds = prd, everything not built on a frontend site (a site with 'Snooty' as git source)
+
   if (!isFrontendBuild) {
     return 'prd';
   }

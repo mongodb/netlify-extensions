@@ -12,7 +12,7 @@ export type EnvironmentConfig = {
 
 export type DocsetsDocument = {
   project: string;
-  bucket: string;
+  bucket: EnvironmentConfig;
   url: EnvironmentConfig;
   prefix: EnvironmentConfig;
 };

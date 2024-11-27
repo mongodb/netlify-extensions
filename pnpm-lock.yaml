@@ -259,6 +259,88 @@ importers:
         specifier: ^5.4.9
         version: 5.4.10(@types/node@22.9.0)
 
+  extensions/redirects-and-publish:
+    dependencies:
+      '@netlify/build':
+        specifier: ^29.56.0
+        version: 29.56.0(@opentelemetry/api@1.8.0)(@types/node@22.9.0)
+      '@netlify/functions':
+        specifier: ^2.8.2
+        version: 2.8.2
+      '@netlify/sdk':
+        specifier: ^2.8.0
+        version: 2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+      '@tanstack/react-query':
+        specifier: ^5.59.16
+        version: 5.59.16(react@18.3.1)
+      '@trpc/client':
+        specifier: ^11.0.0-rc.477
+        version: 11.0.0-rc.604(@trpc/server@11.0.0-rc.604)
+      '@trpc/react-query':
+        specifier: ^11.0.0-rc.477
+        version: 11.0.0-rc.604(@tanstack/react-query@5.59.16(react@18.3.1))(@trpc/client@11.0.0-rc.604(@trpc/server@11.0.0-rc.604))(@trpc/server@11.0.0-rc.604)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@trpc/server':
+        specifier: ^11.0.0-rc.477
+        version: 11.0.0-rc.604
+      fs:
+        specifier: ^0.0.1-security
+        version: 0.0.1-security
+      mongodb:
+        specifier: ^6.10.0
+        version: 6.10.0(socks@2.8.3)
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@netlify/netlify-plugin-netlify-extension':
+        specifier: ^1.0.3
+        version: 1.0.3
+      '@tsconfig/node18':
+        specifier: ^18.2.4
+        version: 18.2.4
+      '@tsconfig/recommended':
+        specifier: ^1.0.8
+        version: 1.0.8
+      '@tsconfig/strictest':
+        specifier: ^2.0.5
+        version: 2.0.5
+      '@tsconfig/vite-react':
+        specifier: ^3.0.2
+        version: 3.0.2
+      '@types/react':
+        specifier: ^18.3.12
+        version: 18.3.12
+      '@types/react-dom':
+        specifier: ^18.3.1
+        version: 18.3.1
+      '@vitejs/plugin-react':
+        specifier: ^4.3.3
+        version: 4.3.3(vite@5.4.10(@types/node@22.9.0))
+      autoprefixer:
+        specifier: ^10.4.20
+        version: 10.4.20(postcss@8.4.47)
+      netlify-cli:
+        specifier: ^17.37.1
+        version: 17.37.2(@types/express@4.17.21)(@types/node@22.9.0)
+      tailwindcss:
+        specifier: ^3.4.14
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+      typescript:
+        specifier: ^5.6.3
+        version: 5.6.3
+      util:
+        specifier: workspace:*
+        version: link:../../libs/util
+      vite:
+        specifier: ^5.4.10
+        version: 5.4.10(@types/node@22.9.0)
+
   extensions/redoc:
     dependencies:
       '@netlify/netlify-plugin-netlify-extension':
@@ -359,6 +441,85 @@ importers:
       vitest:
         specifier: ^2.0.5
         version: 2.1.4(@types/node@20.17.5)(happy-dom@15.11.3)(jsdom@20.0.3)
+
+  extensions/slack:
+    dependencies:
+      '@netlify/functions':
+        specifier: ^2.8.2
+        version: 2.8.2
+      '@netlify/sdk':
+        specifier: ^2.6.0
+        version: 2.8.2(@google-cloud/storage@5.20.5)(@trpc/server@11.0.0-rc.604)(@types/react@18.3.12)(autoprefixer@10.4.20(postcss@8.4.47))(graphql@16.9.0)(postcss@8.4.47)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+      '@tanstack/react-query':
+        specifier: ^5.59.6
+        version: 5.59.16(react@18.3.1)
+      '@trpc/client':
+        specifier: ^11.0.0-rc.477
+        version: 11.0.0-rc.604(@trpc/server@11.0.0-rc.604)
+      '@trpc/react-query':
+        specifier: ^11.0.0-rc.477
+        version: 11.0.0-rc.604(@tanstack/react-query@5.59.16(react@18.3.1))(@trpc/client@11.0.0-rc.604(@trpc/server@11.0.0-rc.604))(@trpc/server@11.0.0-rc.604)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@trpc/server':
+        specifier: ^11.0.0-rc.477
+        version: 11.0.0-rc.604
+      axios:
+        specifier: ^1.7.7
+        version: 1.7.7
+      mongodb:
+        specifier: ^6.9.0
+        version: 6.10.0(socks@2.8.3)
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@netlify/netlify-plugin-netlify-extension':
+        specifier: ^1.0.3
+        version: 1.0.3
+      '@tsconfig/node18':
+        specifier: ^18.2.4
+        version: 18.2.4
+      '@tsconfig/recommended':
+        specifier: ^1.0.7
+        version: 1.0.8
+      '@tsconfig/strictest':
+        specifier: ^2.0.5
+        version: 2.0.5
+      '@tsconfig/vite-react':
+        specifier: ^3.0.2
+        version: 3.0.2
+      '@types/react':
+        specifier: ^18.3.11
+        version: 18.3.12
+      '@types/react-dom':
+        specifier: ^18.3.0
+        version: 18.3.1
+      '@vitejs/plugin-react':
+        specifier: ^4.3.2
+        version: 4.3.3(vite@5.4.10(@types/node@22.9.0))
+      autoprefixer:
+        specifier: ^10.4.20
+        version: 10.4.20(postcss@8.4.47)
+      netlify-cli:
+        specifier: ^17.36.4
+        version: 17.37.2(@types/express@4.17.21)(@types/node@22.9.0)
+      tailwindcss:
+        specifier: ^3.4.13
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+      typescript:
+        specifier: ^5.6.3
+        version: 5.6.3
+      util:
+        specifier: workspace:*
+        version: link:../../libs/util
+      vite:
+        specifier: ^5.4.8
+        version: 5.4.10(@types/node@22.9.0)
 
   extensions/snooty-cache:
     dependencies:
@@ -13204,7 +13365,7 @@ snapshots:
 
   '@stackbit/artisanal-names@1.0.1': {}
 
-  '@stackbit/cms-contentful@0.4.56(graphql@16.9.0)':
+  '@stackbit/cms-contentful@0.4.56':
     dependencies:
       '@contentful/rich-text-types': 15.15.1
       '@stackbit/cms-core': 2.0.1(graphql@16.9.0)
@@ -13216,7 +13377,6 @@ snapshots:
     transitivePeerDependencies:
       - debug
       - encoding
-      - graphql
       - supports-color
 
   '@stackbit/cms-core@2.0.1(graphql@16.9.0)':
@@ -13251,7 +13411,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@stackbit/cms-git@0.4.18(graphql@16.9.0)':
+  '@stackbit/cms-git@0.4.18':
     dependencies:
       '@stackbit/artisanal-names': 1.0.1
       '@stackbit/cms-core': 2.0.1(graphql@16.9.0)
@@ -13265,15 +13425,11 @@ snapshots:
       micromatch: 4.0.8
       slugify: 1.6.6
     transitivePeerDependencies:
-      - bufferutil
-      - canvas
       - debug
       - encoding
-      - graphql
       - supports-color
-      - utf-8-validate
 
-  '@stackbit/cms-sanity@0.2.56(graphql@16.9.0)':
+  '@stackbit/cms-sanity@0.2.56':
     dependencies:
       '@sanity/block-tools': 2.36.2
       '@sanity/client': 3.4.1
@@ -13293,18 +13449,17 @@ snapshots:
       - canvas
       - debug
       - encoding
-      - graphql
       - supports-color
       - utf-8-validate
 
-  '@stackbit/dev-common@0.5.51(graphql@16.9.0)':
+  '@stackbit/dev-common@0.5.51':
     dependencies:
       '@iarna/toml': 2.2.5
       '@stackbit/artisanal-names': 1.0.1
-      '@stackbit/cms-contentful': 0.4.56(graphql@16.9.0)
+      '@stackbit/cms-contentful': 0.4.56
       '@stackbit/cms-core': 2.0.1(graphql@16.9.0)
-      '@stackbit/cms-git': 0.4.18(graphql@16.9.0)
-      '@stackbit/cms-sanity': 0.2.56(graphql@16.9.0)
+      '@stackbit/cms-git': 0.4.18
+      '@stackbit/cms-sanity': 0.2.56
       '@stackbit/sdk': 2.0.1
       '@stackbit/types': 1.0.1
       '@stackbit/utils': 0.4.19
@@ -13330,15 +13485,14 @@ snapshots:
       - canvas
       - debug
       - encoding
-      - graphql
       - supports-color
       - utf-8-validate
 
   '@stackbit/dev@1.0.35(graphql@16.9.0)':
     dependencies:
       '@stackbit/cms-core': 2.0.1(graphql@16.9.0)
-      '@stackbit/cms-git': 0.4.18(graphql@16.9.0)
-      '@stackbit/dev-common': 0.5.51(graphql@16.9.0)
+      '@stackbit/cms-git': 0.4.18
+      '@stackbit/dev-common': 0.5.51
       '@stackbit/sdk': 2.0.1
       axios: 0.25.0
       chalk: 4.1.2
