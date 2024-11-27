@@ -95,7 +95,7 @@ export const mutRedirectsAndPublish = async (
       [
         'public',
         `${docsetEntry?.bucket?.dotcomstg}`,
-        `--prefix=/${docsetEntry?.prefix?.dotcomstg}`,
+        `--prefix=/${docsetEntry?.prefix?.dotcomstg}`, // depnds on branch name 
         '--deploy',
         `--deployed-url-prefix=s${docsetEntry?.url?.dotcomstg}`,
         '--json',

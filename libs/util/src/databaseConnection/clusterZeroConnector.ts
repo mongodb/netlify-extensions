@@ -2,7 +2,7 @@ import type * as mongodb from 'mongodb';
 import { teardown, dbClient } from './clusterConnector';
 
 let clusterZeroClient: mongodb.MongoClient;
-
+//create another function like this one
 export const getPoolDb = async ({
   clusterZeroURI,
   databaseName,
