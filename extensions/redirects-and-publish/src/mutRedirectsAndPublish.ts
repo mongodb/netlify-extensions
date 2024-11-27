@@ -22,6 +22,7 @@ export const mutRedirectsAndPublish = async (
   // TODOOOOO
   // create funciton that pass the brnachentry and return all the branchNames
   // changes variables to constants that make sense
+  // hello 
   console.log("the branch entry is ", branchEntry);
   const branchNames = branchEntry?.urlAliases;
 
