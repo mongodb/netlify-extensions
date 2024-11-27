@@ -29,12 +29,15 @@ export type SearchClusterConnectionInfo = {
   extensionName: string;
 };
 
+// ADD ALIAS
 export interface BranchEntry {
   name?: string;
   gitBranchName: string;
   urlSlug: string;
   isStableBranch: boolean;
   active: boolean;
+  urlAliases: Array<string>;
+  publishOriginalBranchName: boolean;
 }
 
 export interface ReposBranchesDocument {
