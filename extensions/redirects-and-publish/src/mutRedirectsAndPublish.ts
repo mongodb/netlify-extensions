@@ -33,6 +33,7 @@ export const mutRedirectsAndPublish = async (
   // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
   process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.dotcomstg}`;
   process.env.GATSBY_PARSER_USER = 'buildbot';
+  
   await run.command('npm ci');
   await run.command('npm run clean');
   await run.command('npm run build');
