@@ -7,6 +7,8 @@ const extension = new Extension({
   isEnabled: envVarToBool(process.env.REDOC_ENABLED),
 });
 const BUNDLE_PATH = `${process.cwd()}/bundle`;
+
+//TODO: set this in netlify.toml or db env vars
 const REDOC_CLI_VERSION = '1.2.3';
 
 export interface OASPageMetadata {
@@ -45,6 +47,7 @@ extension.addBuildEventHandler(
 
 // handle building the redoc pages
 extension.addBuildEventHandler('onPostBuild', async ({ utils: { run } }) => {
+  // TODO: remove this conditional
   if (!process.env.REDOC_ENABLED) return;
   console.log('=========== Redoc Extension Begin ================');
   await run.command('unzip -o bundle.zip -d bundle');
@@ -62,6 +65,7 @@ extension.addBuildEventHandler('onPostBuild', async ({ utils: { run } }) => {
   }
 
   const openapiPagesEntries = Object.entries(openapiPages);
+  //TODO: set this in netlify.toml or db env vars
   const siteUrl = process.env.DEPLOY_PRIME_URL || '';
 
   await buildOpenAPIPages(openapiPagesEntries, { siteTitle, siteUrl }, run);
