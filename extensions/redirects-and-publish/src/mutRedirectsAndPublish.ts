@@ -8,7 +8,7 @@ export const mutRedirectsAndPublish = async (
   configEnvironment: ConfigEnvironmentVariables,
   run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
-  // Get in from pool.docsets to get bucket
+  // Get it from pool.docsets to get bucket
   const docsetEntry = configEnvironment?.DOCSET_ENTRY;
   const branchEntry = configEnvironment?.BRANCH_ENTRY;
   if (!docsetEntry) {
