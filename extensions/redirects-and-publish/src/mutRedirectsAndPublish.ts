@@ -8,7 +8,7 @@ export const mutRedirectsAndPublish = async (
   configEnvironment: ConfigEnvironmentVariables,
   run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
-  // Connect to mongodb and pool.docsets to get bucket
+  // Get in from pool.docsets to get bucket
   const docsetEntry = configEnvironment?.DOCSET_ENTRY;
   const branchEntry = configEnvironment?.BRANCH_ENTRY;
   if (!docsetEntry) {
@@ -17,20 +17,17 @@ export const mutRedirectsAndPublish = async (
   if (!branchEntry) {
     throw new Error ("Unable to retrive BRANCH_ENTRY");
   }
-  console.log('Succesfully got docsets entry:', docsetEntry);
+  console.log('Succesfully got docsets_entry:', docsetEntry);
+  console.log('Succesfylly got branch_entry', branchEntry);
 
-  // TODOOOOO
-  // create funciton that pass the brnachentry and return all the branchNames
-  // changes variables to constants that make sense
-  // hello 
-  console.log("the branch entry is ", branchEntry);
+  // get the array of the all the possible alisas 
   const branchNames = branchEntry?.urlAliases;
 
+  // add current branch  to list of aliases
   if (!!(branchEntry?.publishOriginalBranchName)) {
     branchNames.push(branchEntry.gitBranchName);
   }
 
-  console.log('the urlslug is', configEnvironment?.BRANCH_ENTRY?.urlSlug);
   // We want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh
   // We do this so when we run mut-publish we are able to uplaod the correct files with the correct paths
   await run.command('rm -f -r running-mut');
@@ -46,7 +43,6 @@ export const mutRedirectsAndPublish = async (
   } 
 
   console.log('Downloading Mut...', configEnvironment?.SITE_NAME);
-
   await run('curl', [
     '-L',
     '-o',
@@ -67,20 +63,16 @@ export const mutRedirectsAndPublish = async (
     throw new Error('Credentials not found');
   }
 
-  //FOR LOOP ------------------------------------------------------------------------------------------------------------------------------
-  for (const name of branchNames) {
-
-  
+  for (const branch of branchNames) {
+    // Building snooty ------------------------------------------------------------
     // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
-    // building snooty 
-    const prefix = `/${docsetEntry?.prefix?.dotcomstg}/${name}`;
-    process.env.PATH_PREFIX = prefix // THIS WILL CHANGE EACH LOOP
+    const prefix = `/${docsetEntry?.prefix?.dotcomstg}/${branch}`;
+    process.env.PATH_PREFIX = prefix;
     await run.command('npm ci');
     await run.command('npm run clean');
     await run.command('npm run build');
 
     // Running mut-redirects -------------------------------------------------------
-  
     try {
       console.log('Running mut-redirects...');
       // TODO: Change hard coded `docs-landing` to whatever repo is being built after DOP-5159 is completed
@@ -93,9 +85,6 @@ export const mutRedirectsAndPublish = async (
     }
 
     //Running mut-publish ----------------------------------------------------------
-
-
-
     console.log('Start of the mut-publish plugin -----------');
 
     /*Usage: mut-publish <source> <bucket> --prefix=prefix
@@ -119,7 +108,7 @@ export const mutRedirectsAndPublish = async (
         [
           'public',
           `${docsetEntry?.bucket?.dotcomstg}`,
-          `--prefix=${prefix}`, // depnds on branch name 
+          `--prefix=${prefix}`,
           '--deploy',
           `--deployed-url-prefix=s${docsetEntry?.url?.dotcomstg}`,
           '--json',
