@@ -34,9 +34,11 @@ export type SearchClusterConnectionInfo = {
 export type BranchEntry = {
   name?: string;
   gitBranchName: string;
-  urlSlug: string;
-  isStableBranch: boolean;
   active: boolean;
+  isStableBranch: boolean;
+  urlSlug: string;
+  publishOriginalBranchName: boolean;
+  urlAliases: Array<string>;
 };
 
 export type ReposBranchesDocument = {
@@ -84,19 +86,53 @@ export type OASFilesDocument = {
   api: string;
   fileContent: string;
   gitHash: string;
-  version: Record<string, Array<string>>;
+  versions: Record<string, Array<string>>;
+  lastUpdated: Date;
 };
+
+export type OASFilePartial = Pick<OASFilesDocument, 'gitHash' | 'versions'>;
 
 export type DocumentsDocument = {
   page_id: string;
   filename: string;
-  ast: any;
+  ast: Ast;
   source: string;
-  static_assets: Array<any>;
+  static_assets: Array<StaticAsset>;
   github_username: string;
-  facets?: Array<Record<string, any>>;
+  facets?: Array<facet>;
   build_id: ObjectId;
   created_at: Date;
+};
+
+export type facet = {
+  category: string;
+  value: string;
+  sub_facets: Array<facet>;
+  display_name: string;
+};
+
+type StaticAsset = {
+  checksum: string;
+  key: string;
+  updated_at?: Date;
+};
+
+type Ast = {
+  type: string;
+  position: Record<string, Record<string, number>>;
+  children: Array<Ast>;
+  fileid: string;
+  options: {
+    headings?: Array<AstHeadings>;
+  };
+};
+
+type AstHeadings = {
+  depth: number;
+  id: string;
+  title: Array<Record<string, string>>;
+  // biome-ignore lint/suspicious/noExplicitAny: <Most selector_id fields appear to be nullish>
+  selector_ids: any;
 };
 
 export type OrganizationName = 'mongodb' | '10gen';
