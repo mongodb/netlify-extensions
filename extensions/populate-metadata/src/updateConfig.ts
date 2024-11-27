@@ -8,7 +8,6 @@ import { getProperties } from './getProperties';
 import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { StaticEnvVars } from 'util/assertDbEnvVars';
 
-// use this function instead
 const getDbNames = (
   env: Environments,
 ): { snootyDb: SnootyDBName; searchDb: SearchDBName; poolDb: PoolDBName } => {

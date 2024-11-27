@@ -28,6 +28,7 @@ export const mutRedirectsAndPublish = async (
     branchNames.push(branchEntry.gitBranchName);
   }
 
+  console.log('the branch names are', branchNames);
   // We want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh
   // We do this so when we run mut-publish we are able to uplaod the correct files with the correct paths
   await run.command('rm -f -r running-mut');
