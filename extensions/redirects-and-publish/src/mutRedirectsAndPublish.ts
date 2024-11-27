@@ -10,13 +10,23 @@ export const mutRedirectsAndPublish = async (
 ): Promise<void> => {
   // Connect to mongodb and pool.docsets to get bucket
   const docsetEntry = configEnvironment?.DOCSET_ENTRY;
+  const branchEntry = configEnvironment?.BRANCH_ENTRY;
   if (!docsetEntry) {
     throw new Error ("Unable to retrive DOCSET_ENTRY");
   }
   console.log('Succesfully got docsets entry:', docsetEntry);
 
-  console.log('the urlslug is', configEnvironment?.BRANCH_ENTRY?.urlSlug);
+  // TODOOOOO
+  // create funciton that pass the brnachentry and return all the branchNames
+  // changes variables to constants that make sense
+  console.log("the branch entry is ", branchEntry);
+  const branchNames = branchEntry?.urlAliases;
 
+  if (!!(branchEntry?.publishOriginalBranchName)) {
+    branchNames.push(branchEntry.gitBranchName);
+  }
+
+  console.log('the urlslug is', configEnvironment?.BRANCH_ENTRY?.urlSlug);
   // We want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh
   // We do this so when we run mut-publish we are able to uplaod the correct files with the correct paths
   await run.command('rm -f -r running-mut');
@@ -31,15 +41,6 @@ export const mutRedirectsAndPublish = async (
     process.chdir(`${process.cwd()}/running-mut/snooty/repo`);
   } 
 
-  process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
-  // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
-  process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.dotcomstg}`;
-  process.env.GATSBY_PARSER_USER = 'buildbot';
-  await run.command('npm ci');
-  await run.command('npm run clean');
-  await run.command('npm run build');
-
-  // Running mut-redirects -------------------------------------------------------
   console.log('Downloading Mut...', configEnvironment?.SITE_NAME);
 
   await run('curl', [
@@ -50,19 +51,9 @@ export const mutRedirectsAndPublish = async (
   ]);
 
   await run.command('unzip -d . -qq mut.zip');
-
-  try {
-    console.log('Running mut-redirects...');
-    // TODO: Change hard coded `docs-landing` to whatever repo is being built after DOP-5159 is completed
-    console.log('the repo name is', process.env.REPO_NAME);
-    await run.command(
-      `${process.cwd()}/mut/mut-redirects ${process.env.REPO_NAME}/config/redirects -o public/.htaccess`,
-    );
-  } catch (e) {
-    console.log(`Error occurred while running mut-redirects: ${e}`);
-  }
-
-  //Running mut-publish ----------------------------------------------------------
+ 
+  process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
+  process.env.GATSBY_PARSER_USER = 'buildbot';
 
   //TODO: Mut and populate-metadata extensions use different env variable names for the same values (set to team wide in future)
   process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY;
@@ -72,38 +63,68 @@ export const mutRedirectsAndPublish = async (
     throw new Error('Credentials not found');
   }
 
-  console.log('Start of the mut-publish plugin -----------');
+  //FOR LOOP ------------------------------------------------------------------------------------------------------------------------------
+  for (const name of branchNames) {
 
-  /*Usage: mut-publish <source> <bucket> --prefix=prefix
-                    (--stage|--deploy)
-                    [--all-subdirectories]
-                    [--redirects=htaccess]
-                    [--deployed-url-prefix=prefix]
-                    [--redirect-prefix=prefix]...
-                    [--dry-run] [--verbose] [--json] */
-  try {
-    console.log('Running mut-publish...');
-    if (!docsetEntry?.bucket || !docsetEntry?.prefix || !docsetEntry?.url) {
-      throw new Error(
-        `DocsetEntry information missing. bucket: ${docsetEntry?.bucket}, ...etc`,
+  
+    // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
+    // building snooty 
+    const prefix = `/${docsetEntry?.prefix?.dotcomstg}/${name}`;
+    process.env.PATH_PREFIX = prefix // THIS WILL CHANGE EACH LOOP
+    await run.command('npm ci');
+    await run.command('npm run clean');
+    await run.command('npm run build');
+
+    // Running mut-redirects -------------------------------------------------------
+  
+    try {
+      console.log('Running mut-redirects...');
+      // TODO: Change hard coded `docs-landing` to whatever repo is being built after DOP-5159 is completed
+      console.log('the repo name is', configEnvironment.REPO_NAME);
+      await run.command(
+        `${process.cwd()}/mut/mut-redirects ${configEnvironment.REPO_NAME}/config/redirects -o public/.htaccess`,
       );
+    } catch (e) {
+      console.log(`Error occurred while running mut-redirects: ${e}`);
     }
 
-    // TODO: In future we change to docsetEntry?.prefix?.[configEnvironment.ENV] and docsetEntry?.url?.[configEnvironment.ENV] (DOP-5178)
-    await run(
-      `${process.cwd()}/mut/mut-publish`,
-      [
-        'public',
-        `${docsetEntry?.bucket?.dotcomstg}`,
-        `--prefix=/${docsetEntry?.prefix?.dotcomstg}`, // depnds on branch name 
-        '--deploy',
-        `--deployed-url-prefix=s${docsetEntry?.url?.dotcomstg}`,
-        '--json',
-        '--all-subdirectories',
-      ],
-      { input: 'y' },
-    );
-  } catch (e) {
-    console.log(`Error occurred while running mut-publish: ${e}`);
+    //Running mut-publish ----------------------------------------------------------
+
+
+
+    console.log('Start of the mut-publish plugin -----------');
+
+    /*Usage: mut-publish <source> <bucket> --prefix=prefix
+                      (--stage|--deploy)
+                      [--all-subdirectories]
+                      [--redirects=htaccess]
+                      [--deployed-url-prefix=prefix]
+                      [--redirect-prefix=prefix]...
+                      [--dry-run] [--verbose] [--json] */
+    try {
+      console.log('Running mut-publish...');
+      if (!docsetEntry?.bucket || !docsetEntry?.prefix || !docsetEntry?.url) {
+        throw new Error(
+          `DocsetEntry information missing. bucket: ${docsetEntry?.bucket}, ...etc`,
+        );
+      }
+
+      // TODO: In future we change to docsetEntry?.prefix?.[configEnvironment.ENV] and docsetEntry?.url?.[configEnvironment.ENV] (DOP-5178)
+      await run(
+        `${process.cwd()}/mut/mut-publish`,
+        [
+          'public',
+          `${docsetEntry?.bucket?.dotcomstg}`,
+          `--prefix=${prefix}`, // depnds on branch name 
+          '--deploy',
+          `--deployed-url-prefix=s${docsetEntry?.url?.dotcomstg}`,
+          '--json',
+          '--all-subdirectories',
+        ],
+        { input: 'y' },
+      );
+    } catch (e) {
+      console.log(`Error occurred while running mut-publish: ${e}`);
+    }
   }
 };
