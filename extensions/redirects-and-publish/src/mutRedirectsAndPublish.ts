@@ -8,7 +8,7 @@ export const mutRedirectsAndPublish = async (
 ): Promise<void> => {
   // Get it from pool.docsets to get bucket
   const docsetEntry = configEnvironment?.DOCSET_ENTRY;
-  const aliasEntry = configEnvironment?.BRANCH_ENTRY;
+  const branchEntry = configEnvironment?.BRANCH_ENTRY;
   if (!docsetEntry) {
     throw new Error ("Unable to retrive DOCSET_ENTRY");
   }
