@@ -20,15 +20,15 @@ export const mutRedirectsAndPublish = async (
   console.log('Succesfully got docsets_entry:', docsetEntry);
   console.log('Succesfylly got branch_entry', branchEntry);
 
-  // get the array of the all the possible alisas 
+  // Get the array of the all the possible alisas 
   const urlAliases = branchEntry?.urlAliases;
 
-  // add current branch  to list of aliases
+  // Add current branch  to list of aliases if needed
   if (!!(branchEntry?.publishOriginalBranchName) && (!urlAliases.includes(branchEntry.gitBranchName))) {
     urlAliases.push(branchEntry.gitBranchName);
   }
 
-  console.log('the branch names are', urlAliases);
+  console.log('The aliases names are', urlAliases);
 
   // We want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh
   // We do this so when we run mut-publish we are able to uplaod the correct files with the correct paths
@@ -92,7 +92,6 @@ export const mutRedirectsAndPublish = async (
   }
 
   for (const alias of urlAliases) {
-    console.log('the current branch is', alias);
     // Building snooty ------------------------------------------------------------
     // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
     const prefix = `/${docsetEntry?.prefix?.dotcomstg}/${alias}`;
