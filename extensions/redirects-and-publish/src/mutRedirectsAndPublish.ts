@@ -24,7 +24,7 @@ export const mutRedirectsAndPublish = async (
   const branchNames = branchEntry?.urlAliases;
 
   // add current branch  to list of aliases
-  if (!!(branchEntry?.publishOriginalBranchName)) {
+  if (!!(branchEntry?.publishOriginalBranchName) && (!branchNames.includes(branchEntry.gitBranchName))) {
     branchNames.push(branchEntry.gitBranchName);
   }
 
@@ -65,6 +65,7 @@ export const mutRedirectsAndPublish = async (
   }
 
   for (const branch of branchNames) {
+    console.log('the current branch is', branch);
     // Building snooty ------------------------------------------------------------
     // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
     const prefix = `/${docsetEntry?.prefix?.dotcomstg}/${branch}`;
