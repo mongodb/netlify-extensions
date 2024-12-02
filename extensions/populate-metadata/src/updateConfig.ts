@@ -134,6 +134,8 @@ export const updateConfig = async ({
     environment: buildEnvironment,
   });
 
+  configEnvironment.METADATA_ENTRY = metadataEntry;
+
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
   configEnvironment.DOCSET_ENTRY = docsetEntry;
@@ -144,7 +146,9 @@ export const updateConfig = async ({
 
   // Prep for snooty build
   if (isFrontendBuild) {
-    run.command(`echo "Cloning content repo"`);
+    run.command(
+      `echo "Cloning content repo \n repo ${repoName}, branchName: ${branchName}, orgName: ${orgName}" `,
+    );
     // TODO 5215: check that the directory doesn't already exist
     run.command(
       `git clone -b ${branchName} https://github.com/${orgName}/${repoName}.git`,
