@@ -150,9 +150,9 @@ export const updateConfig = async ({
       `echo "Cloning content repo \n repo ${repoName}, branchName: ${branchName}, orgName: ${orgName}" `,
     );
     await run.command('ls');
-    await run.command(
-      `if [ -d '${repoName}' ]; then \n echo 'bi connector dir exists' \n fi`,
-    );
+    // await run.command(
+    //   `if [ -d '${repoName}' ]; then \n echo 'bi connector dir exists' \n fi`,
+    // );
     await run.command(`rm -r ${repoName}`);
     await run.command('ls');
 
