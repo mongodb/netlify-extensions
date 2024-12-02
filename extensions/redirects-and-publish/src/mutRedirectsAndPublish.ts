@@ -21,14 +21,14 @@ export const mutRedirectsAndPublish = async (
   console.log('Succesfylly got branch_entry', branchEntry);
 
   // get the array of the all the possible alisas 
-  const branchNames = branchEntry?.urlAliases;
+  const urlAliases = branchEntry?.urlAliases;
 
   // add current branch  to list of aliases
-  if (!!(branchEntry?.publishOriginalBranchName) && (!branchNames.includes(branchEntry.gitBranchName))) {
-    branchNames.push(branchEntry.gitBranchName);
+  if (!!(branchEntry?.publishOriginalBranchName) && (!urlAliases.includes(branchEntry.gitBranchName))) {
+    urlAliases.push(branchEntry.gitBranchName);
   }
 
-  console.log('the branch names are', branchNames);
+  console.log('the branch names are', urlAliases);
 
   // We want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh
   // We do this so when we run mut-publish we are able to uplaod the correct files with the correct paths
@@ -91,11 +91,11 @@ export const mutRedirectsAndPublish = async (
     throw new Error('Credentials not found');
   }
 
-  for (const branch of branchNames) {
-    console.log('the current branch is', branch);
+  for (const alias of urlAliases) {
+    console.log('the current branch is', alias);
     // Building snooty ------------------------------------------------------------
     // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
-    const prefix = `/${docsetEntry?.prefix?.dotcomstg}/${branch}`;
+    const prefix = `/${docsetEntry?.prefix?.dotcomstg}/${alias}`;
     process.env.PATH_PREFIX = prefix;
     await run.command('npm ci');
     await run.command('npm run clean');
@@ -108,8 +108,9 @@ export const mutRedirectsAndPublish = async (
       console.log('the repo name is', configEnvironment.REPO_ENTRY?.repoName);
       await run.command(
         `${process.cwd()}/mut/mut-redirects ${configEnvironment.REPO_ENTRY?.repoName}/config/redirects -o public/.htaccess`,
-
       );
+    } catch (e) {
+      console.log(`Error occurred while running mut-redirects: ${e}`);
     }
 
     //Running mut-publish ----------------------------------------------------------
