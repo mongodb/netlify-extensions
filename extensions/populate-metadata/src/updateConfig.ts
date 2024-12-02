@@ -7,6 +7,13 @@ import type {
 import { getProperties } from './getProperties';
 import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { StaticEnvVars } from 'util/assertDbEnvVars';
+import type { NetlifyPluginUtils } from '@netlify/build';
+
+const FRONTEND_SITES = [
+  'docs-frontend-stg',
+  'docs-frontend-dotcomstg',
+  'docs-frontend-dotcomprd',
+];
 
 const getDbNames = (
   env: Environments,
@@ -47,12 +54,7 @@ const determineEnvironment = ({
   siteName,
 }: { isBuildHookDeploy: boolean; siteName: string }): Environments => {
   // Check if this was an engineer's build or writer's build
-  const frontendSites = [
-    'docs-frontend-stg',
-    'docs-frontend-dotcomstg',
-    'docs-frontend-dotcomprd',
-  ];
-  const isFrontendBuild = frontendSites.includes(siteName);
+  const isFrontendBuild = FRONTEND_SITES.includes(siteName);
 
   //Writer's builds = prd, everything not built on a frontend site (a site with 'Snooty' as git source)
 
@@ -69,22 +71,48 @@ const determineEnvironment = ({
   }
   return 'stg';
 };
+
 export const updateConfig = async ({
   configEnvironment,
   dbEnvVars,
+  run,
 }: {
   configEnvironment: ConfigEnvironmentVariables;
   dbEnvVars: StaticEnvVars;
+  run: NetlifyPluginUtils['run'];
 }): Promise<void> => {
+  // Check if this was an engineer's build or writer's build
+
+  const isFrontendBuild = FRONTEND_SITES.includes(
+    configEnvironment.SITE_NAME as string,
+  );
   // Checks if build was triggered by a webhook
   const isBuildHookDeploy = !!(
     configEnvironment.INCOMING_HOOK_URL && configEnvironment.INCOMING_HOOK_TITLE
   );
+
+  const repoName = isBuildHookDeploy
+    ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.repoName
+    : (process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string));
+
+  const branchName = isBuildHookDeploy
+    ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.branchName
+    : (process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string));
+
+  if (isFrontendBuild) {
+    run.command(`echo "Cloning content repo"`);
+  }
+
+  if (!repoName || !branchName) {
+    throw new Error('Repo name or branch name missing from deploy');
+  }
+  configEnvironment.BRANCH_NAME = branchName;
+  configEnvironment.REPO_NAME = repoName;
+
   const env = determineEnvironment({
     isBuildHookDeploy,
     siteName: configEnvironment.SITE_NAME as string,
   });
-
   const buildEnvironment = (process.env.ENV as Environments) ?? env;
 
   configEnvironment.ENV = buildEnvironment;
@@ -102,32 +130,6 @@ export const updateConfig = async ({
   configEnvironment.SNOOTY_DB_NAME =
     (process.env.SNOOTY_DB_NAME as SnootyDBName) ?? snootyDb;
 
-  // Check if repo name and branch name have been set as environment variables through Netlify UI
-  // Allows overwriting of database name values for testing
-  let branchName: string;
-  let repoName: string;
-  if (buildEnvironment !== 'dotcomstg' && buildEnvironment !== 'dotcomprd') {
-    branchName =
-      process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
-    repoName =
-      process.env.REPO_NAME ??
-      (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
-  } else {
-    console.log(`Incoming hook body ${configEnvironment?.INCOMING_HOOK_BODY}`);
-    repoName = JSON.parse(
-      configEnvironment?.INCOMING_HOOK_BODY as string,
-    )?.repoName;
-    branchName = JSON.parse(
-      configEnvironment?.INCOMING_HOOK_BODY as string,
-    )?.branchName;
-
-    if (!repoName || !branchName) {
-      throw new Error('Repo name or branch name missing from deploy');
-    }
-    configEnvironment.BRANCH_NAME = branchName;
-    configEnvironment.REPO_NAME = repoName;
-  }
-
   const { repo, docsetEntry, metadataEntry } = await getProperties({
     branchName,
     repoName,
@@ -135,6 +137,7 @@ export const updateConfig = async ({
     poolDbName: configEnvironment.POOL_DB_NAME,
     environment: buildEnvironment,
   });
+
   configEnvironment.ORG = metadataEntry.github.organization;
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = buildEnvironment;
@@ -162,3 +165,49 @@ export const updateConfig = async ({
     configEnvironment.SEARCH_DB_NAME,
   );
 };
+
+// const getRepoBranch = (
+//   buildEnvironment: Environments,
+//   configEnvironment: ConfigEnvironmentVariables,
+// ) => {
+//   // Check if repo name and branch name have been set as environment variables through Netlify UI
+//   // Allows overwriting of database name values for testing
+//   let branchName: string;
+//   let repoName: string;
+
+//   if (buildEnvironment !== 'dotcomstg' && buildEnvironment !== 'dotcomprd') {
+//     branchName =
+//       process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
+//     repoName =
+//       process.env.REPO_NAME ??
+//       (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
+//   } else {
+//     console.log(`Incoming hook body ${configEnvironment?.INCOMING_HOOK_BODY}`);
+//     repoName = JSON.parse(
+//       configEnvironment?.INCOMING_HOOK_BODY as string,
+//     )?.repoName;
+//     branchName = JSON.parse(
+//       configEnvironment?.INCOMING_HOOK_BODY as string,
+//     )?.branchName;
+//   }
+//   return { branchName, repoName };
+// };
+
+// Check if repo name and branch name have been set as environment variables through Netlify UI
+// Allows overwriting of database name values for testing
+
+// if (buildEnvironment !== 'dotcomstg' && buildEnvironment !== 'dotcomprd') {
+//   branchName =
+//     process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
+//   repoName =
+//     process.env.REPO_NAME ??
+//     (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
+// } else {
+//   console.log(`Incoming hook body ${configEnvironment?.INCOMING_HOOK_BODY}`);
+//   repoName = JSON.parse(
+//     configEnvironment?.INCOMING_HOOK_BODY as string,
+//   )?.repoName;
+//   branchName = JSON.parse(
+//     configEnvironment?.INCOMING_HOOK_BODY as string,
+//   )?.branchName;
+// }

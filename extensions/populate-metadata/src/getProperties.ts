@@ -9,7 +9,7 @@ import type {
   DocsetsDocument,
   ReposBranchesDocument,
   clusterZeroConnectionInfo,
-  ProjectMetadataDocument,
+  ProjectsDocument,
   ClusterZeroDBName,
 } from 'util/databaseConnection/types';
 const EXTENSION_NAME = 'populate-metadata-extension';
@@ -98,7 +98,7 @@ const getMetadataEntry = async ({
 }: {
   projectName: string;
   connectionInfo: clusterZeroConnectionInfo;
-}): Promise<ProjectMetadataDocument> => {
+}): Promise<ProjectsDocument> => {
   const projects = await getProjectsCollection({ ...connectionInfo });
   const query = {
     name: projectName,
@@ -113,7 +113,7 @@ const getMetadataEntry = async ({
     },
   };
 
-  const projectMetadata = await projects.findOne<ProjectMetadataDocument>(
+  const projectMetadata = await projects.findOne<ProjectsDocument>(
     query,
     projection,
   );
@@ -143,7 +143,7 @@ export const getProperties = async ({
 }): Promise<{
   repo: ReposBranchesDocument;
   docsetEntry: DocsetsDocument;
-  metadataEntry: ProjectMetadataDocument;
+  metadataEntry: ProjectsDocument;
 }> => {
   const repoBranchesConnectionInfo = {
     clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
