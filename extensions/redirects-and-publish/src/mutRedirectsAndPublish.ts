@@ -19,11 +19,14 @@ export const mutRedirectsAndPublish = async (
   console.log('Succesfylly got branch_entry', branchEntry);
   
   // Get the array of the all the possible alisas 
-  const urlAliases = branchEntry?.urlAliases;
+  let urlAliases = branchEntry?.urlAliases;
 
   // Add current branch  to list of aliases
   if (!!(branchEntry?.publishOriginalBranchName) && (!urlAliases.includes(branchEntry.gitBranchName))) {
     urlAliases.push(branchEntry.gitBranchName);
+  }
+  if (!urlAliases) {
+    urlAliases = [''];
   }
   console.log('The urlAliases are', urlAliases);
 
