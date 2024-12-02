@@ -149,9 +149,10 @@ export const updateConfig = async ({
     run.command(
       `echo "Cloning content repo \n repo ${repoName}, branchName: ${branchName}, orgName: ${orgName}" `,
     );
+    run.command('ls');
     // TODO 5215: check that the directory doesn't already exist
     run.command(
-      `git clone -b ${branchName} https://github.com/${orgName}/${repoName}.git`,
+      `if [ ! -d "snooty-parser" ]; then \n git clone -b ${branchName} https://github.com/${orgName}/${repoName}.git \n fi`,
     );
   }
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
