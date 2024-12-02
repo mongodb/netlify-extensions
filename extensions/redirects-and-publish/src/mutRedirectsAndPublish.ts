@@ -16,7 +16,7 @@ export const mutRedirectsAndPublish = async (
     throw new Error ("Unable to retrive BRANCH_ENTRY");
   }
   console.log('Succesfully got docsets_entry:', docsetEntry);
-  console.log('Succesfylly got branch_entry', branchEntry);
+  console.log('Succesfully got branch_entry', branchEntry);
   
   // Get the array of the all the possible alisas 
   // using slice() to create shallow copy so i dont get errors froom netlify about trying to write a read-only variable
