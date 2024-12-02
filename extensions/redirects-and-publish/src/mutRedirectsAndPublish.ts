@@ -19,11 +19,15 @@ export const mutRedirectsAndPublish = async (
   console.log('Succesfylly got branch_entry', branchEntry);
   
   // Get the array of the all the possible alisas 
-  const urlAliases = branchEntry.urlAliases ?  branchEntry.urlAliases :  [''] ;
+  // using slice() to create shallow copy so i dont get errors froom netlify about trying to write a read-only variable
+  const urlAliases = branchEntry.urlAliases ? branchEntry.urlAliases.slice() : [];
 
   // Add current branch  to list of aliases
   if (!!(branchEntry?.publishOriginalBranchName) && (!urlAliases.includes(branchEntry.gitBranchName))) {
     urlAliases.push(branchEntry.gitBranchName);
+  }
+  if (urlAliases.length === 0) {
+    urlAliases.push('');
   }
 
   console.log('The urlAliases are', urlAliases);
