@@ -19,15 +19,13 @@ export const mutRedirectsAndPublish = async (
   console.log('Succesfylly got branch_entry', branchEntry);
   
   // Get the array of the all the possible alisas 
-  let urlAliases = branchEntry?.urlAliases;
+  const urlAliases = branchEntry.urlAliases ?  branchEntry.urlAliases :  [''] ;
 
   // Add current branch  to list of aliases
   if (!!(branchEntry?.publishOriginalBranchName) && (!urlAliases.includes(branchEntry.gitBranchName))) {
     urlAliases.push(branchEntry.gitBranchName);
   }
-  if (!urlAliases) {
-    urlAliases = [''];
-  }
+
   console.log('The urlAliases are', urlAliases);
 
   // We want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh
