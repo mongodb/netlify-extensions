@@ -146,13 +146,15 @@ export const updateConfig = async ({
 
   // Prep for snooty build
   if (isFrontendBuild) {
-    run.command(
+    await run.command(
       `echo "Cloning content repo \n repo ${repoName}, branchName: ${branchName}, orgName: ${orgName}" `,
     );
-    run.command('ls');
-    // TODO 5215: check that the directory doesn't already exist
-    run.command(
-      `if [ ! -d "snooty-parser" ]; then \n git clone -b ${branchName} https://github.com/${orgName}/${repoName}.git \n fi`,
+    await run.command('ls');
+    await run.command(`if [ -d ${repoName} ]; then \n rm -r ${repoName} \nfi`);
+    await run.command('ls');
+
+    await run.command(
+      `git clone -b ${branchName} https://github.com/${orgName}/${repoName}.git `,
     );
   }
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
