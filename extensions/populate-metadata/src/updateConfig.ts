@@ -99,10 +99,6 @@ export const updateConfig = async ({
     ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.branchName
     : (process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string));
 
-  if (isFrontendBuild) {
-    run.command(`echo "Cloning content repo"`);
-  }
-
   if (!repoName || !branchName) {
     throw new Error('Repo name or branch name missing from deploy');
   }
@@ -138,15 +134,25 @@ export const updateConfig = async ({
     environment: buildEnvironment,
   });
 
-  configEnvironment.ORG = metadataEntry.github.organization;
-  // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
-  process.env.SNOOTY_ENV = buildEnvironment;
-  process.env.PATH_PREFIX = docsetEntry.prefix[buildEnvironment];
-
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
   configEnvironment.DOCSET_ENTRY = docsetEntry;
   configEnvironment.BRANCH_ENTRY = branch?.pop();
+
+  const orgName = metadataEntry.github.organization;
+  configEnvironment.ORG = orgName;
+
+  // Prep for snooty build
+  if (isFrontendBuild) {
+    run.command(`echo "Cloning content repo"`);
+    // TODO 5215: check that the directory doesn't already exist
+    run.command(
+      `git clone -b ${branchName} https://github.com/${orgName}/${repoName}.git`,
+    );
+  }
+  // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
+  process.env.SNOOTY_ENV = buildEnvironment;
+  process.env.PATH_PREFIX = docsetEntry.prefix[buildEnvironment];
 
   console.info(
     'BUILD ENVIRONMENT: ',
