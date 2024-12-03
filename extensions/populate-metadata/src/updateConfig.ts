@@ -8,6 +8,7 @@ import { getProperties } from './getProperties';
 import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { StaticEnvVars } from 'util/assertDbEnvVars';
 import type { NetlifyPluginUtils } from '@netlify/build';
+import { existsSync } from 'node:fs';
 
 const FRONTEND_SITES = [
   'docs-frontend-stg',
@@ -93,7 +94,15 @@ export const updateConfig = async ({
 
   const repoName = isBuildHookDeploy
     ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.repoName
-    : (process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string));
+    : (process.env.REPO_NAME ?? (configEnvironment.REPO_NAME as string));
+  console.log('isBuildHookDeploy: ', isBuildHookDeploy);
+
+  console.log(
+    'repo name ',
+    process.env.REPO_NAME ?? (configEnvironment.REPO_NAME as string),
+  );
+
+  JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.repoName;
 
   const branchName = isBuildHookDeploy
     ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.branchName
@@ -153,7 +162,9 @@ export const updateConfig = async ({
     // await run.command(
     //   `if [ -d '${repoName}' ]; then \n echo 'bi connector dir exists' \n fi`,
     // );
-    await run.command(`rm -r ${repoName}`);
+    if (existsSync(`${process.cwd()}/${repoName}`)) {
+      await run.command(`rm -r ${repoName}`);
+    }
     await run.command('ls');
 
     await run.command(
