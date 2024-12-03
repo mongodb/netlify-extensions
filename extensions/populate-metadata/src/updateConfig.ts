@@ -160,8 +160,9 @@ export const updateConfig = async ({
     }
     await run.command('ls');
 
+    const botPwd = process.env.GITHUB_BOT_PWD;
     await run.command(
-      `git clone -b ${branchName} https://${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git `,
+      `git clone -b ${branchName} https://${botPwd}@github.com/${orgName}/${repoName}.git `,
     );
   }
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
