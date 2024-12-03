@@ -159,8 +159,8 @@ export const updateConfig = async ({
     }
 
     const botPwd = process.env.GITHUB_BOT_PWD;
-    const askPassFilePath = `${process.cwd()}/.ssh-askpass`;
-    await run.command('touch $testing-file');
+    const askPassFilePath = `${process.cwd()}/testing-file`;
+    await run.command('touch testing-file');
     await run.command(`echo ${botPwd} > ${askPassFilePath}`);
     await run.command('ls');
 
