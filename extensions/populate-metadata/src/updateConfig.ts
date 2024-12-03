@@ -9,6 +9,7 @@ import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { StaticEnvVars } from 'util/assertDbEnvVars';
 import type { NetlifyPluginUtils } from '@netlify/build';
 import { existsSync } from 'node:fs';
+import { Octokit } from 'octokit';
 
 const FRONTEND_SITES = [
   'docs-frontend-stg',
@@ -151,6 +152,15 @@ export const updateConfig = async ({
     await run.command(
       `echo "Cloning content repo \n repo ${repoName}, branchName: ${branchName}, orgName: ${orgName}" `,
     );
+
+    const octokit = new Octokit({
+      auth: process.env.GITHUB_BOT_PWD,
+    });
+
+    const { repo } = octokit.request('GET /repos/{owner}/{repo}', {
+      owner: orgName,
+      repo: repoName,
+    });
     // await run.command(
     //   `if [ -d '${repoName}' ]; then \n echo 'bi connector dir exists' \n fi`,
     // );
@@ -159,8 +169,8 @@ export const updateConfig = async ({
     }
 
     const botPwd = process.env.GITHUB_BOT_PWD;
-    const askPassFilePath = `${process.cwd()}/testing-file`;
-    await run.command('touch testing-file');
+    const askPassFilePath = `${process.cwd()}/.ssh-askpass`;
+    await run.command('touch .ssh-askpass');
     await run.command(`echo ${botPwd} > ${askPassFilePath}`);
     await run.command('ls');
 
