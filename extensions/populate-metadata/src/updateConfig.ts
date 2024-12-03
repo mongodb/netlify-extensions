@@ -151,19 +151,19 @@ export const updateConfig = async ({
     await run.command(
       `echo "Cloning content repo \n repo ${repoName}, branchName: ${branchName}, orgName: ${orgName}" `,
     );
-    await run.command('ls');
     // await run.command(
     //   `if [ -d '${repoName}' ]; then \n echo 'bi connector dir exists' \n fi`,
     // );
     if (existsSync(`${process.cwd()}/${repoName}`)) {
       await run.command(`rm -r ${repoName}`);
     }
-    await run.command('ls');
 
     const botPwd = process.env.GITHUB_BOT_PWD;
     const askPassFilePath = `${process.cwd()}/.ssh-askpass`;
     await run.command(`echo ${botPwd} > ${askPassFilePath}`);
-    process.env.SSH_ASKPASS = `${askPassFilePath}`;
+    await run.command('ls');
+
+    process.env.SSH_ASKPASS = `../${askPassFilePath}`;
 
     await run.command(
       `git clone -b ${branchName} https://github.com/${orgName}/${repoName}.git -s`,
