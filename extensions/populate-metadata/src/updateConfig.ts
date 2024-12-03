@@ -157,10 +157,11 @@ export const updateConfig = async ({
       auth: process.env.GITHUB_BOT_PWD,
     });
 
-    const { repo } = octokit.request('GET /repos/{owner}/{repo}', {
+    const response = octokit.request('GET /repos/{owner}/{repo}', {
       owner: orgName,
       repo: repoName,
     });
+    console.log(response);
     // await run.command(
     //   `if [ -d '${repoName}' ]; then \n echo 'bi connector dir exists' \n fi`,
     // );
@@ -169,6 +170,7 @@ export const updateConfig = async ({
     }
 
     const botPwd = process.env.GITHUB_BOT_PWD;
+    process.env.GIT_PASSWORD = botPwd;
     const askPassFilePath = `${process.cwd()}/.ssh-askpass`;
     await run.command('touch .ssh-askpass');
     await run.command(`echo ${botPwd} > ${askPassFilePath}`);
