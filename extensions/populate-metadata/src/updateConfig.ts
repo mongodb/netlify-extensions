@@ -97,11 +97,6 @@ export const updateConfig = async ({
     : (process.env.REPO_NAME ?? (configEnvironment.REPO_NAME as string));
   console.log('isBuildHookDeploy: ', isBuildHookDeploy);
 
-  console.log(
-    'repo name ',
-    process.env.REPO_NAME ?? (configEnvironment.REPO_NAME as string),
-  );
-
   const branchName = isBuildHookDeploy
     ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.branchName
     : (process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string));
@@ -166,7 +161,7 @@ export const updateConfig = async ({
     await run.command('ls');
 
     await run.command(
-      `git clone -b ${branchName} https://github.com/${orgName}/${repoName}.git `,
+      `git clone -b ${branchName} https://${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git `,
     );
   }
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
