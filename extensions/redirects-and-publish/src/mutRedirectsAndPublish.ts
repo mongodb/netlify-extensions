@@ -18,7 +18,7 @@ export const mutRedirectsAndPublish = async (
   console.log('Succesfully got docsets_entry:', docsetEntry);
   console.log('Succesfully got branch_entry', branchEntry);
   
-  // Get the array of the all the possible alisas 
+  // Get the array of the all the possible aliases 
   // using slice() to create shallow copy so i dont get errors froom netlify about trying to write a read-only variable
   const urlAliases = branchEntry.urlAliases ? branchEntry.urlAliases.slice() : [];
 
