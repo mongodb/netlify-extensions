@@ -8,7 +8,7 @@ import { getProperties } from './getProperties';
 import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { StaticEnvVars } from 'util/assertDbEnvVars';
 import type { NetlifyPluginUtils } from '@netlify/build';
-import { existsSync } from 'node:fs';
+import * as fs from 'node:fs';
 import { Octokit } from 'octokit';
 
 const FRONTEND_SITES = [
@@ -166,10 +166,12 @@ export const updateConfig = async ({
       },
     );
     console.log(response);
+
+    // cosnt responseTwo = await octokit.actions.downloadArtifact({})
     // await run.command(
     //   `if [ -d '${repoName}' ]; then \n echo 'bi connector dir exists' \n fi`,
     // );
-    if (existsSync(`${process.cwd()}/${repoName}`)) {
+    if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
       await run.command(`rm -r ${repoName}`);
     }
 
@@ -177,8 +179,11 @@ export const updateConfig = async ({
     process.env.GIT_PASSWORD = botPwd;
     const askPassFilePath = `${process.cwd()}/.ssh-askpass`;
     await run.command('touch .ssh-askpass');
-    await run.command(`echo ${botPwd} > ${askPassFilePath}`);
+    await run.command(`echo 'hello' > ${askPassFilePath}`);
     await run.command('ls');
+
+    const data = fs.readFileSync(askPassFilePath, 'utf-8');
+    console.log(data);
 
     process.env.SSH_ASKPASS = `${askPassFilePath}`;
 
