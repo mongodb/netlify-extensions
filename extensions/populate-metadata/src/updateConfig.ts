@@ -102,8 +102,6 @@ export const updateConfig = async ({
     process.env.REPO_NAME ?? (configEnvironment.REPO_NAME as string),
   );
 
-  JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.repoName;
-
   const branchName = isBuildHookDeploy
     ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.branchName
     : (process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string));
