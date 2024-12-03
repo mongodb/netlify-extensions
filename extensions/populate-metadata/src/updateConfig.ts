@@ -157,7 +157,7 @@ export const updateConfig = async ({
       auth: process.env.GITHUB_BOT_PWD,
     });
 
-    const response = octokit.request('GET /repos/{owner}/{repo}', {
+    const response = await octokit.request('GET /repos/{owner}/{repo}', {
       owner: orgName,
       repo: repoName,
     });
