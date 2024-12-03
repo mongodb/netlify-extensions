@@ -162,10 +162,11 @@ export const updateConfig = async ({
 
     const botPwd = process.env.GITHUB_BOT_PWD;
     await run.command(`echo ${botPwd} > ${process.cwd()}/.ssh-askpass`);
+    process.env.SSH_ASKPASS = `${process.cwd()}/.ssh-askpass`;
 
-    // await run.command(
-    //   `git clone -b ${branchName} https://docs-builder-bot:${botPwd}@github.com/${orgName}/${repoName}.git -s`,
-    // );
+    await run.command(
+      `git clone -b ${branchName} https://github.com/${orgName}/${repoName}.git -s`,
+    );
   }
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = buildEnvironment;
