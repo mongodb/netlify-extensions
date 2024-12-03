@@ -18,18 +18,19 @@ export const mutRedirectsAndPublish = async (
   console.log('Succesfully got docsets_entry:', docsetEntry);
   console.log('Succesfully got branch_entry', branchEntry);
   
-  // Get the array of the all the possible aliases 
-  // using slice() to create shallow copy so i dont get errors from netlify about trying to write a read-only variable
+  // Get the array of the all the possible alisas 
+  // using slice() to create shallow copy so i dont get errors froom netlify about trying to write a read-only variable
   const urlAliases = branchEntry.urlAliases ? branchEntry.urlAliases.slice() : [];
 
   // Add current branch  to list of aliases
-  if (!!(branchEntry?.publishOriginalBranchName) && (!urlAliases.includes(branchEntry.gitBranchName))) {
+  if (!!(branchEntry.publishOriginalBranchName) && (!urlAliases.includes(branchEntry.gitBranchName))) {
     urlAliases.push(branchEntry.gitBranchName);
   }
   if (urlAliases.length === 0) {
-    urlAliases.push('');
+    urlAliases.push(branchEntry.urlSlug);
   }
 
+  // These aliases are used to publish page info into the correct subdirectories in the bucket
   console.log('The urlAliases are', urlAliases);
 
   // We want to copy the snooty folder and run `npm run build` instead of `npm run build:no-prefix` as it does in the build.sh
@@ -64,7 +65,6 @@ export const mutRedirectsAndPublish = async (
   }
 
   for (const alias of urlAliases) {
-    console.log('the current alias is', alias);
     // Building snooty ------------------------------------------------------------
     // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
     const prefix = alias ? `/${docsetEntry?.prefix?.dotcomstg}/${alias}`: `/${docsetEntry?.prefix?.dotcomstg}`;
@@ -72,11 +72,11 @@ export const mutRedirectsAndPublish = async (
     await run.command('npm ci');
     await run.command('npm run clean');
     await run.command('npm run build');
+
     // Running mut-redirects -------------------------------------------------------
     try {
       console.log('Running mut-redirects...');
-      // TODO: Change hard coded `docs-landing` to whatever repo is being built after DOP-5159 is completed
-      console.log('the repo name is', configEnvironment.REPO_ENTRY?.repoName);
+      console.log('The repo name is', configEnvironment.REPO_ENTRY?.repoName);
       await run.command(
         `${process.cwd()}/mut/mut-redirects ${configEnvironment.REPO_ENTRY?.repoName}/config/redirects -o public/.htaccess`,
       );
