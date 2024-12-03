@@ -157,10 +157,14 @@ export const updateConfig = async ({
       auth: process.env.GITHUB_BOT_PWD,
     });
 
-    const response = await octokit.request('GET /repos/{owner}/{repo}', {
-      owner: orgName,
-      repo: repoName,
-    });
+    const response = await octokit.request(
+      'GET /repos/{owner}/{repo}/branches/{branch}',
+      {
+        owner: orgName,
+        repo: repoName,
+        branch: branchName,
+      },
+    );
     console.log(response);
     // await run.command(
     //   `if [ -d '${repoName}' ]; then \n echo 'bi connector dir exists' \n fi`,
