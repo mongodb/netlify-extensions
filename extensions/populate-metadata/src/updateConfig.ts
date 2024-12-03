@@ -161,8 +161,9 @@ export const updateConfig = async ({
     await run.command('ls');
 
     const botPwd = process.env.GITHUB_BOT_PWD;
-    await run.command(`echo ${botPwd} > ${process.cwd()}/.ssh-askpass`);
-    process.env.SSH_ASKPASS = `${process.cwd()}/.ssh-askpass`;
+    const askPassFilePath = `${process.cwd()}/.ssh-askpass`;
+    await run.command(`echo ${botPwd} > ${askPassFilePath}`);
+    process.env.SSH_ASKPASS = `${askPassFilePath}`;
 
     await run.command(
       `git clone -b ${branchName} https://github.com/${orgName}/${repoName}.git -s`,
