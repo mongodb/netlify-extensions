@@ -67,7 +67,7 @@ export const mutRedirectsAndPublish = async (
   for (const alias of urlAliases) {
     // Building snooty ------------------------------------------------------------
     // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
-    const prefix = alias ? `/${docsetEntry?.prefix?.dotcomstg}/${alias}`: `/${docsetEntry?.prefix?.dotcomstg}`;
+    const prefix = alias ? `/${docsetEntry.prefix.dotcomstg}/${alias}`: `/${docsetEntry.prefix.dotcomstg}`;
     process.env.PATH_PREFIX = prefix;
     await run.command('npm ci');
     await run.command('npm run clean');
