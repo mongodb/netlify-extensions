@@ -23,6 +23,14 @@ function updateToRelativePaths(nodeList: Node[], prefix: string) {
   }
 }
 
+function removeScripts(document: Window['document']) {
+  const query = 'script:not(.structured_data)';
+  const scripts = document.querySelectorAll(query);
+  for (const script of scripts) {
+    script.parentNode?.removeChild(script);
+  }
+}
+
 export const handleHtmlFile = async (
   filepath: string,
   relativePath: string,
@@ -37,8 +45,9 @@ export const handleHtmlFile = async (
 
   const links = document.querySelectorAll('a');
   const images = document.querySelectorAll('img');
-  // TODO: should handle background-image url as well
+  // TODO as part of DOP-5196
   updateToRelativePaths([...links, ...images], relativePath ?? './');
+  removeScripts(document);
 
   console.log('writing file html ', filepath);
 
