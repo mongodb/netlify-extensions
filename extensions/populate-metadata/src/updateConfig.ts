@@ -197,7 +197,7 @@ export const updateConfig = async ({
     );
 
     if (fs.existsSync(`${repoName}/.git/config`)) {
-      await run.command(`rm -r ${repoName}.git/config`);
+      await run.command(`rm -r ${repoName}/.git/config`);
     }
 
     console.log('repoName', repoName);
