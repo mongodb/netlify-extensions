@@ -185,7 +185,8 @@ export const updateConfig = async ({
     await run.command(`echo 'hello' > ${askPassFilePath}`);
     await run.command('ls');
 
-    const askpassfile = fs.readFileSync(askPassFilePath, 'utf-8');
+    await run.command(`cat ${askPassFilePath}`);
+    // const askpassfile = fs.readFileSync(askPassFilePath, 'utf-8');
     // console.log(data);
 
     process.env.SSH_ASKPASS = `${askPassFilePath}`;
