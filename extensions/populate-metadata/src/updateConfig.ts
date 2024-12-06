@@ -181,19 +181,21 @@ export const updateConfig = async ({
     const botPwd = process.env.GITHUB_BOT_PWD;
     process.env.GIT_PASSWORD = botPwd;
     const askPassFilePath = `${process.cwd()}/.ssh-askpass`;
-    await run.command(`touch testing.txt`);
-    // await run.command(`echo 'hello' > ${askPassFilePath}`);
-    // await run.command('ls');
 
-    await run.command(`cat testing.txt`);
-    // const askpassfile = fs.readFileSync(askPassFilePath, 'utf-8');
-    // console.log(data);
+    // await run.command(`touch testing.txt`);
+    // // await run.command(`echo 'hello' > ${askPassFilePath}`);
+    // // await run.command('ls');
+
+    // await run.command(`cat testing.txt`);
+
+    // const askpassfile = fs.readFileSync(testing.txt, 'utf-8');
+    // console.log(askpassfile);
 
     process.env.SSH_ASKPASS = `${askPassFilePath}`;
 
-    await run.command(
-      `git clone -b ${branchName} https://github.com/${orgName}/${repoName}.git -s`,
-    );
+    // await run.command(
+    //   `git clone -b ${branchName} https://docs-builder-bot:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
+    // );
   }
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = buildEnvironment;
