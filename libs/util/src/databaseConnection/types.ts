@@ -35,6 +35,8 @@ export interface BranchEntry {
   urlSlug: string;
   isStableBranch: boolean;
   active: boolean;
+  urlAliases: Array<string>;
+  publishOriginalBranchName: boolean;
 }
 
 export interface ReposBranchesDocument {
