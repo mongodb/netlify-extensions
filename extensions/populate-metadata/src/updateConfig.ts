@@ -181,11 +181,11 @@ export const updateConfig = async ({
     const botPwd = process.env.GITHUB_BOT_PWD;
     process.env.GIT_PASSWORD = botPwd;
     const askPassFilePath = `${process.cwd()}/.ssh-askpass`;
-    await run.command('touch .ssh-askpass');
+    await run.command(`touch .ssh-askpass`);
     await run.command(`echo 'hello' > ${askPassFilePath}`);
     await run.command('ls');
 
-    await run.command(`cat ${askPassFilePath}`);
+    await run.command(`cat .ssh-askpass`);
     // const askpassfile = fs.readFileSync(askPassFilePath, 'utf-8');
     // console.log(data);
 
