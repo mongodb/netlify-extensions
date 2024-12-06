@@ -199,6 +199,9 @@ export const updateConfig = async ({
     if (fs.existsSync(`${repoName}.git/config`)) {
       await run.command(`rm -r ${repoName}.git/config`);
     }
+
+    console.log('repoName', repoName);
+    await run.command(`ls ${repoName}/.git `);
   }
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = buildEnvironment;
