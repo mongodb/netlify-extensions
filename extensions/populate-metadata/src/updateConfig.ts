@@ -196,7 +196,7 @@ export const updateConfig = async ({
       `git clone -b ${branchName} https://docs-builder-bot:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
     );
 
-    if (fs.existsSync(`${repoName}.git/config`)) {
+    if (fs.existsSync(`${repoName}/.git/config`)) {
       await run.command(`rm -r ${repoName}.git/config`);
     }
 
