@@ -7,6 +7,15 @@ import type {
 import { getProperties } from './getProperties';
 import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { StaticEnvVars } from 'util/assertDbEnvVars';
+import type { NetlifyPluginUtils } from '@netlify/build';
+import * as fs from 'node:fs';
+import { Octokit } from 'octokit';
+
+const FRONTEND_SITES = [
+  'docs-frontend-stg',
+  'docs-frontend-dotcomstg',
+  'docs-frontend-dotcomprd',
+];
 
 const getDbNames = (
   env: Environments,
@@ -47,19 +56,14 @@ const determineEnvironment = ({
   siteName,
 }: { isBuildHookDeploy: boolean; siteName: string }): Environments => {
   // Check if this was an engineer's build or writer's build
-  const frontendSites = [
-    'docs-frontend-stg',
-    'docs-frontend-dotcomstg',
-    'docs-frontend-dotcomprd',
-  ];
-  const isFrontendBuild = frontendSites.includes(siteName);
+  const isFrontendBuild = FRONTEND_SITES.includes(siteName);
 
-  //Writer's builds = prd, everything not built on a site with 'Snooty' as git source
+  //Writer's builds = prd, everything not built on a frontend site (a site with 'Snooty' as git source)
+
   if (!isFrontendBuild) {
     return 'prd';
   }
   if (isBuildHookDeploy) {
-    //TODO: DOP-5201, check hook URL
     if (siteName === 'docs-frontend-dotcomprd') {
       return 'dotcomprd';
     }
@@ -69,23 +73,48 @@ const determineEnvironment = ({
   }
   return 'stg';
 };
+
 export const updateConfig = async ({
   configEnvironment,
   dbEnvVars,
+  run,
 }: {
   configEnvironment: ConfigEnvironmentVariables;
   dbEnvVars: StaticEnvVars;
+  run: NetlifyPluginUtils['run'];
 }): Promise<void> => {
+  // Check if this was an engineer's build or writer's build
+
+  const isFrontendBuild = FRONTEND_SITES.includes(
+    configEnvironment.SITE_NAME as string,
+  );
   // Checks if build was triggered by a webhook
-  // TODO: DOP-5201, add specific logic dependent on hook title, url, body, etc. once Slack deploy apps have been implemented
   const isBuildHookDeploy = !!(
     configEnvironment.INCOMING_HOOK_URL && configEnvironment.INCOMING_HOOK_TITLE
   );
+
+  const repoName = isBuildHookDeploy
+    ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.repoName
+    : (process.env.REPO_NAME ??
+      (process.env.REPOSITORY_URL?.split('/')?.pop() as string));
+  console.log('isBuildHookDeploy: ', isBuildHookDeploy);
+
+  console.log(process.env.REPOSITORY_URL?.split('/')?.pop() as string);
+
+  const branchName: string = isBuildHookDeploy
+    ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.branchName
+    : (process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string));
+
+  if (!repoName || !branchName) {
+    throw new Error('Repo name or branch name missing from deploy');
+  }
+  configEnvironment.BRANCH_NAME = branchName;
+  configEnvironment.REPO_NAME = repoName;
+
   const env = determineEnvironment({
     isBuildHookDeploy,
     siteName: configEnvironment.SITE_NAME as string,
   });
-
   const buildEnvironment = (process.env.ENV as Environments) ?? env;
 
   configEnvironment.ENV = buildEnvironment;
@@ -103,35 +132,7 @@ export const updateConfig = async ({
   configEnvironment.SNOOTY_DB_NAME =
     (process.env.SNOOTY_DB_NAME as SnootyDBName) ?? snootyDb;
 
-  // Check if repo name and branch name have been set as environment variables through Netlify UI
-  // Allows overwriting of database name values for testing
-  let branchName: string;
-  let repoName: string;
-  if (buildEnvironment !== 'dotcomstg' && buildEnvironment !== 'dotcomprd') {
-    branchName =
-      process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
-    repoName =
-      process.env.REPO_NAME ??
-      (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
-  } else {
-    branchName =
-      process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
-    repoName =
-      process.env.REPO_NAME ??
-      (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
-    // TODO: DOP-5201, Branch name and repo name to deploy sent as values in Build Hook payload if in dotcomprd or dotcomstg environments
-    // [branchName, repoName] = configEnvironment?.INCOMING_HOOK_BODY?.split(
-    //   '',
-    // ) as string[];
-    //process.env.BRANCH_NAME = branchName
-    //process.env.REPO_NAME = repoName;
-    //process.env.ORG_NAME = orgName;
-  }
-
-  if (!branchName || !repoName) {
-    throw new Error('Repo name or branch name missing from deploy');
-  }
-  const { repo, docsetEntry } = await getProperties({
+  const { repo, docsetEntry, metadataEntry } = await getProperties({
     branchName,
     repoName,
     dbEnvVars,
@@ -139,14 +140,72 @@ export const updateConfig = async ({
     environment: buildEnvironment,
   });
 
-  // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
-  process.env.SNOOTY_ENV = buildEnvironment;
-  process.env.PATH_PREFIX = docsetEntry.prefix[buildEnvironment];
+  configEnvironment.METADATA_ENTRY = metadataEntry;
 
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
   configEnvironment.DOCSET_ENTRY = docsetEntry;
   configEnvironment.BRANCH_ENTRY = branch?.pop();
+
+  const orgName = metadataEntry.github.organization;
+  configEnvironment.ORG = orgName;
+
+  // Prep for snooty build
+  if (isFrontendBuild) {
+    await run.command(
+      `echo "Cloning content repo \n repo ${repoName}, branchName: ${branchName}, orgName: ${orgName}" `,
+    );
+
+    if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
+      // const octokit = new Octokit({
+      //   auth: process.env.GITHUB_BOT_PWD,
+      // });
+
+      // const response = await octokit.request(
+      //   'GET /repos/{owner}/{repo}/branches/{branch}',
+      //   {
+      //     owner: orgName,
+      //     repo: repoName,
+      //     branch: branchName,
+      //   },
+      // );
+      // console.log(response);
+
+      // cosnt responseTwo = await octokit.actions.downloadArtifact({})
+      // await run.command(
+      //   `if [ -d '${repoName}' ]; then \n echo 'bi connector dir exists' \n fi`,
+      // );
+
+      await run.command(`rm -r ${repoName}`);
+    }
+
+    // const askPassFilePath = `${process.cwd()}/.ssh-askpass`;
+
+    // // await run.command(`touch testing.txt`);
+    // // // await run.command(`echo 'hello' > ${askPassFilePath}`);
+    // // // await run.command('ls');
+
+    // // await run.command(`cat testing.txt`);
+
+    // // const askpassfile = fs.readFileSync(testing.txt, 'utf-8');
+    // // console.log(askpassfile);
+
+    // process.env.SSH_ASKPASS = `${askPassFilePath}`;
+
+    await run.command(
+      `git clone -b ${branchName} https://docs-builder-bot:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
+    );
+
+    if (fs.existsSync(`${repoName}/.git/config`)) {
+      await run.command(`rm -r ${repoName}/.git/config`);
+    }
+
+    console.log('repoName', repoName);
+    await run.command(`ls ${repoName}/.git `);
+  }
+  // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
+  process.env.SNOOTY_ENV = buildEnvironment;
+  process.env.PATH_PREFIX = docsetEntry.prefix[buildEnvironment];
 
   console.info(
     'BUILD ENVIRONMENT: ',
@@ -157,9 +216,57 @@ export const updateConfig = async ({
     configEnvironment.DOCSET_ENTRY,
     '\n BRANCH ENTRY: ',
     configEnvironment.BRANCH_ENTRY,
+    '\n METADATA ENTRY: ',
+    configEnvironment.METADATA_ENTRY,
     '\n POOL DB NAME: ',
     configEnvironment.POOL_DB_NAME,
     '\n SEARCH DB NAME: ',
     configEnvironment.SEARCH_DB_NAME,
   );
 };
+
+// const getRepoBranch = (
+//   buildEnvironment: Environments,
+//   configEnvironment: ConfigEnvironmentVariables,
+// ) => {
+//   // Check if repo name and branch name have been set as environment variables through Netlify UI
+//   // Allows overwriting of database name values for testing
+//   let branchName: string;
+//   let repoName: string;
+
+//   if (buildEnvironment !== 'dotcomstg' && buildEnvironment !== 'dotcomprd') {
+//     branchName =
+//       process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
+//     repoName =
+//       process.env.REPO_NAME ??
+//       (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
+//   } else {
+//     console.log(`Incoming hook body ${configEnvironment?.INCOMING_HOOK_BODY}`);
+//     repoName = JSON.parse(
+//       configEnvironment?.INCOMING_HOOK_BODY as string,
+//     )?.repoName;
+//     branchName = JSON.parse(
+//       configEnvironment?.INCOMING_HOOK_BODY as string,
+//     )?.branchName;
+//   }
+//   return { branchName, repoName };
+// };
+
+// Check if repo name and branch name have been set as environment variables through Netlify UI
+// Allows overwriting of database name values for testing
+
+// if (buildEnvironment !== 'dotcomstg' && buildEnvironment !== 'dotcomprd') {
+//   branchName =
+//     process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
+//   repoName =
+//     process.env.REPO_NAME ??
+//     (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
+// } else {
+//   console.log(`Incoming hook body ${configEnvironment?.INCOMING_HOOK_BODY}`);
+//   repoName = JSON.parse(
+//     configEnvironment?.INCOMING_HOOK_BODY as string,
+//   )?.repoName;
+//   branchName = JSON.parse(
+//     configEnvironment?.INCOMING_HOOK_BODY as string,
+//   )?.branchName;
+// }

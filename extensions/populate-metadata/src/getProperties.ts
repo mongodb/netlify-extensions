@@ -1,12 +1,16 @@
 import type { StaticEnvVars, Environments } from 'util/assertDbEnvVars';
-import { closePoolDb } from 'util/databaseConnection/clusterZeroConnector';
+import { closeClusterZeroDb } from 'util/databaseConnection/clusterZeroConnector';
 import { getDocsetsCollection } from 'util/databaseConnection/fetchDocsetsData';
-import { getReposBranchesCollection } from '../../../libs/util/src/databaseConnection/fetchReposBranchesData';
+import { getReposBranchesCollection } from 'util/databaseConnection/fetchReposBranchesData';
+import { getProjectsCollection } from 'util/databaseConnection/fetchProjectsData';
+
 import type {
   PoolDBName,
   DocsetsDocument,
   ReposBranchesDocument,
   clusterZeroConnectionInfo,
+  ProjectsDocument,
+  ClusterZeroDBName,
 } from 'util/databaseConnection/types';
 const EXTENSION_NAME = 'populate-metadata-extension';
 
@@ -88,6 +92,42 @@ const getRepoEntry = async ({
   return repo;
 };
 
+const getMetadataEntry = async ({
+  projectName,
+  connectionInfo,
+}: {
+  projectName: string;
+  connectionInfo: clusterZeroConnectionInfo;
+}): Promise<ProjectsDocument> => {
+  const projects = await getProjectsCollection({ ...connectionInfo });
+  const query = {
+    name: projectName,
+  };
+  const projection = {
+    projection: {
+      _id: 0,
+      name: 1,
+      owner: 1,
+      github: 1,
+      jira: 1,
+    },
+  };
+
+  const projectMetadata = await projects.findOne<ProjectsDocument>(
+    query,
+    projection,
+  );
+
+  if (!projectMetadata) {
+    throw new Error(
+      `Could not get docs_metadata.projects entry for project ${projectName} with query ${JSON.stringify(
+        query,
+      )}`,
+    );
+  }
+  return projectMetadata;
+};
+
 export const getProperties = async ({
   branchName,
   repoName,
@@ -100,7 +140,11 @@ export const getProperties = async ({
   dbEnvVars: StaticEnvVars;
   poolDbName: PoolDBName;
   environment: Environments;
-}): Promise<{ repo: ReposBranchesDocument; docsetEntry: DocsetsDocument }> => {
+}): Promise<{
+  repo: ReposBranchesDocument;
+  docsetEntry: DocsetsDocument;
+  metadataEntry: ProjectsDocument;
+}> => {
   const repoBranchesConnectionInfo = {
     clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
     databaseName: poolDbName,
@@ -127,7 +171,19 @@ export const getProperties = async ({
     environment,
   });
 
-  closePoolDb();
+  const projectMetadataConnectionInfo = {
+    clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
+    databaseName: dbEnvVars.METADATA_DB_NAME as ClusterZeroDBName,
+    collectionName: dbEnvVars.PROJECTS_COLLECTION,
+    extensionName: EXTENSION_NAME,
+  };
 
-  return { repo, docsetEntry };
+  const metadataEntry = await getMetadataEntry({
+    connectionInfo: projectMetadataConnectionInfo,
+    projectName: repo.project,
+  });
+
+  closeClusterZeroDb();
+
+  return { repo, docsetEntry, metadataEntry };
 };
