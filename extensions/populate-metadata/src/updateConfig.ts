@@ -120,13 +120,16 @@ export const updateConfig = async ({
     branchName = JSON.parse(
       configEnvironment?.INCOMING_HOOK_BODY as string,
     )?.branchName;
-
-    if (!repoName || !branchName) {
-      throw new Error('Repo name or branch name missing from deploy');
-    }
-    configEnvironment.BRANCH_NAME = branchName;
-    configEnvironment.REPO_NAME = repoName;
   }
+
+  if (!repoName) {
+    throw new Error('Repo name missing from deploy');
+  }
+  if (!branchName) {
+    throw new Error('Branch name missing from deploy');
+  }
+  configEnvironment.BRANCH_NAME = branchName;
+  configEnvironment.REPO_NAME = repoName;
 
   const { repo, docsetEntry, metadataEntry } = await getProperties({
     branchName,
