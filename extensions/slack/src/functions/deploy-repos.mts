@@ -30,11 +30,6 @@ export default async (req: Request) => {
   // TODO: Create an interface for slack view_submission payloads
   const parsed = JSON.parse(decoded);
 
-  const user = parsed?.user?.username;
-  const stateValues = parsed?.view?.state?.values;
-  const selectedRepos =
-    stateValues?.block_repo_option?.repo_option?.selected_options;
-
   if (parsed?.type !== 'view_submission') {
     const response = new Response(
       'Form not submitted, will not process request',
@@ -43,28 +38,43 @@ export default async (req: Request) => {
     return response;
   }
 
+  const slackCommand = parsed.view?.callback_id;
+
+  const user = parsed.user?.username;
+  const stateValues = parsed.view?.state?.values;
+  const selectedRepos =
+    stateValues?.block_repo_option?.repo_option?.selected_options;
+
   // TODO: Send message to user that their job has been enqueued (DOP-5096)
   // const messageResponse = await sendMessage(
   //   'this is a test message',
   //   parsed?.user?.id,
   // );
 
-  // TODO: send branch name, payload in POST request, DOP-5201
   console.log(`Selected repos: ${JSON.stringify(selectedRepos)}`);
 
   for (const individualRepo of selectedRepos) {
     const [repoName, branchName] = individualRepo.value.split('/');
     const jobTitle = `Slack deploy: repoName ${repoName}, branchName ${branchName}, by ${user}`;
     if (repoName && branchName) {
-      // TODO: add other conditionals here to deploy based on branchName
+      // TODO: DOP-5214, change value of the build hooks to env vars retrieved from dbEnvVars
       console.log(`Deploying branch ${branchName} of repo ${repoName}`);
-      // Currently: sends build hook to deploy to docs-frontend-dotcomstg site
-      // TODO: DOP-5202, Send conditionally to build hooks of different sites ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal request received from
+      const TEST_WEBHOOK_URL =
+        'https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+';
+      const PROD_WEBHOOK_URL =
+        'https://api.netlify.com/build_hooks/6744e9fd3344dd3955ccf135?trigger_branch=main&trigger_title=deployHook+';
+
+      console.log(`Deploying branch ${branchName} of repo ${repoName}`);
+      // Trigger build on a frontend site ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal the request was received from
       const resp = await axios.post(
-        `https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+${jobTitle}`,
+        slackCommand === '/netlify-test-deploy'
+          ? `${TEST_WEBHOOK_URL}${jobTitle}`
+          : `${PROD_WEBHOOK_URL}${jobTitle}`,
         { repoName: repoName, branchName: branchName },
       );
+      return;
     }
+    throw new Error('Missing branchName or repoName');
   }
 };
 
