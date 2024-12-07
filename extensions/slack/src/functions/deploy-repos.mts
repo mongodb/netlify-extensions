@@ -57,23 +57,22 @@ export default async (req: Request) => {
     const [repoName, branchName] = individualRepo.value.split('/');
     const jobTitle = `Slack deploy: repoName ${repoName}, branchName ${branchName}, by ${user}`;
     if (repoName && branchName) {
-      if (slackCommand === '/netlify-test-deploy') {
-        console.log(`Deploying branch ${branchName} of repo ${repoName}`);
-        // Tigger build on a frontend site ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal the request was received from
-        // TODO: DOP-5214, change value of slash commands and their associated build hooks to env vars retrieved from dbEnvVars
-        const resp = await axios.post(
-          `https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+${jobTitle}`,
-          { repoName: repoName, branchName: branchName },
-        );
-        return;
-      }
-      if (slackCommand === '/netlify-deploy') {
-        const resp = await axios.post(
-          `https://api.netlify.com/build_hooks/6744e9fd3344dd3955ccf135?trigger_branch=main&trigger_title=deployHook+${jobTitle}`,
-          { repoName: repoName, branchName: branchName },
-        );
-        return;
-      }
+      // TODO: DOP-5214, change value of the build hooks to env vars retrieved from dbEnvVars
+      console.log(`Deploying branch ${branchName} of repo ${repoName}`);
+      const TEST_WEBHOOK_URL =
+        'https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+';
+      const PROD_WEBHOOK_URL =
+        'https://api.netlify.com/build_hooks/6744e9fd3344dd3955ccf135?trigger_branch=main&trigger_title=deployHook+';
+
+      console.log(`Deploying branch ${branchName} of repo ${repoName}`);
+      // Trigger build on a frontend site ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal the request was received from
+      const resp = await axios.post(
+        slackCommand === '/netlify-test-deploy'
+          ? `${TEST_WEBHOOK_URL}${jobTitle}`
+          : `${PROD_WEBHOOK_URL}${jobTitle}`,
+        { repoName: repoName, branchName: branchName },
+      );
+      return;
     }
     throw new Error('Missing branchName or repoName');
   }
