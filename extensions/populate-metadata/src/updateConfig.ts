@@ -74,29 +74,22 @@ const determineEnvironment = ({
 };
 
 const cloneContentRepo = async (
-  isFrontendBuild: boolean,
   run: NetlifyPluginUtils['run'],
   repoName: string,
   branchName: string,
   orgName: string,
 ) => {
-  if (isFrontendBuild) {
-    await run.command(
-      `echo "Cloning content repo \n repo ${repoName}, branchName: ${branchName}, orgName: ${orgName}" `,
-    );
+  if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
+    await run.command(`rm -r ${repoName}`);
+  }
 
-    if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
-      await run.command(`rm -r ${repoName}`);
-    }
+  await run.command(
+    `git clone -b ${branchName} https://${process.env.GITHUB_BOT_USERNAME}:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
+  );
 
-    await run.command(
-      `git clone -b ${branchName} https://${process.env.GITHUB_BOT_USERNAME}:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
-    );
-
-    // Remove git config as it stores the connection string in plain text
-    if (fs.existsSync(`${repoName}/.git/config`)) {
-      await run.command(`rm -r ${repoName}/.git/config`);
-    }
+  // Remove git config as it stores the connection string in plain text
+  if (fs.existsSync(`${repoName}/.git/config`)) {
+    await run.command(`rm -r ${repoName}/.git/config`);
   }
 };
 
@@ -178,12 +171,17 @@ export const updateConfig = async ({
   const orgName = metadataEntry.github.organization;
   configEnvironment.ORG = orgName;
 
-  // Prep for Snooty frontend build by cloning content repo
-  cloneContentRepo(isFrontendBuild, run, repoName, branchName, orgName);
-
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = buildEnvironment;
   process.env.PATH_PREFIX = docsetEntry.prefix[buildEnvironment];
+
+  // Prep for Snooty frontend build by cloning content repo
+  if (isFrontendBuild) {
+    console.log(
+      `Cloning content repo \n Repo: ${repoName}, branch: ${branchName}, github organization: ${orgName}`,
+    );
+    await cloneContentRepo(run, repoName, branchName, orgName);
+  }
 
   console.info(
     'BUILD ENVIRONMENT: ',
