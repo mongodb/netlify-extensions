@@ -6,7 +6,7 @@ export const mutRedirectsAndPublish = async (
   configEnvironment: ConfigEnvironmentVariables,
   run: NetlifyPluginUtils['run'],
 ): Promise<void> => {
-  // Get it from pool.docsets to get bucket
+  // Get data from pool.docsets to get bucket
   const docsetEntry = configEnvironment?.DOCSET_ENTRY;
   const branchEntry = configEnvironment?.BRANCH_ENTRY;
   if (!docsetEntry) {
@@ -19,7 +19,7 @@ export const mutRedirectsAndPublish = async (
   console.log('Succesfully got branch_entry', branchEntry);
 
   // Get the array of the all the possible alisas
-  // using slice() to create shallow copy so i dont get errors froom netlify about trying to write a read-only variable
+  // using slice() to create shallow copy so they're no errors from netlify about trying to write a read-only variable
   const urlAliases = branchEntry.urlAliases
     ? branchEntry.urlAliases.slice()
     : [];

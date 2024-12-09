@@ -5,7 +5,6 @@ export const teardown = async (client: mongodb.MongoClient): Promise<void> => {
 };
 
 // Handles memoization of db object, and initial connection logic if needs to be initialized
-// do we use this client instead ?
 export const dbClient = async ({
   uri,
   appName,
