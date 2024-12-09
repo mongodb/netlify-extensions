@@ -30,7 +30,7 @@ interface AtlasSpecUrlParams {
   apiVersion?: string;
   resourceVersion?: string;
   latestResourceVersion?: string;
-  configEnvironment?: ConfigEnvironmentVariables;
+  configEnvironment: ConfigEnvironmentVariables;
 }
 
 export const getAtlasSpecUrl = async ({

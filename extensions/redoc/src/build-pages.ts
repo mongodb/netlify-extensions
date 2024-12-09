@@ -36,6 +36,7 @@ interface GetOASpecParams {
   resourceVersions?: string[];
   apiVersion?: string;
   resourceVersion?: string;
+  configEnvironment: ConfigEnvironmentVariables;
 }
 
 export async function getBuildOasSpecCommand({
@@ -47,6 +48,7 @@ export async function getBuildOasSpecCommand({
   siteTitle,
   apiVersion,
   resourceVersion,
+  configEnvironment,
 }: GetOASpecParams) {
   try {
     let spec = '';
@@ -203,6 +205,7 @@ export async function buildOpenAPIPages(
               apiVersion,
               resourceVersions,
               resourceVersion,
+              configEnvironment,
             });
 
             await run.command(command);
@@ -229,6 +232,7 @@ export async function buildOpenAPIPages(
         siteUrl,
         siteTitle,
         apiVersion,
+        configEnvironment,
       });
       await run.command(command);
 
