@@ -73,6 +73,33 @@ const determineEnvironment = ({
   return 'stg';
 };
 
+const cloneContentRepo = async (
+  isFrontendBuild: boolean,
+  run: NetlifyPluginUtils['run'],
+  repoName: string,
+  branchName: string,
+  orgName: string,
+) => {
+  if (isFrontendBuild) {
+    await run.command(
+      `echo "Cloning content repo \n repo ${repoName}, branchName: ${branchName}, orgName: ${orgName}" `,
+    );
+
+    if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
+      await run.command(`rm -r ${repoName}`);
+    }
+
+    await run.command(
+      `git clone -b ${branchName} https://${process.env.GITHUB_BOT_USERNAME}:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
+    );
+
+    // Remove git config as it stores the connection string in plain text
+    if (fs.existsSync(`${repoName}/.git/config`)) {
+      await run.command(`rm -r ${repoName}/.git/config`);
+    }
+  }
+};
+
 export const updateConfig = async ({
   configEnvironment,
   dbEnvVars,
@@ -91,16 +118,12 @@ export const updateConfig = async ({
     configEnvironment.INCOMING_HOOK_URL && configEnvironment.INCOMING_HOOK_TITLE
   );
 
-  // Check if repo name and branch name have been set as environment variables through Netlify UI
-  // Allows overwriting of database name values for testing
-
+  // Determine which repository and branch to build
+  // Check if repo name and branch name have been set as environment variables through Netlify UI, allows overwriting of database name values
   const repoName = isBuildHookDeploy
     ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.repoName
     : (process.env.REPO_NAME ??
       (process.env.REPOSITORY_URL?.split('/')?.pop() as string));
-  console.log('isBuildHookDeploy: ', isBuildHookDeploy);
-
-  console.log(process.env.REPOSITORY_URL?.split('/')?.pop() as string);
 
   const branchName: string = isBuildHookDeploy
     ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.branchName
@@ -113,14 +136,17 @@ export const updateConfig = async ({
   configEnvironment.BRANCH_NAME = branchName;
   configEnvironment.REPO_NAME = repoName;
 
+  // Determine which environment the build will run in
   const env = determineEnvironment({
     isBuildHookDeploy,
     siteName: configEnvironment.SITE_NAME as string,
   });
+
   const buildEnvironment = (process.env.ENV as Environments) ?? env;
 
   configEnvironment.ENV = buildEnvironment;
 
+  // Get the names of the databases associated with given build environment
   const { snootyDb, searchDb, poolDb } = getDbNames(buildEnvironment);
 
   // Check if values for the database names have been set as environment variables through Netlify UI
@@ -153,24 +179,7 @@ export const updateConfig = async ({
   configEnvironment.ORG = orgName;
 
   // Prep for Snooty frontend build by cloning content repo
-  if (isFrontendBuild) {
-    await run.command(
-      `echo "Cloning content repo \n repo ${repoName}, branchName: ${branchName}, orgName: ${orgName}" `,
-    );
-
-    if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
-      await run.command(`rm -r ${repoName}`);
-    }
-
-    await run.command(
-      `git clone -b ${branchName} https://${process.env.GITHUB_BOT_USERNAME}:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
-    );
-
-    // Remove git config as it stores the connection string in plain text
-    if (fs.existsSync(`${repoName}/.git/config`)) {
-      await run.command(`rm -r ${repoName}/.git/config`);
-    }
-  }
+  cloneContentRepo(isFrontendBuild, run, repoName, branchName, orgName);
 
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = buildEnvironment;
