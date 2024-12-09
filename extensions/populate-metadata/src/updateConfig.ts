@@ -9,7 +9,6 @@ import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { StaticEnvVars } from 'util/assertDbEnvVars';
 import type { NetlifyPluginUtils } from '@netlify/build';
 import * as fs from 'node:fs';
-import { Octokit } from 'octokit';
 
 const FRONTEND_SITES = [
   'docs-frontend-stg',
@@ -83,8 +82,7 @@ export const updateConfig = async ({
   dbEnvVars: StaticEnvVars;
   run: NetlifyPluginUtils['run'];
 }): Promise<void> => {
-  // Check if this was an engineer's build or writer's build
-
+  // Check if this was a build triggered by a frontend change or a content repo change
   const isFrontendBuild = FRONTEND_SITES.includes(
     configEnvironment.SITE_NAME as string,
   );
@@ -92,6 +90,9 @@ export const updateConfig = async ({
   const isBuildHookDeploy = !!(
     configEnvironment.INCOMING_HOOK_URL && configEnvironment.INCOMING_HOOK_TITLE
   );
+
+  // Check if repo name and branch name have been set as environment variables through Netlify UI
+  // Allows overwriting of database name values for testing
 
   const repoName = isBuildHookDeploy
     ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.repoName
@@ -108,6 +109,7 @@ export const updateConfig = async ({
   if (!repoName || !branchName) {
     throw new Error('Repo name or branch name missing from deploy');
   }
+
   configEnvironment.BRANCH_NAME = branchName;
   configEnvironment.REPO_NAME = repoName;
 
@@ -150,59 +152,26 @@ export const updateConfig = async ({
   const orgName = metadataEntry.github.organization;
   configEnvironment.ORG = orgName;
 
-  // Prep for snooty build
+  // Prep for Snooty frontend build by cloning content repo
   if (isFrontendBuild) {
     await run.command(
       `echo "Cloning content repo \n repo ${repoName}, branchName: ${branchName}, orgName: ${orgName}" `,
     );
 
     if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
-      // const octokit = new Octokit({
-      //   auth: process.env.GITHUB_BOT_PWD,
-      // });
-
-      // const response = await octokit.request(
-      //   'GET /repos/{owner}/{repo}/branches/{branch}',
-      //   {
-      //     owner: orgName,
-      //     repo: repoName,
-      //     branch: branchName,
-      //   },
-      // );
-      // console.log(response);
-
-      // cosnt responseTwo = await octokit.actions.downloadArtifact({})
-      // await run.command(
-      //   `if [ -d '${repoName}' ]; then \n echo 'bi connector dir exists' \n fi`,
-      // );
-
       await run.command(`rm -r ${repoName}`);
     }
 
-    // const askPassFilePath = `${process.cwd()}/.ssh-askpass`;
-
-    // // await run.command(`touch testing.txt`);
-    // // // await run.command(`echo 'hello' > ${askPassFilePath}`);
-    // // // await run.command('ls');
-
-    // // await run.command(`cat testing.txt`);
-
-    // // const askpassfile = fs.readFileSync(testing.txt, 'utf-8');
-    // // console.log(askpassfile);
-
-    // process.env.SSH_ASKPASS = `${askPassFilePath}`;
-
     await run.command(
-      `git clone -b ${branchName} https://docs-builder-bot:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
+      `git clone -b ${branchName} https://${process.env.GITHUB_BOT_USERNAME}:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
     );
 
+    // Remove git config as it stores the connection string in plain text
     if (fs.existsSync(`${repoName}/.git/config`)) {
       await run.command(`rm -r ${repoName}/.git/config`);
     }
-
-    console.log('repoName', repoName);
-    await run.command(`ls ${repoName}/.git `);
   }
+
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = buildEnvironment;
   process.env.PATH_PREFIX = docsetEntry.prefix[buildEnvironment];
@@ -224,49 +193,3 @@ export const updateConfig = async ({
     configEnvironment.SEARCH_DB_NAME,
   );
 };
-
-// const getRepoBranch = (
-//   buildEnvironment: Environments,
-//   configEnvironment: ConfigEnvironmentVariables,
-// ) => {
-//   // Check if repo name and branch name have been set as environment variables through Netlify UI
-//   // Allows overwriting of database name values for testing
-//   let branchName: string;
-//   let repoName: string;
-
-//   if (buildEnvironment !== 'dotcomstg' && buildEnvironment !== 'dotcomprd') {
-//     branchName =
-//       process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
-//     repoName =
-//       process.env.REPO_NAME ??
-//       (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
-//   } else {
-//     console.log(`Incoming hook body ${configEnvironment?.INCOMING_HOOK_BODY}`);
-//     repoName = JSON.parse(
-//       configEnvironment?.INCOMING_HOOK_BODY as string,
-//     )?.repoName;
-//     branchName = JSON.parse(
-//       configEnvironment?.INCOMING_HOOK_BODY as string,
-//     )?.branchName;
-//   }
-//   return { branchName, repoName };
-// };
-
-// Check if repo name and branch name have been set as environment variables through Netlify UI
-// Allows overwriting of database name values for testing
-
-// if (buildEnvironment !== 'dotcomstg' && buildEnvironment !== 'dotcomprd') {
-//   branchName =
-//     process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
-//   repoName =
-//     process.env.REPO_NAME ??
-//     (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
-// } else {
-//   console.log(`Incoming hook body ${configEnvironment?.INCOMING_HOOK_BODY}`);
-//   repoName = JSON.parse(
-//     configEnvironment?.INCOMING_HOOK_BODY as string,
-//   )?.repoName;
-//   branchName = JSON.parse(
-//     configEnvironment?.INCOMING_HOOK_BODY as string,
-//   )?.branchName;
-// }
