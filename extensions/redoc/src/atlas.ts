@@ -11,7 +11,10 @@ export interface OASFile {
 
 export type OASFilePartial = Pick<OASFile, 'gitHash' | 'versions'>;
 
-export const findLastSavedVersionData = async (apiKeyword: string, configEnvironment: ConfigEnvironmentVariables) => {
+export const findLastSavedVersionData = async (
+  apiKeyword: string,
+  configEnvironment: ConfigEnvironmentVariables,
+) => {
   const dbSession = await db(configEnvironment);
   try {
     const projection = { gitHash: 1, versions: 1 };
@@ -38,7 +41,7 @@ export const getAtlasSpecUrl = async ({
   apiVersion,
   resourceVersion,
   latestResourceVersion,
-  configEnvironment
+  configEnvironment,
 }: AtlasSpecUrlParams) => {
   // get the environemnt from netlify
   const env = configEnvironment?.ENV ?? '';
@@ -52,7 +55,7 @@ export const getAtlasSpecUrl = async ({
     env === 'dotcomprd'
       ? 'https://cloud.mongodb.com/version'
       : 'https://cloud-dev.mongodb.com/version';
-      
+
   // Currently, the only expected API fetched programmatically is the Cloud Admin API,
   // but it's possible to have more in the future with varying processes.
   const keywords = ['cloud'];
@@ -74,7 +77,8 @@ export const getAtlasSpecUrl = async ({
   let successfulGitHash = true;
 
   try {
-    const { fetchGitHash, resetGitHashCache } = createFetchGitHash(GIT_HASH_URL);
+    const { fetchGitHash, resetGitHashCache } =
+      createFetchGitHash(GIT_HASH_URL);
     const gitHash = await fetchGitHash();
     oasFileURL = `${OAS_FILE_SERVER}${gitHash}${versionExtension}.json`;
 
@@ -157,5 +161,3 @@ function createFetchGitHash(GIT_HASH_URL: string) {
     },
   };
 }
-
-

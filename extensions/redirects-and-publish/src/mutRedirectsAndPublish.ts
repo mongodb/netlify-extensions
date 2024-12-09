@@ -10,20 +10,25 @@ export const mutRedirectsAndPublish = async (
   const docsetEntry = configEnvironment?.DOCSET_ENTRY;
   const branchEntry = configEnvironment?.BRANCH_ENTRY;
   if (!docsetEntry) {
-    throw new Error ("Unable to retrive DOCSET_ENTRY");
+    throw new Error('Unable to retrive DOCSET_ENTRY');
   }
   if (!branchEntry) {
-    throw new Error ("Unable to retrive BRANCH_ENTRY");
+    throw new Error('Unable to retrive BRANCH_ENTRY');
   }
   console.log('Succesfully got docsets_entry:', docsetEntry);
   console.log('Succesfully got branch_entry', branchEntry);
-  
-  // Get the array of the all the possible alisas 
+
+  // Get the array of the all the possible alisas
   // using slice() to create shallow copy so i dont get errors froom netlify about trying to write a read-only variable
-  const urlAliases = branchEntry.urlAliases ? branchEntry.urlAliases.slice() : [];
+  const urlAliases = branchEntry.urlAliases
+    ? branchEntry.urlAliases.slice()
+    : [];
 
   // Add current branch  to list of aliases
-  if (!!(branchEntry.publishOriginalBranchName) && (!urlAliases.includes(branchEntry.gitBranchName))) {
+  if (
+    !!branchEntry.publishOriginalBranchName &&
+    !urlAliases.includes(branchEntry.gitBranchName)
+  ) {
     urlAliases.push(branchEntry.gitBranchName);
   }
   if (urlAliases.length === 0) {
@@ -44,7 +49,7 @@ export const mutRedirectsAndPublish = async (
       `rsync -q -i -av --progress  ${process.cwd()} ${process.cwd()}/running-mut/snooty --exclude node_modules --exclude .cache --exclude running-mut`,
     );
     process.chdir(`${process.cwd()}/running-mut/snooty/repo`);
-  } 
+  }
 
   console.log('Downloading Mut...', configEnvironment?.SITE_NAME);
   await run('curl', [
@@ -54,7 +59,7 @@ export const mutRedirectsAndPublish = async (
     `https://github.com/mongodb/mut/releases/download/v${MUT_VERSION}/mut-v${MUT_VERSION}-linux_x86_64.zip`,
   ]);
   await run.command('unzip -d . -qq mut.zip');
- 
+
   process.env.GATSBY_MANIFEST_PATH = MANIFEST_PATH;
   process.env.GATSBY_PARSER_USER = 'buildbot';
   //TODO: Mut and populate-metadata extensions use different env variable names for the same values (set to team wide in future)
@@ -67,7 +72,9 @@ export const mutRedirectsAndPublish = async (
   for (const alias of urlAliases) {
     // Building snooty ------------------------------------------------------------
     // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
-    const prefix = alias ? `/${docsetEntry.prefix.dotcomstg}/${alias}`: `/${docsetEntry.prefix.dotcomstg}`;
+    const prefix = alias
+      ? `/${docsetEntry.prefix.dotcomstg}/${alias}`
+      : `/${docsetEntry.prefix.dotcomstg}`;
     process.env.PATH_PREFIX = prefix;
     await run.command('npm ci');
     await run.command('npm run clean');

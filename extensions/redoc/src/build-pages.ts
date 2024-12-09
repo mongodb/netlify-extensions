@@ -64,7 +64,7 @@ export async function getBuildOasSpecCommand({
         apiKeyword: source,
         apiVersion,
         resourceVersion,
-        configEnvironment
+        configEnvironment,
       });
 
       spec = oasFileURL;
@@ -145,7 +145,7 @@ export const saveSuccessfulBuildVersionData = async (
   apiKeyword: string,
   gitHash: string,
   versionData: Record<string, string>,
-  configEnvironment: ConfigEnvironmentVariables
+  configEnvironment: ConfigEnvironmentVariables,
 ) => {
   const dbSession = await db(configEnvironment);
   try {
@@ -248,7 +248,12 @@ export async function buildOpenAPIPages(
       try {
         const gitHash = await fetchGitHash();
         const versions = await fetchVersionData(gitHash, OAS_FILE_SERVER);
-        await saveSuccessfulBuildVersionData(source, gitHash, versions, configEnvironment);
+        await saveSuccessfulBuildVersionData(
+          source,
+          gitHash,
+          versions,
+          configEnvironment,
+        );
       } catch (e) {
         console.error(e);
       }
