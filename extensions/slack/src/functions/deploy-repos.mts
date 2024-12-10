@@ -52,16 +52,15 @@ export default async (req: Request) => {
   // );
 
   console.log(
-    `Selected repos: ${JSON.stringify(selectedRepos)}, length ${selectedRepos.length}`,
+    `${selectedRepos.length} selected repos: ${JSON.stringify(selectedRepos)} `,
   );
 
-  for (let individualRepo of selectedRepos) {
-    console.log(`${individualRepo.value} \n`);
+  for (const individualRepo of selectedRepos) {
     const [repoName, branchName] = individualRepo.value.split('/');
     const jobTitle = `Slack deploy: repoName ${repoName}, branchName ${branchName}, by ${user}`;
     if (repoName && branchName) {
       // TODO: DOP-5214, change value of the build hooks to env vars retrieved from dbEnvVars
-      console.log(`Deploying branch ${branchName} of repo ${repoName}`);
+      console.log(jobTitle);
       const TEST_WEBHOOK_URL =
         'https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+';
       const PROD_WEBHOOK_URL =
@@ -73,7 +72,6 @@ export default async (req: Request) => {
           : `${PROD_WEBHOOK_URL}${jobTitle}`,
         { repoName: repoName, branchName: branchName },
       );
-      return;
     }
     throw new Error('Missing branchName or repoName');
   }
