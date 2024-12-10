@@ -13,6 +13,7 @@ export interface RedocVersionOptions {
   resourceVersions: string[];
 }
 const GIT_HASH_URL = 'https://cloud-dev.mongodb.com/version';
+// TODO: replace this with value from dbEnvVars
 const COLLECTION_NAME = 'oas_files';
 
 const OAS_FILE_SERVER =
@@ -129,6 +130,7 @@ export const fetchVersionData = async (gitHash: string, serverURL: string) => {
   return versions;
 };
 
+// TODO: import this from types  in build/util
 export interface OASFile {
   api: string;
   fileContent: string;
@@ -142,6 +144,7 @@ export const saveSuccessfulBuildVersionData = async (
   gitHash: string,
   versionData: Record<string, string>,
 ) => {
+  // TODO: Remove this dbsession creation
   const dbSession = await db();
   try {
     const query = {
@@ -158,6 +161,7 @@ export const saveSuccessfulBuildVersionData = async (
       upsert: true,
     };
 
+    // TODO: get OASFiles collection instance from fetchOASData in build/utils
     const oasFilesCollection = dbSession.collection<OASFile>(COLLECTION_NAME);
     await oasFilesCollection.updateOne(query, update, options);
   } catch (error) {
