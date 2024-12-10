@@ -1,5 +1,6 @@
 import { COLLECTION_NAME, db } from './utils/db';
 
+//TODO: Use or save these as env vars
 const env = process.env.SNOOTY_ENV ?? '';
 
 const OAS_FILE_SERVER =
@@ -12,6 +13,7 @@ const GIT_HASH_URL =
     ? 'https://cloud.mongodb.com/version'
     : 'https://cloud-dev.mongodb.com/version';
 
+// TODO: import OASFilesDocument type and OASFilesPartial from build/utils type
 export interface OASFile {
   api: string;
   fileContent: string;
@@ -27,6 +29,7 @@ export const findLastSavedVersionData = async (apiKeyword: string) => {
   try {
     const projection = { gitHash: 1, versions: 1 };
     const filter = { api: apiKeyword };
+    // TODO: get OASFiles collection instance from fetchOASData in build/utils
     const oasFilesCollection = dbSession.collection<OASFile>(COLLECTION_NAME);
     return oasFilesCollection.findOne<OASFilePartial>(filter, {
       projection,
