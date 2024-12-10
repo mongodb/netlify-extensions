@@ -1,5 +1,5 @@
 // // Documentation: https://sdk.netlify.com
-import { envVarToBool, Extension } from './extension';
+import { envVarToBool, Extension } from 'util/extension';
 import { mutRedirectsAndPublish } from './mutRedirectsAndPublish';
 
 const extension = new Extension({

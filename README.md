@@ -25,7 +25,7 @@ The project is configured as a monorepo using [PNPM Workspaces](https://pnpm.io/
   - util/
 ```
 
-The extensions, unsurprisingly, live under the `extensions/` directory. The libs directory contains projects that are shared. Currently, there is a single project called `util` which contains the custom extension class used in the extension projects. To import a project into another one such as the `util` project in one of the extensions, go to the `package.json` of the extension, and add `"util": "workspace:*"` as a dependency (in this case, as a `devDependency`), and then run `pnpm install`. You can then import files from that project like so:
+The extensions, unsurprisingly, live under the `extensions/` directory. The libs directory contains projects that are shared. Currently, there is a single project called `util` which contains the custom extension class used in the extension projects. To import a project into another one such as the `util` project in one of the extensions, go to the `package.json` of the extension, and add `"util": "workspace:*"` as a dependency (in this case, as a `devDependency`), and then run `pnpm install`. Make sure there is no `package-lock.json` within your extension. You can then import files from that project like so:
 
 ```ts
 import { Extension } from "util/extension";
