@@ -17,7 +17,7 @@ export type DocsetsDocument = {
   prefix: EnvironmentConfig;
 };
 
-export type clusterZeroConnectionInfo = {
+export type ClusterZeroConnectionInfo = {
   clusterZeroURI: string;
   databaseName: ClusterZeroDBName;
   collectionName: string;
@@ -99,15 +99,15 @@ export type DocumentsDocument = {
   source: string;
   static_assets: Array<StaticAsset>;
   github_username: string;
-  facets?: Array<facet>;
+  facets?: Array<Facet>;
   build_id: ObjectId;
   created_at: Date;
 };
 
-export type facet = {
+export type Facet = {
   category: string;
   value: string;
-  sub_facets: Array<facet>;
+  sub_facets: Array<Facet>;
   display_name: string;
 };
 
@@ -131,7 +131,7 @@ type AstHeadings = {
   depth: number;
   id: string;
   title: Array<Record<string, string>>;
-  // biome-ignore lint/suspicious/noExplicitAny: <Most selector_id fields appear to be nullish>
+  // biome-ignore: <Most selector_id fields appear to be nullish>
   selector_ids: unknown;
 };
 

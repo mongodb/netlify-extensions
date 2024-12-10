@@ -17,6 +17,7 @@ import type {
   SearchDBName,
   SnootyDBName,
   ProjectsDocument,
+  OrganizationName,
 } from './databaseConnection/types';
 import { getDbConfig, type StaticEnvVars } from './assertDbEnvVars';
 
@@ -146,11 +147,13 @@ export class Extension<
   // };
 }
 
-export type GithubOrganizations = 'MongoDB' | '10gen';
 export type ConfigEnvironmentVariables = Partial<{
+  // The name of the branch in the content repo that is being built
   BRANCH_NAME: string;
+  // Usually duplicate of BRANCH_NAME property, this is the git primitve branch that the build is being built on
+  BRANCH: string;
   REPO_NAME: string;
-  ORG: GithubOrganizations;
+  ORG: OrganizationName;
   SITE_NAME: string;
   INCOMING_HOOK_URL: string;
   INCOMING_HOOK_TITLE: string;

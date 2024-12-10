@@ -8,8 +8,8 @@ import type {
   PoolDBName,
   DocsetsDocument,
   ReposBranchesDocument,
-  clusterZeroConnectionInfo,
-  ProjectMetadataDocument,
+  ClusterZeroConnectionInfo,
+  ProjectsDocument,
   ClusterZeroDBName,
 } from 'util/databaseConnection/types';
 const EXTENSION_NAME = 'populate-metadata-extension';
@@ -23,7 +23,7 @@ const getDocsetEntry = async ({
   projectName,
   environment,
 }: {
-  docsetsConnectionInfo: clusterZeroConnectionInfo;
+  docsetsConnectionInfo: ClusterZeroConnectionInfo;
   projectName: string;
   environment: Environments;
 }): Promise<DocsetsDocument> => {
@@ -56,7 +56,7 @@ const getRepoEntry = async ({
 }: {
   repoName: string;
   branchName: string;
-  connectionInfo: clusterZeroConnectionInfo;
+  connectionInfo: ClusterZeroConnectionInfo;
 }): Promise<ReposBranchesDocument> => {
   const reposBranches = await getReposBranchesCollection(connectionInfo);
 
@@ -88,13 +88,13 @@ const getRepoEntry = async ({
   return repo;
 };
 
-const getMetadataEntry = async ({
+const getProjectsEntry = async ({
   projectName,
   connectionInfo,
 }: {
   projectName: string;
-  connectionInfo: clusterZeroConnectionInfo;
-}): Promise<ProjectMetadataDocument> => {
+  connectionInfo: ClusterZeroConnectionInfo;
+}): Promise<ProjectsDocument> => {
   const projects = await getProjectsCollection(connectionInfo);
   const query = {
     name: projectName,
@@ -109,7 +109,7 @@ const getMetadataEntry = async ({
     },
   };
 
-  const projectMetadata = await projects.findOne<ProjectMetadataDocument>(
+  const projectMetadata = await projects.findOne<ProjectsDocument>(
     query,
     projection,
   );
@@ -139,7 +139,7 @@ export const getProperties = async ({
 }): Promise<{
   repo: ReposBranchesDocument;
   docsetEntry: DocsetsDocument;
-  metadataEntry: ProjectMetadataDocument;
+  projectsEntry: ProjectsDocument;
 }> => {
   const repoBranchesConnectionInfo = {
     clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
@@ -174,12 +174,12 @@ export const getProperties = async ({
     extensionName: EXTENSION_NAME,
   };
 
-  const metadataEntry = await getMetadataEntry({
+  const projectsEntry = await getProjectsEntry({
     connectionInfo: projectMetadataConnectionInfo,
     projectName: repo.project,
   });
 
   await closeClusterZeroDb();
 
-  return { repo, docsetEntry, metadataEntry };
+  return { repo, docsetEntry, projectsEntry };
 };
