@@ -39,13 +39,12 @@ export const mutRedirectsAndPublish = async (
   const repoName = configEnvironment.REPO_ENTRY?.repoName;
 
   // Get docset entry and branch entry from NetlifyConfig
-  const docsetEntry = configEnvironment?.DOCSET_ENTRY;
-  const branchEntry = configEnvironment?.BRANCH_ENTRY;
-  if (!docsetEntry) {
-    throw new Error('Unable to retrive DOCSET_ENTRY');
-  }
-  if (!branchEntry) {
-    throw new Error('Unable to retrieve BRANCH_ENTRY');
+  const docsetEntry = configEnvironment.DOCSET_ENTRY;
+  const branchEntry = configEnvironment.BRANCH_ENTRY;
+  if (!docsetEntry || !branchEntry) {
+    throw new Error(
+      `Unable to retrieve docset entry ${docsetEntry} or branch entry ${branchEntry} for repo ${repoName}`,
+    );
   }
 
   // Get the array of the all the possible aliases, used to publish page info into the correct subdirectories in the bucket
