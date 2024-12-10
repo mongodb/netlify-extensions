@@ -27,9 +27,7 @@ const getDocsetEntry = async ({
   projectName: string;
   environment: Environments;
 }): Promise<DocsetsDocument> => {
-  const docsets = await getDocsetsCollection({
-    ...docsetsConnectionInfo,
-  });
+  const docsets = await getDocsetsCollection(docsetsConnectionInfo);
   const docsetEnvironmentProjection = getEnvProjection(environment);
   const query = { project: { $eq: projectName } };
   const projection = {
@@ -60,9 +58,7 @@ const getRepoEntry = async ({
   branchName: string;
   connectionInfo: clusterZeroConnectionInfo;
 }): Promise<ReposBranchesDocument> => {
-  const reposBranches = await getReposBranchesCollection({
-    ...connectionInfo,
-  });
+  const reposBranches = await getReposBranchesCollection(connectionInfo);
 
   const query = {
     repoName: repoName,
@@ -98,8 +94,8 @@ const getMetadataEntry = async ({
 }: {
   projectName: string;
   connectionInfo: clusterZeroConnectionInfo;
-}): Promise<ProjectsDocument> => {
-  const projects = await getProjectsCollection({ ...connectionInfo });
+}): Promise<ProjectMetadataDocument> => {
+  const projects = await getProjectsCollection(connectionInfo);
   const query = {
     name: projectName,
   };
@@ -183,7 +179,7 @@ export const getProperties = async ({
     projectName: repo.project,
   });
 
-  closeClusterZeroDb();
+  await closeClusterZeroDb();
 
   return { repo, docsetEntry, metadataEntry };
 };

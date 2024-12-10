@@ -131,8 +131,8 @@ type AstHeadings = {
   depth: number;
   id: string;
   title: Array<Record<string, string>>;
-  // biome-ignore lint/suspicious/noExplicitAny: <Most selector_id fields appear to be nullish>
-  selector_ids: any;
+  // biome-ignore: <Most selector_id fields appear to be nullish>
+  selector_ids: unknown;
 };
 
 export type OrganizationName = 'mongodb' | '10gen';

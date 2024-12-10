@@ -58,7 +58,6 @@ const determineEnvironment = ({
   const isFrontendBuild = FRONTEND_SITES.includes(siteName);
 
   //Writer's builds = prd, everything not built on a frontend site (a site with 'Snooty' as git source)
-
   if (!isFrontendBuild) {
     return 'prd';
   }
@@ -161,12 +160,11 @@ export const updateConfig = async ({
     environment: buildEnvironment,
   });
 
-  configEnvironment.METADATA_ENTRY = metadataEntry;
-
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
   configEnvironment.DOCSET_ENTRY = docsetEntry;
   configEnvironment.BRANCH_ENTRY = branch?.pop();
+  configEnvironment.METADATA_ENTRY = metadataEntry;
 
   const orgName = metadataEntry.github.organization;
   configEnvironment.ORG = orgName;

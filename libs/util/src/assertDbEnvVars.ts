@@ -17,9 +17,11 @@ export type StaticEnvVars = {
   AWS_S3_SECRET_ACCESS_KEY: string;
   DOCSETS_COLLECTION: CollectionName;
   DOCUMENTS_COLLECTION: string;
+  GIT_HASH_URL: string;
   METADATA_DB_NAME: string;
   OAS_FILES_COLLECTION: string;
   PROJECTS_COLLECTION: CollectionName;
+  REDOC_CLI_VERSION: string;
   REPOS_BRANCHES_COLLECTION: CollectionName;
   SLACK_AUTH_TOKEN: string;
   SLACK_SIGNING_SECRET: string;
@@ -46,12 +48,16 @@ export const getDbConfig = (): StaticEnvVars => {
       (process.env.DOCSETS_COLLECTION as CollectionName) ?? 'docsets',
     DOCUMENTS_COLLECTION:
       (process.env.DOCUMENTS_COLLECTION as CollectionName) ?? 'documents',
+    GIT_HASH_URL:
+      (process.env.GIT_HASH_URL as string) ??
+      'https://cloud-dev.mongodb.com/version',
     METADATA_DB_NAME:
       (process.env.METADATA_DB_NAME as string) ?? 'docs_metadata',
     OAS_FILES_COLLECTION:
       (process.env.OAS_FILES_COLLECTION as string) ?? 'oas_files',
     PROJECTS_COLLECTION:
       (process.env.PROJECTS_COLLECTION as CollectionName) ?? 'projects',
+    REDOC_CLI_VERSION: (process.env.REDOC_CLI_VERSION as string) ?? '1.2.3',
     REPOS_BRANCHES_COLLECTION:
       (process.env.REPOS_BRANCHES_COLLECTION as CollectionName) ??
       'repos_branches',

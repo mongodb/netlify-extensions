@@ -1,6 +1,7 @@
 import type * as mongodb from 'mongodb';
 import { getClusterZeroDb } from './clusterZeroConnector';
-import type { ReposBranchesDocument } from './types';
+import type { DocumentsDocument } from './types';
+
 
 // Get Documents collection of Snooty_<xyz> database
 export const getDocumentsCollection = async ({
@@ -13,11 +14,12 @@ export const getDocumentsCollection = async ({
   databaseName: string;
   collectionName: string;
   extensionName?: string;
-}): Promise<mongodb.Collection<ReposBranchesDocument>> => {
+}): Promise<mongodb.Collection<DocumentsDocument>> => {
+
   const dbSession = await getClusterZeroDb({
     clusterZeroURI,
     databaseName,
     appName: extensionName ?? '',
   });
-  return dbSession.collection<ReposBranchesDocument>(collectionName);
+  return dbSession.collection<DocumentsDocument>(collectionName);
 };

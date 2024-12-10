@@ -27,7 +27,9 @@ export const buildRepoGroups = async (
         options.push({
           text: {
             type: 'plain_text',
-            text: active ? branchName : `(!inactive) ${branchName}`,
+            text: active
+              ? `${repoName}/${branchName}`
+              : `(!inactive) ${repoName}/${branchName}`,
           },
           value: `${repoName}/${branchName}`,
         });

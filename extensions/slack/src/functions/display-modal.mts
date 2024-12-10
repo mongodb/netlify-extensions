@@ -14,6 +14,7 @@ export default async (req: Request): Promise<Response> => {
   const requestBody = await new Response(req.body).text();
   const key_val = getQSString(requestBody);
   const triggerId = key_val.trigger_id;
+  const command = decodeURIComponent(key_val.command);
   const dbEnvVars = getDbConfig();
 
   if (
@@ -29,8 +30,8 @@ export default async (req: Request): Promise<Response> => {
 
   const reposBranchesCollection = await getReposBranchesCollection({
     clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
-    // TODO: DOP-5202, Change this conditionally to 'pool' or 'pool_test' depending on which slash command has been triggered
-    databaseName: 'pool',
+    // TODO: DOP-5214, store these values as env var constants
+    databaseName: command === '/netlify-test-deploy' ? 'pool_test' : 'pool',
     collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
     extensionName: EXTENSION_NAME,
   });
@@ -41,6 +42,7 @@ export default async (req: Request): Promise<Response> => {
     repos: deployableRepos,
     triggerId,
     slackAuthToken: dbEnvVars.SLACK_AUTH_TOKEN,
+    slackCommand: command,
   });
 
   if (!response?.data?.ok) {
