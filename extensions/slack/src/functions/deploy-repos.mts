@@ -72,8 +72,9 @@ export default async (req: Request) => {
           : `${PROD_WEBHOOK_URL}${jobTitle}`,
         { repoName: repoName, branchName: branchName },
       );
+    } else {
+      throw new Error('Missing branchName or repoName');
     }
-    throw new Error('Missing branchName or repoName');
   }
 };
 
