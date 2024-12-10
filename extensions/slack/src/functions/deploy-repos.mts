@@ -54,6 +54,7 @@ export default async (req: Request) => {
   console.log(`Selected repos: ${JSON.stringify(selectedRepos)}`);
 
   for (const individualRepo of selectedRepos) {
+    console.log(`${individualRepo} \n`);
     const [repoName, branchName] = individualRepo.value.split('/');
     const jobTitle = `Slack deploy: repoName ${repoName}, branchName ${branchName}, by ${user}`;
     if (repoName && branchName) {
