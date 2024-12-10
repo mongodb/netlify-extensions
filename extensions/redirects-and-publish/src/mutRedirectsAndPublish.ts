@@ -9,13 +9,13 @@ const getRepoAliases = (branchEntry: BranchEntry) => {
     : [];
 
   if (
-    !!branchEntry.publishOriginalBranchName &&
+    branchEntry.publishOriginalBranchName &&
     !urlAliases.includes(branchEntry.gitBranchName)
   ) {
     // Add current branch to list of aliases
     urlAliases.push(branchEntry.gitBranchName);
   }
-  if (urlAliases.length === 0) {
+  if (!urlAliases.length) {
     urlAliases.push(branchEntry.urlSlug);
   }
   return urlAliases;
@@ -44,6 +44,12 @@ export const mutRedirectsAndPublish = async (
   if (!docsetEntry || !branchEntry) {
     throw new Error(
       `Unable to retrieve docset entry ${docsetEntry} or branch entry ${branchEntry} for repo ${repoName}`,
+    );
+  }
+
+  if (!docsetEntry?.bucket || !docsetEntry?.prefix || !docsetEntry?.url) {
+    throw new Error(
+      `DocsetEntry information missing from docset ${docsetEntry}. Must include bucket, prefix, and url fields`,
     );
   }
 
@@ -88,17 +94,15 @@ export const mutRedirectsAndPublish = async (
 
     // Running mut-redirects -------------------------------------------------------
     try {
-      console.log(
-        `Running mut-redirects... for ${repoName} with alias ${alias}`,
-      );
+      console.log(`Running mut-redirects for ${repoName} with alias ${alias}`);
       await run.command(
         `${process.cwd()}/mut/mut-redirects ${repoName}/config/redirects -o public/.htaccess`,
       );
     } catch (e) {
       console.log(`Error occurred while running mut-redirects: ${e}`);
     }
+
     //Running mut-publish ----------------------------------------------------------
-    console.log('Start of the mut-publish plugin -----------');
     /*Usage: mut-publish <source> <bucket> --prefix=prefix
                       (--stage|--deploy)
                       [--all-subdirectories]
@@ -107,12 +111,8 @@ export const mutRedirectsAndPublish = async (
                       [--redirect-prefix=prefix]...
                       [--dry-run] [--verbose] [--json] */
     try {
-      console.log('Running mut-publish...');
-      if (!docsetEntry?.bucket || !docsetEntry?.prefix || !docsetEntry?.url) {
-        throw new Error(
-          `DocsetEntry information missing. bucket: ${docsetEntry?.bucket}, ...etc`,
-        );
-      }
+      console.log(`Running mut-publish for ${repoName} with alias ${alias}`);
+
       // TODO: In future we change to docsetEntry?.prefix?.[configEnvironment.ENV] and docsetEntry?.url?.[configEnvironment.ENV] (DOP-5178)
       await run(
         `${process.cwd()}/mut/mut-publish`,
