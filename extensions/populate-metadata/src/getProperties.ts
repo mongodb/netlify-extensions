@@ -8,7 +8,7 @@ import type {
   PoolDBName,
   DocsetsDocument,
   ReposBranchesDocument,
-  clusterZeroConnectionInfo,
+  ClusterZeroConnectionInfo,
   ProjectsDocument,
   ClusterZeroDBName,
 } from 'util/databaseConnection/types';
@@ -23,7 +23,7 @@ const getDocsetEntry = async ({
   projectName,
   environment,
 }: {
-  docsetsConnectionInfo: clusterZeroConnectionInfo;
+  docsetsConnectionInfo: ClusterZeroConnectionInfo;
   projectName: string;
   environment: Environments;
 }): Promise<DocsetsDocument> => {
@@ -56,7 +56,7 @@ const getRepoEntry = async ({
 }: {
   repoName: string;
   branchName: string;
-  connectionInfo: clusterZeroConnectionInfo;
+  connectionInfo: ClusterZeroConnectionInfo;
 }): Promise<ReposBranchesDocument> => {
   const reposBranches = await getReposBranchesCollection(connectionInfo);
 
@@ -93,8 +93,8 @@ const getMetadataEntry = async ({
   connectionInfo,
 }: {
   projectName: string;
-  connectionInfo: clusterZeroConnectionInfo;
-}): Promise<ProjectMetadataDocument> => {
+  connectionInfo: ClusterZeroConnectionInfo;
+}): Promise<ProjectsDocument> => {
   const projects = await getProjectsCollection(connectionInfo);
   const query = {
     name: projectName,
