@@ -88,7 +88,7 @@ const getRepoEntry = async ({
   return repo;
 };
 
-const getMetadataEntry = async ({
+const getProjectsEntry = async ({
   projectName,
   connectionInfo,
 }: {
@@ -139,7 +139,7 @@ export const getProperties = async ({
 }): Promise<{
   repo: ReposBranchesDocument;
   docsetEntry: DocsetsDocument;
-  metadataEntry: ProjectsDocument;
+  projectsEntry: ProjectsDocument;
 }> => {
   const repoBranchesConnectionInfo = {
     clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
@@ -174,12 +174,12 @@ export const getProperties = async ({
     extensionName: EXTENSION_NAME,
   };
 
-  const metadataEntry = await getMetadataEntry({
+  const projectsEntry = await getProjectsEntry({
     connectionInfo: projectMetadataConnectionInfo,
     projectName: repo.project,
   });
 
   await closeClusterZeroDb();
 
-  return { repo, docsetEntry, metadataEntry };
+  return { repo, docsetEntry, projectsEntry };
 };

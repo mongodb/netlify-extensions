@@ -3,6 +3,7 @@ import type {
   PoolDBName,
   SnootyDBName,
   SearchDBName,
+  OrganizationName,
 } from 'util/databaseConnection/types';
 import { getProperties } from './getProperties';
 import type { ConfigEnvironmentVariables } from 'util/extension';
@@ -72,12 +73,17 @@ const determineEnvironment = ({
   return 'stg';
 };
 
-const cloneContentRepo = async (
-  run: NetlifyPluginUtils['run'],
-  repoName: string,
-  branchName: string,
-  orgName: string,
-) => {
+const cloneContentRepo = async ({
+  run,
+  repoName,
+  branchName,
+  orgName,
+}: {
+  run: NetlifyPluginUtils['run'];
+  repoName: string;
+  branchName: string;
+  orgName: string;
+}) => {
   if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
     await run.command(`rm -r ${repoName}`);
   }
@@ -152,7 +158,7 @@ export const updateConfig = async ({
   configEnvironment.SNOOTY_DB_NAME =
     (process.env.SNOOTY_DB_NAME as SnootyDBName) ?? snootyDb;
 
-  const { repo, docsetEntry, metadataEntry } = await getProperties({
+  const { repo, docsetEntry, projectsEntry } = await getProperties({
     branchName,
     repoName,
     dbEnvVars,
@@ -164,10 +170,10 @@ export const updateConfig = async ({
   configEnvironment.REPO_ENTRY = repoEntry;
   configEnvironment.DOCSET_ENTRY = docsetEntry;
   configEnvironment.BRANCH_ENTRY = branch?.pop();
-  configEnvironment.METADATA_ENTRY = metadataEntry;
+  configEnvironment.PROJECTS_ENTRY = projectsEntry;
 
-  const orgName = metadataEntry.github.organization;
-  configEnvironment.ORG = orgName;
+  const orgName = projectsEntry.github.organization;
+  configEnvironment.ORG = orgName as OrganizationName;
 
   // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
   process.env.SNOOTY_ENV = buildEnvironment;
@@ -178,7 +184,7 @@ export const updateConfig = async ({
     console.log(
       `Cloning content repo \n Repo: ${repoName}, branch: ${branchName}, github organization: ${orgName}`,
     );
-    await cloneContentRepo(run, repoName, branchName, orgName);
+    await cloneContentRepo({ run, repoName, branchName, orgName });
   }
 
   console.info(
@@ -191,7 +197,7 @@ export const updateConfig = async ({
     '\n BRANCH ENTRY: ',
     configEnvironment.BRANCH_ENTRY,
     '\n METADATA ENTRY: ',
-    configEnvironment.METADATA_ENTRY,
+    configEnvironment.PROJECTS_ENTRY,
     '\n POOL DB NAME: ',
     configEnvironment.POOL_DB_NAME,
     '\n SEARCH DB NAME: ',
