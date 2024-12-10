@@ -1,6 +1,7 @@
 import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { NetlifyPluginUtils } from '@netlify/build';
 import type { BranchEntry } from 'util/databaseConnection/types';
+import type { StaticEnvVars, assertEnvVars } from 'util/assertDbEnvVars';
 
 const getRepoAliases = (branchEntry: BranchEntry) => {
   // use slice() to create shallow copy of the branch's aliases
@@ -21,15 +22,19 @@ const getRepoAliases = (branchEntry: BranchEntry) => {
   return urlAliases;
 };
 
-const setMutEnvVars = () => {
+export const setMutEnvVars = (dbEnvVars: StaticEnvVars) => {
   process.env.GATSBY_MANIFEST_PATH = `${process.cwd()}/bundle.zip`;
-  process.env.GATSBY_PARSER_USER = 'buildbot';
-  //TODO: Mut and populate-metadata extensions use different env variable names for the same values (set to team wide in future)
-  process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_S3_SECRET_ACCESS_KEY;
-  process.env.AWS_ACCESS_KEY_ID = process.env.AWS_S3_ACCESS_KEY_ID;
-  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
-    throw new Error('Credentials not found');
-  }
+  // Set these variables as environment variables for Mut
+  process.env.GATSBY_PARSER_USER = dbEnvVars.GATSBY_PARSER_USER;
+  // TODO: check if these can be set as env vars (with the same name) in assertDbEnvVars
+  process.env.AWS_SECRET_ACCESS_KEY = dbEnvVars.AWS_S3_SECRET_ACCESS_KEY;
+  process.env.AWS_ACCESS_KEY_ID = dbEnvVars.AWS_S3_ACCESS_KEY_ID;
+  assertEnvVars({
+    manifestPath: process.env.GATSBY_MANIFEST_PATH,
+    parserUser: process.env.GATSBY_PARSER_USER,
+    awsAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  });
 };
 
 export const mutRedirectsAndPublish = async (
@@ -55,9 +60,6 @@ export const mutRedirectsAndPublish = async (
 
   // Get the array of the all the possible aliases, used to publish page info into the correct subdirectories in the bucket
   const urlAliases = getRepoAliases(branchEntry);
-
-  // Set environment variables for Mut
-  setMutEnvVars();
 
   // Copy the Snooty frontend folder and rerun the frontend build WITH a Gatsby prefix (instead of `npm run build:no-prefix` as done in the build.sh)
   await run.command('rm -f -r running-mut');

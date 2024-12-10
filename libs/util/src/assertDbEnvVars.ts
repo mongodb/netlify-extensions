@@ -7,6 +7,7 @@ export type StaticEnvVars = {
   ATLAS_SEARCH_URI: string;
   AWS_S3_ACCESS_KEY_ID: string;
   AWS_S3_SECRET_ACCESS_KEY: string;
+  GATSBY_PARSER_USER: string;
   DOCSETS_COLLECTION: CollectionName;
   DOCUMENTS_COLLECTION: string;
   REPOS_BRANCHES_COLLECTION: CollectionName;
@@ -14,7 +15,7 @@ export type StaticEnvVars = {
   SLACK_SIGNING_SECRET: string;
 };
 
-const assertEnvVars = (vars: StaticEnvVars) => {
+export const assertEnvVars = (vars: Record<string, string>) => {
   const missingVars = Object.entries(vars)
     .filter(([, value]) => !value)
     .map(([key]) => `- ${key}`)
@@ -34,12 +35,13 @@ export const getDbConfig = (): StaticEnvVars => {
       (process.env.DOCSETS_COLLECTION as CollectionName) ?? 'docsets',
     DOCUMENTS_COLLECTION:
       (process.env.DOCUMENTS_COLLECTION as CollectionName) ?? 'documents',
+    GATSBY_PARSER_USER: (process.env.PARSER_USER as string) ?? 'buildbot',
     REPOS_BRANCHES_COLLECTION:
       (process.env.REPOS_BRANCHES_COLLECTION as CollectionName) ??
       'repos_branches',
     SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET as string,
     SLACK_AUTH_TOKEN: process.env.SLACK_AUTH_TOKEN as string,
-  });
+  }) as StaticEnvVars;
 
   return environmentVariables;
 };
