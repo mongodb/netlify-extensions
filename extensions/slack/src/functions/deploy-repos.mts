@@ -51,10 +51,12 @@ export default async (req: Request) => {
   //   parsed?.user?.id,
   // );
 
-  console.log(`Selected repos: ${JSON.stringify(selectedRepos)}`);
+  console.log(
+    `Selected repos: ${JSON.stringify(selectedRepos)}, length ${selectedRepos.length}`,
+  );
 
-  for (const individualRepo of selectedRepos) {
-    console.log(`${individualRepo} \n`);
+  for (let individualRepo of selectedRepos) {
+    console.log(`${individualRepo.value} \n`);
     const [repoName, branchName] = individualRepo.value.split('/');
     const jobTitle = `Slack deploy: repoName ${repoName}, branchName ${branchName}, by ${user}`;
     if (repoName && branchName) {
@@ -64,8 +66,6 @@ export default async (req: Request) => {
         'https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+';
       const PROD_WEBHOOK_URL =
         'https://api.netlify.com/build_hooks/6744e9fd3344dd3955ccf135?trigger_branch=main&trigger_title=deployHook+';
-
-      console.log(`Deploying branch ${branchName} of repo ${repoName}`);
       // Trigger build on a frontend site ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal the request was received from
       const resp = await axios.post(
         slackCommand === '/netlify-test-deploy'
