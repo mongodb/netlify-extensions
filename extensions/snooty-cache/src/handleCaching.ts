@@ -18,13 +18,11 @@ export const restoreFrontendCache = async (
 
   if (!cacheFiles.length) {
     console.log('No Snooty frontend cache files found');
-
     return;
   }
 
   // Don't want to restore duplicates, only restore Snooty frontend cache files
   console.log('Restoring Snooty frontend cache files');
-
   await Promise.all(cacheFiles.map((cacheFile) => cache.restore(cacheFile)));
 
   await checkForNewSnootyVersion(run);
@@ -36,9 +34,8 @@ export const createFrontendCache = async (
 ) => {
   console.log('Creating cache files...');
   await run.command('./snooty-parser/snooty/snooty create-cache .');
-  console.log('Cache files created');
-  const filesPaths = await readdirAsync(process.cwd());
 
+  const filesPaths = await readdirAsync(process.cwd());
   const cacheFiles = getCacheFilePaths(filesPaths);
 
   await Promise.all(
