@@ -82,6 +82,7 @@ export const mutRedirectsAndPublish = async (
   ]);
   await run.command('unzip -d . -qq mut.zip');
 
+  await run.command('npm ci --legacy-peer-deps');
   for (const alias of urlAliases) {
     // Building frontend ------------------------------------------------------------
     // TODO: When uploaded to prod, run this command instead: process.env.PATH_PREFIX = `/${docsetEntry?.prefix?.[configEnvironment.ENV]}`; (DOP-5178)
@@ -90,7 +91,6 @@ export const mutRedirectsAndPublish = async (
       : `/${docsetEntry.prefix.dotcomstg}`;
     process.env.PATH_PREFIX = prefix;
 
-    await run.command('npm ci');
     await run.command('npm run clean');
     await run.command('npm run build');
 
