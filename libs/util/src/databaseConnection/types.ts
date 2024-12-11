@@ -1,21 +1,23 @@
+import type { ObjectId } from 'mongodb';
+
 export type Environments = 'dev' | 'stg' | 'dotcomstg' | 'prd' | 'dotcomprd';
 
-export interface EnvironmentConfig {
+export type EnvironmentConfig = {
   dev?: string;
   stg: string;
   dotcomstg: string;
   prd: string;
   dotcomprd: string;
-}
+};
 
-export interface DocsetsDocument {
+export type DocsetsDocument = {
   project: string;
   bucket: EnvironmentConfig;
   url: EnvironmentConfig;
   prefix: EnvironmentConfig;
-}
+};
 
-export type clusterZeroConnectionInfo = {
+export type ClusterZeroConnectionInfo = {
   clusterZeroURI: string;
   databaseName: ClusterZeroDBName;
   collectionName: string;
@@ -29,17 +31,17 @@ export type SearchClusterConnectionInfo = {
   extensionName: string;
 };
 
-export interface BranchEntry {
+export type BranchEntry = {
   name?: string;
   gitBranchName: string;
-  urlSlug: string;
-  isStableBranch: boolean;
   active: boolean;
-  urlAliases: Array<string>;
+  isStableBranch: boolean;
+  urlSlug: string;
   publishOriginalBranchName: boolean;
-}
+  urlAliases: Array<string>;
+};
 
-export interface ReposBranchesDocument {
+export type ReposBranchesDocument = {
   repoName: string;
   project: string;
   search?: {
@@ -49,7 +51,7 @@ export interface ReposBranchesDocument {
   branches?: Array<BranchEntry>;
   prodDeployable: boolean;
   internalOnly: boolean;
-}
+};
 
 export type S3UploadParams = {
   bucket: string;
@@ -58,18 +60,88 @@ export type S3UploadParams = {
   obj: string;
 };
 
-export interface SearchDocument {
+export type SearchDocument = {
   url: string;
   slug: string;
   lastModified: Date;
   manifestRevisionId: string;
   searchProperty: Array<string>;
   includeInGlobalSearch: boolean;
-}
+};
+
+export type ProjectsDocument = {
+  name: string;
+  owner: string;
+  baseUrl: string;
+  github: {
+    organization: OrganizationName;
+    repo: string;
+  };
+  jira: {
+    component: string;
+  };
+};
+
+export type OASFilesDocument = {
+  api: string;
+  fileContent: string;
+  gitHash: string;
+  versions: Record<string, Array<string>>;
+  lastUpdated: Date;
+};
+
+export type OASFilePartial = Pick<OASFilesDocument, 'gitHash' | 'versions'>;
+
+export type DocumentsDocument = {
+  page_id: string;
+  filename: string;
+  ast: Ast;
+  source: string;
+  static_assets: Array<StaticAsset>;
+  github_username: string;
+  facets?: Array<Facet>;
+  build_id: ObjectId;
+  created_at: Date;
+};
+
+export type Facet = {
+  category: string;
+  value: string;
+  sub_facets: Array<Facet>;
+  display_name: string;
+};
+
+type StaticAsset = {
+  checksum: string;
+  key: string;
+  updated_at?: Date;
+};
+
+type Ast = {
+  type: string;
+  position: Record<string, Record<string, number>>;
+  children: Array<Ast>;
+  fileid: string;
+  options: {
+    headings?: Array<AstHeadings>;
+  };
+};
+
+type AstHeadings = {
+  depth: number;
+  id: string;
+  title: Array<Record<string, string>>;
+  // biome-ignore: <Most selector_id fields appear to be nullish>
+  selector_ids: unknown;
+};
+
+export type OrganizationName = 'mongodb' | '10gen';
 
 export type SearchDBName = 'search' | 'search-test' | 'search-staging';
 
 export type PoolDBName = 'pool' | 'pool_test';
+
+export type MetadataDBName = 'docs_metadata';
 
 export type SnootyDBName =
   | 'test'
@@ -78,4 +150,4 @@ export type SnootyDBName =
   | 'snooty_dotcomstg'
   | 'snooty_dotcomprd';
 
-export type ClusterZeroDBName = PoolDBName | 'docs_metadata' | SnootyDBName;
+export type ClusterZeroDBName = PoolDBName | MetadataDBName | SnootyDBName;

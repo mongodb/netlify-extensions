@@ -16,6 +16,8 @@ import type {
   ReposBranchesDocument,
   SearchDBName,
   SnootyDBName,
+  ProjectsDocument,
+  OrganizationName,
 } from './databaseConnection/types';
 import { getDbConfig, type StaticEnvVars } from './assertDbEnvVars';
 
@@ -116,36 +118,42 @@ export class Extension<
     );
   };
 
-  addFunctions = async (
-    path: string,
-    options: FunctionsOptions,
-  ): Promise<void> => {
-    super.addFunctions(path, {
-      prefix: options.prefix,
-      shouldInjectFunction: () => {
-        try {
-          if (!this.isEnabled) {
-            return false;
-          }
-          if (options?.shouldInjectFunction) {
-            return options.shouldInjectFunction({
-              name: options.shouldInjectFunction.name,
-            });
-          }
-          return true;
-        } catch (e) {
-          console.info(
-            `Function injection did not complete successfully. Errored with error: ${e}`,
-          );
-          return false;
-        }
-      },
-    });
-  };
+  // TODO: addFunctions implementation to be fixed later (DOP-5200); currently does not behave as expected
+  // addFunctions = async (
+  //   path: string,
+  //   options: FunctionsOptions,
+  // ): Promise<void> => {
+  //   super.addFunctions(path, {
+  //     prefix: options.prefix,
+  //     shouldInjectFunction: () => {
+  //       try {
+  //         if (!this.isEnabled) {
+  //           return false;
+  //         }
+  //         if (options?.shouldInjectFunction) {
+  //           return options.shouldInjectFunction({
+  //             name: options.shouldInjectFunction.name,
+  //           });
+  //         }
+  //         return true;
+  //       } catch (e) {
+  //         console.info(
+  //           `Function injection did not complete successfully. Errored with error: ${e}`,
+  //         );
+  //         return false;
+  //       }
+  //     },
+  //   });
+  // };
 }
 
 export type ConfigEnvironmentVariables = Partial<{
+  // The name of the branch in the content repo that is being built
+  BRANCH_NAME: string;
+  // Usually duplicate of BRANCH_NAME property, this is the git primitve branch that the build is being built on
   BRANCH: string;
+  REPO_NAME: string;
+  ORG: OrganizationName;
   SITE_NAME: string;
   INCOMING_HOOK_URL: string;
   INCOMING_HOOK_TITLE: string;
@@ -154,6 +162,7 @@ export type ConfigEnvironmentVariables = Partial<{
   REPO_ENTRY: ReposBranchesDocument;
   DOCSET_ENTRY: DocsetsDocument;
   BRANCH_ENTRY: BranchEntry;
+  PROJECTS_ENTRY: ProjectsDocument;
   POOL_DB_NAME: PoolDBName;
   SEARCH_DB_NAME: SearchDBName;
   SNOOTY_DB_NAME: SnootyDBName;
