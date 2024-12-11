@@ -1,7 +1,7 @@
 import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { NetlifyPluginUtils } from '@netlify/build';
 import type { BranchEntry } from 'util/databaseConnection/types';
-import type { StaticEnvVars, assertEnvVars } from 'util/assertDbEnvVars';
+import { type StaticEnvVars, assertEnvVars } from 'util/assertDbEnvVars';
 
 const getRepoAliases = (branchEntry: BranchEntry) => {
   // use slice() to create shallow copy of the branch's aliases
