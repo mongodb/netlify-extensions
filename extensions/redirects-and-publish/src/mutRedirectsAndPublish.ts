@@ -62,16 +62,16 @@ export const mutRedirectsAndPublish = async (
   const urlAliases = getRepoAliases(branchEntry);
 
   // Copy the Snooty frontend folder and rerun the frontend build WITH a Gatsby prefix (instead of `npm run build:no-prefix` as done in the build.sh)
-  await run.command('rm -f -r running-mut');
-  await run.command('mkdir -p running-mut');
-  // TODO: this should also happen for dotcomprd if configEnvironment.ENV == dotcomprd
-  if (configEnvironment?.ENV === 'dotcomstg') {
-    await run.command('mkdir -p running-mut/snooty');
-    await run.command(
-      `rsync -q -i -av --progress  ${process.cwd()} ${process.cwd()}/running-mut/snooty --exclude node_modules --exclude .cache --exclude running-mut`,
-    );
-    process.chdir(`${process.cwd()}/running-mut/snooty/repo`);
-  }
+  // await run.command('rm -f -r running-mut');
+  // await run.command('mkdir -p running-mut');
+  // // TODO: this should also happen for dotcomprd if configEnvironment.ENV == dotcomprd
+  // if (configEnvironment?.ENV === 'dotcomstg') {
+  //   await run.command('mkdir -p running-mut/snooty');
+  //   await run.command(
+  //     `rsync -q -i -av --progress  ${process.cwd()} ${process.cwd()}/running-mut/snooty --exclude node_modules --exclude .cache --exclude running-mut`,
+  //   );
+  //   process.chdir(`${process.cwd()}/running-mut/snooty/repo`);
+  // }
 
   console.log(`Downloading and unzipping mut for ${repoName}`);
   await run('curl', [
