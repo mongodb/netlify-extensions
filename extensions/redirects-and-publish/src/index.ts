@@ -10,7 +10,7 @@ const extension = new Extension({
 });
 
 extension.addBuildEventHandler(
-  'onSuccess',
+  'onBuild',
   async ({ utils: { run }, netlifyConfig, dbEnvVars }) => {
     // TODO: In the future this should also account for dotcomprd
     if (netlifyConfig?.build?.environment.ENV !== 'dotcomstg') {
