@@ -29,12 +29,12 @@ export const setMutEnvVars = (dbEnvVars: StaticEnvVars) => {
   // TODO: check if these can be set as env vars (with the same name) in assertDbEnvVars
   process.env.AWS_SECRET_ACCESS_KEY = dbEnvVars.AWS_S3_SECRET_ACCESS_KEY;
   process.env.AWS_ACCESS_KEY_ID = dbEnvVars.AWS_S3_ACCESS_KEY_ID;
-  assertEnvVars({
-    manifestPath: process.env.GATSBY_MANIFEST_PATH,
-    parserUser: process.env.GATSBY_PARSER_USER,
-    awsAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  });
+  // assertEnvVars({
+  //   manifestPath: process.env.GATSBY_MANIFEST_PATH,
+  //   parserUser: process.env.GATSBY_PARSER_USER,
+  //   awsAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  //   awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  // });
 };
 
 export const mutRedirectsAndPublish = async (

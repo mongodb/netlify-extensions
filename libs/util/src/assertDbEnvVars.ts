@@ -67,7 +67,7 @@ export const getDbConfig = (): StaticEnvVars => {
     SLACK_AUTH_TOKEN: process.env.SLACK_AUTH_TOKEN as string,
     UPDATED_DOCUMENTS_COLLECTION:
       (process.env.UPDATED_DOCUMENTS as CollectionName) ?? 'updated_documents',
-  });
+  }) as StaticEnvVars;
 
   return environmentVariables;
 };
