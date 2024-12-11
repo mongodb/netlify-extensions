@@ -89,9 +89,10 @@ export const mutRedirectsAndPublish = async (
     const prefix = alias
       ? `/${docsetEntry.prefix.dotcomstg}/${alias}`
       : `/${docsetEntry.prefix.dotcomstg}`;
-    process.env.PATH_PREFIX = prefix;
 
+    await run.command('ls');
     await run.command('npm run clean');
+    process.env.PATH_PREFIX = prefix;
     await run.command('npm run build');
 
     // Running mut-redirects -------------------------------------------------------
