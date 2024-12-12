@@ -24,7 +24,9 @@ function updateToRelativePaths(nodeList: Node[], prefix: string) {
 }
 
 function removeScripts(document: Window['document']) {
-  const query = 'script:not(.structured_data)';
+  const offlineScriptsClass = 'snooty-offline-ui';
+  const structuredDataClass = 'structured_data';
+  const query = `script:not(.${structuredDataClass}):not(.${offlineScriptsClass})`;
   const scripts = document.querySelectorAll(query);
   for (const script of scripts) {
     script.parentNode?.removeChild(script);
