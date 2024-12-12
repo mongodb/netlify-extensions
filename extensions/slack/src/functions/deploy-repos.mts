@@ -58,23 +58,40 @@ export default async (req: Request) => {
   for (const individualRepo of selectedRepos) {
     const [repoName, branchName] = individualRepo.value.split('/');
     const jobTitle = `Slack deploy: repoName ${repoName}, branchName ${branchName}, by ${user}`;
-    if (repoName && branchName) {
-      // TODO: DOP-5214, change value of the build hooks to env vars retrieved from dbEnvVars
-      console.log(jobTitle);
-      const TEST_WEBHOOK_URL =
-        'https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+';
-      const PROD_WEBHOOK_URL =
-        'https://api.netlify.com/build_hooks/6744e9fd3344dd3955ccf135?trigger_branch=main&trigger_title=deployHook+';
-      // Trigger build on a frontend site ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal the request was received from
-      const resp = await axios.post(
-        slackCommand === '/netlify-test-deploy'
-          ? `${TEST_WEBHOOK_URL}${jobTitle}`
-          : `${PROD_WEBHOOK_URL}${jobTitle}`,
-        { repoName: repoName, branchName: branchName },
-      );
-    } else {
-      throw new Error('Missing branchName or repoName');
-    }
+    setTimeout(
+      async () =>
+        await deployRepos(slackCommand, repoName, branchName, jobTitle),
+      30000,
+    );
+  }
+};
+
+const sleep = (ms: number) => {
+  return;
+};
+
+const deployRepos = async (
+  slackCommand: string,
+  repoName: string,
+  branchName: string,
+  jobTitle: string,
+) => {
+  if (repoName && branchName) {
+    // TODO: DOP-5214, change value of the build hooks to env vars retrieved from dbEnvVars
+    console.log(`deploying job ${jobTitle} at ${Date.now()}`);
+    const TEST_WEBHOOK_URL =
+      'https://api.netlify.com/build_hooks/673bd8c7938ade69f9530ec5?trigger_branch=main&trigger_title=deployHook+';
+    const PROD_WEBHOOK_URL =
+      'https://api.netlify.com/build_hooks/6744e9fd3344dd3955ccf135?trigger_branch=main&trigger_title=deployHook+';
+    // Trigger build on a frontend site ('docs-frontend-dotcomstg' or 'docs-frontend-dotcomprd') depending on which modal the request was received from
+    const resp = await axios.post(
+      slackCommand === '/netlify-test-deploy'
+        ? `${TEST_WEBHOOK_URL}${jobTitle}`
+        : `${PROD_WEBHOOK_URL}${jobTitle}`,
+      { repoName: repoName, branchName: branchName },
+    );
+  } else {
+    throw new Error('Missing branchName or repoName');
   }
 };
 
