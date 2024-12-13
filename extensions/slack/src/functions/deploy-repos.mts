@@ -62,7 +62,7 @@ export default async (req: Request) => {
     console.log('timeout starting', Date.now());
     await asyncTimeout(10, slackCommand, repoName, branchName, jobTitle);
     console.log('timeout finished', Date.now());
-    // await deployRepos(slackCommand, repoName, branchName, jobTitle);
+    await deployRepos(slackCommand, repoName, branchName, jobTitle);
   }
 };
 
@@ -82,6 +82,8 @@ const deployRepos = async (
   branchName: string,
   jobTitle: string,
 ) => {
+  console.log('time in deploy repos', Date.now());
+
   if (repoName && branchName) {
     // TODO: DOP-5214, change value of the build hooks to env vars retrieved from dbEnvVars
     console.log(`deploying job ${jobTitle} at ${Date.now()}`);
