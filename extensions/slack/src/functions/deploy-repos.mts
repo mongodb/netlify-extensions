@@ -59,8 +59,9 @@ export default async (req: Request) => {
   for (const individualRepo of selectedRepos) {
     const [repoName, branchName] = individualRepo.value.split('/');
     const jobTitle = `Slack deploy: repoName ${repoName}, branchName ${branchName}, by ${user}`;
-    await asyncTimeout(0, slackCommand, repoName, branchName, jobTitle);
-    console.log('timeout finished');
+    console.log('timeout starting', Date.now());
+    await asyncTimeout(10, slackCommand, repoName, branchName, jobTitle);
+    console.log('timeout finished', Date.now());
     // await deployRepos(slackCommand, repoName, branchName, jobTitle);
   }
 };
@@ -72,11 +73,7 @@ const asyncTimeout = async (
   branchName: string,
   jobTitle: string,
 ) => {
-  return new Promise((resolve) =>
-    setTimeout(async () => {
-      await deployRepos(slackCommand, repoName, branchName, jobTitle);
-    }, ms),
-  );
+  return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
 const deployRepos = async (
