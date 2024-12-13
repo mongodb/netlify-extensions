@@ -96,9 +96,10 @@ const cloneContentRepo = async ({
     // Remove git config as it stores the connection string in plain text
     await run.command(`rm -r ${repoName}/.git/config`);
   }
+  await run.command('touch testfile');
+  await run.command(`echo "${repoName}, ${branchName}" > testfile`);
   await run.command('ls');
-  await run.command(`echo ${repoName}, ${branchName} > testfile`);
-  await run.command('ls');
+  await run.command('cat testfile');
 };
 
 export const updateConfig = async ({
