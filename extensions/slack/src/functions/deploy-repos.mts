@@ -7,6 +7,7 @@ export default async (req: Request) => {
     return new Response('Request received without a body', { status: 401 });
   }
   const requestBody = await new Response(req.body).text();
+  console.log(requestBody);
   const dbEnvVars = getDbConfig();
 
   if (
@@ -60,7 +61,6 @@ export default async (req: Request) => {
     const jobTitle = `Slack deploy: repoName ${repoName}, branchName ${branchName}, by ${user}`;
     await asyncTimeout(0, slackCommand, repoName, branchName, jobTitle);
     console.log('timeout finished');
-
     // await deployRepos(slackCommand, repoName, branchName, jobTitle);
   }
 };
