@@ -97,9 +97,11 @@ const cloneContentRepo = async ({
     await run.command(`rm -r ${repoName}/.git/config`);
   }
   await run.command(`touch ${repoName}/${branchName}`);
-  await run.command(`echo "${repoName}, ${branchName}" > testfile`);
+  await run.command(
+    `echo "${repoName}, ${branchName}" > ${repoName}/${branchName}`,
+  );
   await run.command('ls');
-  await run.command('cat testfile');
+  console.log(fs.readFileSync(`${repoName}/${branchName}`));
 };
 
 export const updateConfig = async ({
