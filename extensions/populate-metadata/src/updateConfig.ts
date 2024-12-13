@@ -91,6 +91,9 @@ const cloneContentRepo = async ({
   await run.command(
     `git clone -b ${branchName} https://${process.env.GITHUB_BOT_USERNAME}:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
   );
+  await run.command('touch snooty/config');
+  await run.command('ls');
+  await run.command('ls snooty');
 
   // Remove git config as it stores the connection string in plain text
   if (fs.existsSync(`${repoName}/.git/config`)) {
