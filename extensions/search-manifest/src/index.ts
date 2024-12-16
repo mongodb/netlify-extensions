@@ -11,6 +11,7 @@ extension.addBuildEventHandler(
   'onSuccess',
   async ({ utils: { run }, netlifyConfig, dbEnvVars }) => {
     console.log(process.env.ENV);
+    console.log('running search-manifest build event handler extension');
     generateAndUploadManifests({
       configEnvironment: netlifyConfig?.build?.environment,
       run,
