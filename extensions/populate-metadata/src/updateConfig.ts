@@ -93,6 +93,7 @@ const cloneContentRepo = async ({
   );
 
   if (repoName === 'docs-laravel') {
+    await run.command(`cd ${repoName}`);
     await run.command('git submodule update --init --recursive');
     await run.command('mkdir source && cp -r laravel-mongodb/docs/* source');
     await run.command('ls');
