@@ -3,7 +3,7 @@ import { teardown, dbClient } from './clusterConnector';
 
 let clusterZeroClient: mongodb.MongoClient;
 
-export const getPoolDb = async ({
+export const getClusterZeroDb = async ({
   clusterZeroURI,
   databaseName,
   appName,
@@ -19,7 +19,7 @@ export const getPoolDb = async ({
   return clusterZeroClient.db(databaseName);
 };
 
-export const closePoolDb = async () => {
+export const closeClusterZeroDb = async () => {
   if (clusterZeroClient) await teardown(clusterZeroClient);
   else {
     console.info('No client connection open to Cluster Zero client');

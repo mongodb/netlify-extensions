@@ -3,10 +3,19 @@ import type {
   PoolDBName,
   SnootyDBName,
   SearchDBName,
+  OrganizationName,
 } from 'util/databaseConnection/types';
 import { getProperties } from './getProperties';
 import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { StaticEnvVars } from 'util/assertDbEnvVars';
+import type { NetlifyPluginUtils } from '@netlify/build';
+import * as fs from 'node:fs';
+
+const FRONTEND_SITES = [
+  'docs-frontend-stg',
+  'docs-frontend-dotcomstg',
+  'docs-frontend-dotcomprd',
+];
 
 const getDbNames = (
   env: Environments,
@@ -47,19 +56,13 @@ const determineEnvironment = ({
   siteName,
 }: { isBuildHookDeploy: boolean; siteName: string }): Environments => {
   // Check if this was an engineer's build or writer's build
-  const frontendSites = [
-    'docs-frontend-stg',
-    'docs-frontend-dotcomstg',
-    'docs-frontend-dotcomprd',
-  ];
-  const isFrontendBuild = frontendSites.includes(siteName);
+  const isFrontendBuild = FRONTEND_SITES.includes(siteName);
 
-  //Writer's builds = prd, everything not built on a site with 'Snooty' as git source
+  //Writer's builds = prd, everything not built on a frontend site (a site with 'Snooty' as git source)
   if (!isFrontendBuild) {
     return 'prd';
   }
   if (isBuildHookDeploy) {
-    //TODO: DOP-5201, check hook URL
     if (siteName === 'docs-frontend-dotcomprd') {
       return 'dotcomprd';
     }
@@ -69,18 +72,69 @@ const determineEnvironment = ({
   }
   return 'stg';
 };
+
+const cloneContentRepo = async ({
+  run,
+  repoName,
+  branchName,
+  orgName,
+}: {
+  run: NetlifyPluginUtils['run'];
+  repoName: string;
+  branchName: string;
+  orgName: string;
+}) => {
+  if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
+    await run.command(`rm -r ${repoName}`);
+  }
+
+  await run.command(
+    `git clone -b ${branchName} https://${process.env.GITHUB_BOT_USERNAME}:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
+  );
+
+  // Remove git config as it stores the connection string in plain text
+  if (fs.existsSync(`${repoName}/.git/config`)) {
+    await run.command(`rm -r ${repoName}/.git/config`);
+  }
+};
+
 export const updateConfig = async ({
   configEnvironment,
   dbEnvVars,
+  run,
 }: {
   configEnvironment: ConfigEnvironmentVariables;
   dbEnvVars: StaticEnvVars;
+  run: NetlifyPluginUtils['run'];
 }): Promise<void> => {
+  // Check if this was a build triggered by a frontend change or a content repo change
+  const isFrontendBuild = FRONTEND_SITES.includes(
+    configEnvironment.SITE_NAME as string,
+  );
   // Checks if build was triggered by a webhook
-  // TODO: DOP-5201, add specific logic dependent on hook title, url, body, etc. once Slack deploy apps have been implemented
   const isBuildHookDeploy = !!(
     configEnvironment.INCOMING_HOOK_URL && configEnvironment.INCOMING_HOOK_TITLE
   );
+
+  // Determine which repository and branch to build
+  // Check if repo name and branch name have been set as environment variables through Netlify UI, allows overwriting of database name values
+  const repoName = isBuildHookDeploy
+    ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.repoName
+    : (process.env.REPO_NAME ??
+      (process.env.REPOSITORY_URL?.split('/')?.pop() as string));
+
+  const branchName: string = isBuildHookDeploy
+    ? JSON.parse(configEnvironment?.INCOMING_HOOK_BODY as string)?.branchName
+    : (process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string));
+
+  if (!repoName || !branchName) {
+    throw new Error('Repo name or branch name missing from deploy');
+  }
+
+  configEnvironment.BRANCH_NAME = branchName;
+  configEnvironment.REPO_NAME = repoName;
+
+  // Determine which environment the build will run in
   const env = determineEnvironment({
     isBuildHookDeploy,
     siteName: configEnvironment.SITE_NAME as string,
@@ -90,6 +144,7 @@ export const updateConfig = async ({
 
   configEnvironment.ENV = buildEnvironment;
 
+  // Get the names of the databases associated with given build environment
   const { snootyDb, searchDb, poolDb } = getDbNames(buildEnvironment);
 
   // Check if values for the database names have been set as environment variables through Netlify UI
@@ -103,35 +158,7 @@ export const updateConfig = async ({
   configEnvironment.SNOOTY_DB_NAME =
     (process.env.SNOOTY_DB_NAME as SnootyDBName) ?? snootyDb;
 
-  // Check if repo name and branch name have been set as environment variables through Netlify UI
-  // Allows overwriting of database name values for testing
-  let branchName: string;
-  let repoName: string;
-  if (buildEnvironment !== 'dotcomstg' && buildEnvironment !== 'dotcomprd') {
-    branchName =
-      process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
-    repoName =
-      process.env.REPO_NAME ??
-      (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
-  } else {
-    branchName =
-      process.env.BRANCH_NAME ?? (configEnvironment.BRANCH as string);
-    repoName =
-      process.env.REPO_NAME ??
-      (process.env.REPOSITORY_URL?.split('/')?.pop() as string);
-    // TODO: DOP-5201, Branch name and repo name to deploy sent as values in Build Hook payload if in dotcomprd or dotcomstg environments
-    // [branchName, repoName] = configEnvironment?.INCOMING_HOOK_BODY?.split(
-    //   '',
-    // ) as string[];
-    //process.env.BRANCH_NAME = branchName
-    //process.env.REPO_NAME = repoName;
-    //process.env.ORG_NAME = orgName;
-  }
-
-  if (!branchName || !repoName) {
-    throw new Error('Repo name or branch name missing from deploy');
-  }
-  const { repo, docsetEntry } = await getProperties({
+  const { repo, docsetEntry, projectsEntry } = await getProperties({
     branchName,
     repoName,
     dbEnvVars,
@@ -139,14 +166,26 @@ export const updateConfig = async ({
     environment: buildEnvironment,
   });
 
-  // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
-  process.env.SNOOTY_ENV = buildEnvironment;
-  process.env.PATH_PREFIX = docsetEntry.prefix[buildEnvironment];
-
   const { branches: branch, ...repoEntry } = repo;
   configEnvironment.REPO_ENTRY = repoEntry;
   configEnvironment.DOCSET_ENTRY = docsetEntry;
   configEnvironment.BRANCH_ENTRY = branch?.pop();
+  configEnvironment.PROJECTS_ENTRY = projectsEntry;
+
+  const orgName = projectsEntry.github.organization;
+  configEnvironment.ORG = orgName as OrganizationName;
+
+  // Set process.env SNOOTY_ENV and PREFIX_PATH environment variables for frontend to retrieve at build time
+  process.env.SNOOTY_ENV = buildEnvironment;
+  process.env.PATH_PREFIX = docsetEntry.prefix[buildEnvironment];
+
+  // Prep for Snooty frontend build by cloning content repo
+  if (isFrontendBuild) {
+    console.log(
+      `Cloning content repo \n Repo: ${repoName}, branch: ${branchName}, github organization: ${orgName}`,
+    );
+    await cloneContentRepo({ run, repoName, branchName, orgName });
+  }
 
   console.info(
     'BUILD ENVIRONMENT: ',
@@ -157,6 +196,8 @@ export const updateConfig = async ({
     configEnvironment.DOCSET_ENTRY,
     '\n BRANCH ENTRY: ',
     configEnvironment.BRANCH_ENTRY,
+    '\n METADATA ENTRY: ',
+    configEnvironment.PROJECTS_ENTRY,
     '\n POOL DB NAME: ',
     configEnvironment.POOL_DB_NAME,
     '\n SEARCH DB NAME: ',
