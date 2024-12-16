@@ -69,11 +69,11 @@ export const generateAndUploadManifests = async ({
   console.log('=========== Uploading Manifests to S3=================');
   const uploadParams: S3UploadParams = {
     // TODO: make into constants
-    bucket:
+    bucket: 'docs-search-indexes-test',
+    prefix:
       configEnvironment.ENV === 'dotcomstg'
-        ? 'docs-search-indexes-test/preprd'
-        : 'docs-search-indexes-test/prd',
-    prefix: 'search-indexes/',
+        ? '/ab-testing/search-indexes/'
+        : 'ab-testing/search-indexes',
     fileName: `${projectName}-${branchName}.json`,
     obj: manifest.export(),
   };
