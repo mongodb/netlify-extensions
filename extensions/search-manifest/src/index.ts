@@ -17,12 +17,6 @@ extension.addBuildEventHandler(
       dbEnvVars,
     });
   },
-  {
-    if: (netlifyConfig: NetlifyConfig) => {
-      console.log(netlifyConfig.build);
-      return true;
-    },
-  },
 );
 
 export { extension };

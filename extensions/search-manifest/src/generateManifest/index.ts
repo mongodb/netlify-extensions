@@ -1,6 +1,6 @@
 import { promisify } from 'node:util';
 import { readFileSync, readdir } from 'node:fs';
-import { BSON } from 'bson';
+import BSON from 'bson';
 import { Document } from './document';
 import { Manifest } from './manifest';
 

@@ -1,4 +1,4 @@
-import type { BSON } from 'bson';
+import type BSON from 'bson';
 import { JSONPath } from 'jsonpath-plus';
 import { type Facet, createFacet } from './createFacets';
 
