@@ -92,9 +92,10 @@ const cloneContentRepo = async ({
     `git clone -b ${branchName} https://${process.env.GITHUB_BOT_USERNAME}:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
   );
 
-  if (repoName === 'DOCS_LARAVEL') {
+  if (repoName === 'docs-laravel') {
     await run.command('git submodule update --init --recursive');
     await run.command('mkdir source && cp -r laravel-mongodb/docs/* source');
+    await run.command('ls');
   }
 
   // Remove git config as it stores the connection string in plain text
