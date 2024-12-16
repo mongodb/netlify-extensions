@@ -84,9 +84,11 @@ const cloneContentRepo = async ({
   branchName: string;
   orgName: string;
 }) => {
-  if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
-    await run.command(`rm -r ${process.cwd()}/${repoName}`);
+  if (fs.existsSync(`${repoName}`)) {
+    await run.command(`rm -r ${repoName}`);
   }
+
+  await run.command('ls');
 
   await run.command(
     `git clone -b ${branchName} https://${process.env.GITHUB_BOT_USERNAME}:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
@@ -101,9 +103,7 @@ const cloneContentRepo = async ({
   if (repoName === 'docs-laravel') {
     process.chdir(`${repoName}`);
     await run.command('git submodule update --init --recursive');
-    await run.command(
-      `rsync -r -q -av ${process.cwd()}/laravel-mongodb/docs source`,
-    );
+    await run.command('rsync -r -q -av laravel-mongodb/docs source');
     await run.command('echo docs-laravel submodule updated successfully');
   }
 };
