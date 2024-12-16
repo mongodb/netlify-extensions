@@ -19,10 +19,8 @@ extension.addBuildEventHandler(
   },
   {
     if: (netlifyConfig: NetlifyConfig) => {
-      return (
-        netlifyConfig.build.environment.ENV === 'dotcomstg' ||
-        netlifyConfig.build.environment.ENV === 'dotcomprd'
-      );
+      console.log(netlifyConfig.build);
+      return true;
     },
   },
 );
