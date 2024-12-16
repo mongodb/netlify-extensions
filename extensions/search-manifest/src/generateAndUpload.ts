@@ -1,14 +1,14 @@
 import type { NetlifyPluginUtils } from '@netlify/build';
 import type { StaticEnvVars } from 'util/assertDbEnvVars';
 import type { ConfigEnvironmentVariables } from 'util/extension';
-import { getSearchProperties } from './uploadToAtlas/getProperties';
+import { getSearchProperties } from './uploadToAtlas/getSearchProperties';
 import type {
   SearchDBName,
   BranchEntry,
   DocsetsDocument,
   ReposBranchesDocument,
-  S3UploadParams,
 } from 'util/databaseConnection/types';
+import type { S3UploadParams } from 'util/s3Connection/types';
 import { generateManifest } from './generateManifest';
 import { uploadManifest } from './uploadToAtlas/uploadManifest';
 import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
@@ -27,12 +27,12 @@ export const generateAndUploadManifests = async ({
   // Get content repo zipfile as AST representation
   await run.command('unzip -o bundle.zip');
 
-  const branchName = configEnvironment.BRANCH;
-  const repoName = configEnvironment.SITE_NAME;
+  const branchName = configEnvironment.BRANCH_NAME;
+  const repoName = configEnvironment.REPO_NAME;
   if (!repoName || !branchName) {
     // Check that an environment variable for repo name was set
     throw new Error(
-      'Repo or branch name was not found, manifest cannot be uploaded to Atlas or S3 ',
+      `Repo or branch name was not found, manifest for repo ${repoName} and branch ${branchName} cannot be uploaded to Atlas or S3 `,
     );
   }
 
@@ -67,14 +67,14 @@ export const generateAndUploadManifests = async ({
 
   console.log('=========== Uploading Manifests to S3=================');
   const uploadParams: S3UploadParams = {
-    //TODO: change based on environments
+    // TODO: make into constants
     bucket:
       configEnvironment.ENV === 'dotcomstg'
         ? 'docs-search-indexes-test/preprd'
         : 'docs-search-indexes-test/prd',
     prefix: 'search-indexes/',
     fileName: `${projectName}-${branchName}.json`,
-    manifest: manifest.export(),
+    obj: manifest.export(),
   };
 
   const s3Status = await uploadManifestToS3({

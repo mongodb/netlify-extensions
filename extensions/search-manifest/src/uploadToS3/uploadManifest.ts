@@ -32,7 +32,7 @@ export const uploadManifestToS3 = async ({
   const uploadStatus = await upload(client, {
     Bucket: uploadParams.bucket,
     Key: key,
-    Body: uploadParams.manifest,
+    Body: uploadParams.obj,
   });
   return uploadStatus;
 };

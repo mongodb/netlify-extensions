@@ -27,7 +27,7 @@ const composeUpserts = async (
     assert.strictEqual(typeof document.slug, 'string');
     assert.ok(document.slug || document.slug === '');
 
-    document.strippedSlug = document.slug.replaceAll('/', '');
+    document.strippedSlug = document.slug.replace('/', '');
 
     const newDocument: SearchDocument = {
       ...document,
