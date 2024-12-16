@@ -99,7 +99,9 @@ const cloneContentRepo = async ({
 
     await run.command('mkdir source');
     await run.command('ls laravel-mongodb');
-    await run.command('cp -r laravel-mongodb/docs/* source');
+    await run.command(
+      `rsync -r -q -av ${process.cwd()}/laravel-mongodb/docs/* source`,
+    );
     await run.command('ls');
   }
 
