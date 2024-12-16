@@ -85,7 +85,7 @@ const cloneContentRepo = async ({
   orgName: string;
 }) => {
   if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
-    await run.command(`rm -r ${repoName}`);
+    await run.command(`rm -r ${process.cwd()}/${repoName}`);
   }
 
   await run.command(
@@ -93,7 +93,7 @@ const cloneContentRepo = async ({
   );
 
   if (repoName === 'docs-laravel') {
-    await run.command(`cd ${process.cwd()}/${repoName}`);
+    process.chdir(`${repoName}`);
     await run.command('ls');
     await run.command('git submodule update --init --recursive');
     await run.command('echo submodule updated successfully');
