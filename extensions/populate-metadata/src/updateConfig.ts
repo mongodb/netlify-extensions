@@ -88,8 +88,6 @@ const cloneContentRepo = async ({
     await run.command(`rm -r ${repoName}`);
   }
 
-  await run.command('ls');
-
   await run.command(
     `git clone -b ${branchName} https://${process.env.GITHUB_BOT_USERNAME}:${process.env.GITHUB_BOT_PWD}@github.com/${orgName}/${repoName}.git -s`,
   );
