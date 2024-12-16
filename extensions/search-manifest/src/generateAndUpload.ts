@@ -25,7 +25,7 @@ export const generateAndUploadManifests = async ({
   dbEnvVars: StaticEnvVars;
 }) => {
   // Get content repo zipfile as AST representation
-  await run.command('unzip -o bundle.zip');
+  await run.command('unzip -o -q bundle.zip');
 
   const branchName = configEnvironment.BRANCH_NAME;
   const repoName = configEnvironment.REPO_NAME;
@@ -40,6 +40,7 @@ export const generateAndUploadManifests = async ({
 
   console.log('=========== Finished generating manifests ================');
 
+  console.log(configEnvironment.SEARCH_DB_NAME);
   // TODO:  this should be made into its own type
   const searchConnectionInfo = {
     searchURI: dbEnvVars.ATLAS_SEARCH_URI,

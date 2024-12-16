@@ -1,6 +1,5 @@
 import { envVarToBool, Extension } from 'util/extension';
 import { generateAndUploadManifests } from './generateAndUpload';
-import type { NetlifyConfig } from '@netlify/build';
 
 const extension = new Extension({
   isEnabled: envVarToBool(process.env.SEARCH_MANIFEST_ENABLED),
@@ -10,9 +9,10 @@ const extension = new Extension({
 extension.addBuildEventHandler(
   'onSuccess',
   async ({ utils: { run }, netlifyConfig, dbEnvVars }) => {
-    console.log(process.env.ENV);
-    console.log('running search-manifest build event handler extension');
-    generateAndUploadManifests({
+    console.log(
+      `Running search-manifest build event handler extension in ${process.env.ENV}`,
+    );
+    await generateAndUploadManifests({
       configEnvironment: netlifyConfig?.build?.environment,
       run,
       dbEnvVars,
