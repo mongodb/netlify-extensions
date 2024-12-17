@@ -84,7 +84,7 @@ const cloneContentRepo = async ({
   branchName: string;
   orgName: string;
 }) => {
-  if (fs.existsSync(`${process.cwd()}/${repoName}`)) {
+  if (fs.existsSync(repoName)) {
     await run.command(`rm -r ${repoName}`);
   }
 
@@ -95,6 +95,17 @@ const cloneContentRepo = async ({
   // Remove git config as it stores the connection string in plain text
   if (fs.existsSync(`${repoName}/.git/config`)) {
     await run.command(`rm -r ${repoName}/.git/config`);
+  }
+
+  // Docs-laravel requires a submodule to build
+  if (repoName === 'docs-laravel') {
+    await run.command('git submodule update --init --recursive', {
+      cwd: repoName,
+    });
+    await run.command('cp -r laravel-mongodb/docs source', {
+      cwd: repoName,
+    });
+    console.log('docs-laravel submodule updated successfully');
   }
 };
 
