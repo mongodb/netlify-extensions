@@ -100,10 +100,13 @@ const cloneContentRepo = async ({
   // Docs-laravel requires a submodule to build
   if (repoName === 'docs-laravel') {
     process.chdir(`${repoName}`);
-    await run.command('git submodule update --init --recursive');
-    await run.command('cp -r laravel-mongodb/docs source');
+    await run.command('git submodule update --init --recursive', {
+      cwd: repoName,
+    });
+    await run.command('cp -r laravel-mongodb/docs source', {
+      cwd: repoName,
+    });
     console.log('docs-laravel submodule updated successfully');
-    process.chdir('..');
   }
 };
 
