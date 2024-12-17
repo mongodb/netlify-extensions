@@ -7,6 +7,7 @@ import type {
   BranchEntry,
   DocsetsDocument,
   ReposBranchesDocument,
+  SearchClusterConnectionInfo,
 } from 'util/databaseConnection/types';
 import type { S3UploadParams } from 'util/s3Connection/types';
 import { generateManifest } from './generateManifest';
@@ -40,9 +41,7 @@ export const generateAndUploadManifests = async ({
 
   console.log('=========== Finished generating manifests ================');
 
-  console.log(configEnvironment.SEARCH_DB_NAME);
-  // TODO:  this should be made into its own type
-  const searchConnectionInfo = {
+  const searchConnectionInfo: SearchClusterConnectionInfo = {
     searchURI: dbEnvVars.ATLAS_SEARCH_URI,
     databaseName: configEnvironment.SEARCH_DB_NAME as SearchDBName,
     collectionName: dbEnvVars.DOCUMENTS_COLLECTION,
@@ -68,12 +67,12 @@ export const generateAndUploadManifests = async ({
 
   console.log('=========== Uploading Manifests to S3=================');
   const uploadParams: S3UploadParams = {
-    // TODO: make into constants
+    // TODO: make into constants?
     bucket: 'docs-search-indexes-test',
     prefix:
-      configEnvironment.ENV === 'dotcomstg'
-        ? '/ab-testing/search-indexes/'
-        : 'ab-testing/search-indexes',
+      configEnvironment.ENV === 'dotcomprd'
+        ? '/search-indexes/prd'
+        : '/search-indexes/preprd',
     fileName: `${projectName}-${branchName}.json`,
     obj: manifest.export(),
   };
