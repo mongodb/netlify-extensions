@@ -84,7 +84,7 @@ const cloneContentRepo = async ({
   branchName: string;
   orgName: string;
 }) => {
-  if (fs.existsSync(`${repoName}`)) {
+  if (fs.existsSync(repoName)) {
     await run.command(`rm -r ${repoName}`);
   }
 
@@ -102,7 +102,7 @@ const cloneContentRepo = async ({
     process.chdir(`${repoName}`);
     await run.command('git submodule update --init --recursive');
     await run.command('cp -r laravel-mongodb/docs source');
-    await run.command('echo docs-laravel submodule updated successfully');
+    console.log('docs-laravel submodule updated successfully');
     process.chdir('..');
   }
 };
