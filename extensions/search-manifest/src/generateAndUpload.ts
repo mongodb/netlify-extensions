@@ -84,7 +84,9 @@ export const generateAndUploadManifests = async ({
     AWS_S3_SECRET_ACCESS_KEY: dbEnvVars.AWS_S3_SECRET_ACCESS_KEY,
   });
 
-  console.log(`S3 upload status: ${JSON.stringify(s3Status)}`);
+  console.log(
+    `S3 upload status: ${JSON.stringify(s3Status.$metadata.httpStatusCode)}`,
+  );
   console.log('=========== Finished Uploading to S3  ================');
 
   try {
