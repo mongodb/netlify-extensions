@@ -25,6 +25,12 @@ export const generateAndUploadManifests = async ({
   run: NetlifyPluginUtils['run'];
   dbEnvVars: StaticEnvVars;
 }) => {
+  if (process.env.ENV !== 'dotcomstg') {
+    console.log(
+      `shouldn't generate manifest for ${process.env.ENV}, returning`,
+    );
+    return;
+  }
   // Get content repo zipfile as AST representation
   await run.command('unzip -o -q bundle.zip');
 

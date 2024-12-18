@@ -12,12 +12,6 @@ extension.addBuildEventHandler(
     console.log(
       `Running search-manifest build event handler extension in ${process.env.ENV}`,
     );
-    if (process.env.ENV !== 'dotcomstg') {
-      return;
-    }
-    console.log(
-      `Running search-manifest build event handler extension in ${process.env.ENV}`,
-    );
     await generateAndUploadManifests({
       configEnvironment: netlifyConfig?.build?.environment,
       run,
