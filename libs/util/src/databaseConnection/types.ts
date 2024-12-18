@@ -53,13 +53,6 @@ export type ReposBranchesDocument = {
   internalOnly: boolean;
 };
 
-export type S3UploadParams = {
-  bucket: string;
-  prefix: string;
-  fileName: string;
-  obj: string;
-};
-
 export type SearchDocument = {
   url: string;
   slug: string;

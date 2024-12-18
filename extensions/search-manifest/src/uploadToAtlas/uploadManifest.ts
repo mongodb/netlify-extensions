@@ -1,8 +1,20 @@
 import assert from 'node:assert';
 import type { Manifest } from '../generateManifest/manifest';
-import type { RefreshInfo, SearchDocument } from '../types';
 import { generateHash, joinUrl } from '../utils';
-import { getDocumentsCollection } from './searchConnector';
+import { getDocumentsCollection } from 'util/databaseConnection/fetchSearchData';
+import { closeSearchDb } from 'util/databaseConnection/searchClusterConnector';
+import type {
+  SearchClusterConnectionInfo,
+  SearchDocument,
+} from 'util/databaseConnection/types';
+
+type RefreshInfo = {
+  deleted: number;
+  upserted: number;
+  modified: number;
+  dateStarted: Date;
+  elapsedMS: number;
+};
 
 const composeUpserts = async (
   manifest: Manifest,
@@ -15,7 +27,7 @@ const composeUpserts = async (
     assert.strictEqual(typeof document.slug, 'string');
     assert.ok(document.slug || document.slug === '');
 
-    document.strippedSlug = document.slug.replaceAll('/', '');
+    document.strippedSlug = document.slug.replace('/', '');
 
     const newDocument: SearchDocument = {
       ...document,
@@ -39,16 +51,23 @@ const composeUpserts = async (
   });
 };
 
-export const uploadManifest = async (
-  manifest: Manifest,
-  searchProperty: string,
-) => {
-  //check that manifest documents exist
-  //TODO: maybe check other manifest properties as well?
+export const uploadManifest = async ({
+  manifest,
+  searchProperty,
+  connectionInfo,
+}: {
+  manifest: Manifest;
+  searchProperty: string;
+  connectionInfo: SearchClusterConnectionInfo;
+}) => {
+  // Check that manifest documents exist
+  //TODO: Should we check for other manifest properties as well?
   if (!manifest?.documents?.length) {
     return Promise.reject(new Error('Invalid manifest'));
   }
-  const documentsColl = await getDocumentsCollection();
+  const documentsColl = await getDocumentsCollection({
+    ...connectionInfo,
+  });
 
   const status: RefreshInfo = {
     deleted: 0,
@@ -73,11 +92,11 @@ export const uploadManifest = async (
 
   //TODO: make sure url of manifest doesn't have excess leading slashes(as done in getManifests)
 
-  //check property types
-  console.info('Starting transaction');
+  // Assert property types
   assert.strictEqual(typeof manifest.global, 'boolean');
   assert.strictEqual(typeof hash, 'string');
   assert.ok(hash);
+  console.info('Starting transaction');
 
   try {
     if (operations.length > 0) {
@@ -98,6 +117,6 @@ export const uploadManifest = async (
       `Error writing upserts to Search.documents collection with error ${e}`,
     );
   } finally {
-    // await closeSearchDb();
+    await closeSearchDb();
   }
 };
