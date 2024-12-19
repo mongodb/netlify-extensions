@@ -1,10 +1,11 @@
 import { promisify } from 'node:util';
-import { readFileSync, readdir } from 'node:fs';
+import { readFileSync, readFile, readdir } from 'node:fs';
 import BSON from 'bson';
 import { Document } from './document';
 import { Manifest } from './manifest';
 
 const readdirAsync = promisify(readdir);
+const readFileAsync = promisify(readFile);
 
 export const generateManifest = async () => {
   const manifest = new Manifest();
@@ -21,13 +22,17 @@ export const generateManifest = async () => {
     );
   });
 
-  for (const entry of mappedEntries) {
-    // Read and decode each entry
-    const decoded = BSON.deserialize(readFileSync(`documents/${entry}`));
+  await Promise.all(
+    mappedEntries.map(async (entry) => {
+      // Read and decode each entry
+      const decoded = BSON.deserialize(
+        await readFileAsync(`documents/${entry}`),
+      );
 
-    // Parse data into a document and format it as a Manifest document
-    const processedDoc = new Document(decoded).exportAsManifestEntry();
-    if (processedDoc) manifest.addDocument(processedDoc);
-  }
+      // Parse data into a document and format it as a Manifest document
+      const processedDoc = new Document(decoded).exportAsManifestEntry();
+      if (processedDoc) manifest.addDocument(processedDoc);
+    }),
+  );
   return manifest;
 };

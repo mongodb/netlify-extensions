@@ -9,6 +9,12 @@ const extension = new Extension({
 extension.addBuildEventHandler(
   'onSuccess',
   async ({ utils: { run }, netlifyConfig, dbEnvVars }) => {
+    if (process.env.ENV !== 'dotcomstg') {
+      console.log(
+        `shouldn't generate manifest for ${process.env.ENV}, returning`,
+      );
+      return;
+    }
     console.log(
       `Running search-manifest build event handler extension in ${process.env.ENV}`,
     );

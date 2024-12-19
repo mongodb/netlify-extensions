@@ -25,12 +25,6 @@ export const generateAndUploadManifests = async ({
   run: NetlifyPluginUtils['run'];
   dbEnvVars: StaticEnvVars;
 }) => {
-  if (process.env.ENV !== 'dotcomstg') {
-    console.log(
-      `shouldn't generate manifest for ${process.env.ENV}, returning`,
-    );
-    return;
-  }
   // Get content repo zipfile as AST representation
   await run.command('unzip -o -q bundle.zip');
 
@@ -72,13 +66,14 @@ export const generateAndUploadManifests = async ({
   const projectName = configEnvironment.REPO_ENTRY?.project;
 
   console.log('=========== Uploading Manifests to S3=================');
+  const s3Prefix =
+    configEnvironment.ENV === 'dotcomprd'
+      ? '/search-indexes/prd'
+      : '/search-indexes/preprd';
   const uploadParams: S3UploadParams = {
     // TODO: make into constants?
     bucket: 'docs-search-indexes-test',
-    prefix:
-      configEnvironment.ENV === 'dotcomprd'
-        ? '/search-indexes/prd'
-        : '/search-indexes/preprd',
+    prefix: s3Prefix,
     fileName: `${projectName}-${branchName}.json`,
     obj: manifest.export(),
   };
@@ -92,12 +87,16 @@ export const generateAndUploadManifests = async ({
   console.log(
     `S3 upload status: ${JSON.stringify(s3Status.$metadata.httpStatusCode)}`,
   );
-  console.log('=========== Finished Uploading to S3  ================');
+  console.log(
+    `=========== Finished Uploading to S3 docs-search-indexes-test/${s3Prefix} ================`,
+  );
 
   try {
     manifest.setUrl(url);
     manifest.setGlobalSearchValue(includeInGlobalSearch);
-    console.log('=========== Uploading Manifests to Atlas =================');
+    console.log(
+      `=========== Uploading Manifests to Atlas database ${configEnvironment.SEARCH_DB_NAME} in collection ${dbEnvVars.DOCUMENTS_COLLECTION} =================`,
+    );
     const status = await uploadManifest({
       manifest,
       searchProperty,

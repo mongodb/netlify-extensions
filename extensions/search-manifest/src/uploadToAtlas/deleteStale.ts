@@ -26,7 +26,7 @@ export const deleteStaleProperties = async (
   searchProperty: string,
   connectionInfo: SearchClusterConnectionInfo,
 ) => {
-  const documentsColl = await getDocumentsCollection({ ...connectionInfo });
+  const documentsColl = await getDocumentsCollection(connectionInfo);
   console.info(`Removing all documents with stale property ${searchProperty}`);
   const query = { searchProperty: { $regex: searchProperty } };
   try {
@@ -37,6 +37,6 @@ export const deleteStaleProperties = async (
       `Error removing stale property ${searchProperty} in database ${connectionInfo.databaseName}, collection ${connectionInfo.collectionName}: ${e}`,
     );
   } finally {
-    closeSearchDb();
+    await closeSearchDb();
   }
 };

@@ -65,9 +65,7 @@ export const uploadManifest = async ({
   if (!manifest?.documents?.length) {
     return Promise.reject(new Error('Invalid manifest'));
   }
-  const documentsColl = await getDocumentsCollection({
-    ...connectionInfo,
-  });
+  const documentsColl = await getDocumentsCollection(connectionInfo);
 
   const status: RefreshInfo = {
     deleted: 0,
