@@ -20,7 +20,7 @@ export const getSearchProperties = async ({
   );
 
   const version = branchEntry.urlSlug || branchEntry.gitBranchName;
-  const searchProperty = `${repoEntry.search?.categoryName ?? repoEntry.project}-${version}`;
+  const searchProperty = `${repoEntry.search?.categoryName || repoEntry.project}-${version}`;
   const includeInGlobalSearch = branchEntry.isStableBranch;
 
   const active = branchEntry.active;
