@@ -70,6 +70,7 @@ extension.addBuildEventHandler(
     //TODO: set this in netlify.toml or db env vars
     const siteUrl = process.env.DEPLOY_PRIME_URL || '';
 
+    console.log('about to build openAPI pages');
     await buildOpenAPIPages(
       openapiPagesEntries,
       { siteTitle, siteUrl },
