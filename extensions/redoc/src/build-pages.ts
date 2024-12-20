@@ -1,8 +1,9 @@
-import type { NetlifyPluginUtils } from '@netlify/build';
+import type { NetlifyConfig, NetlifyPluginUtils } from '@netlify/build';
 import type { OASPageMetadata } from '.';
 import { getAtlasSpecUrl } from './atlas';
 import { db } from './utils/db';
 import { writeFileAsync } from './utils/fs-async';
+import type { EnvironmentConfig } from 'util/databaseConnection/types';
 
 export interface RedocVersionOptions {
   active: {
@@ -176,6 +177,7 @@ export async function buildOpenAPIPages(
   entries: [string, OASPageMetadata][],
   { siteUrl, siteTitle }: PageBuilderOptions,
   run: NetlifyPluginUtils['run'],
+  env: string,
 ) {
   for (const [pageSlug, data] of entries) {
     const {
@@ -186,6 +188,7 @@ export async function buildOpenAPIPages(
     } = data;
 
     let isSuccessfulBuild = true;
+    const outputPath = `${process.cwd()}${env === 'prd' ? '/snooty' : ''}/public`;
 
     if (resourceVersions) {
       const isRunSuccessfulArray = await Promise.all(
@@ -196,7 +199,7 @@ export async function buildOpenAPIPages(
             const command = await getBuildOasSpecCommand({
               source,
               sourceType,
-              output: `${process.cwd()}/snooty/public`,
+              output: outputPath,
               pageSlug,
               siteUrl,
               siteTitle,
@@ -224,7 +227,7 @@ export async function buildOpenAPIPages(
       const command = await getBuildOasSpecCommand({
         source,
         sourceType,
-        output: `${process.cwd()}/snooty/public`,
+        output: outputPath,
         pageSlug,
         siteUrl,
         siteTitle,
