@@ -30,7 +30,7 @@ export const deleteStaleProperties = async (
   console.info(`Removing all documents with stale property ${searchProperty}`);
   const query = { searchProperty: { $regex: searchProperty } };
   try {
-    const status = await documentsColl?.deleteMany(query);
+    const status = await documentsColl.deleteMany(query);
     return status;
   } catch (e) {
     console.info(

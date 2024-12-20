@@ -13,6 +13,7 @@ import type { S3UploadParams } from 'util/s3Connection/types';
 import { generateManifest } from './generateManifest';
 import { uploadManifest } from './uploadToAtlas/uploadManifest';
 import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
+import { deleteStaleProperties } from './uploadToAtlas/deleteStale';
 
 const EXTENSION_NAME = 'search-manifest';
 
@@ -37,10 +38,6 @@ export const generateAndUploadManifests = async ({
     );
   }
 
-  const manifest = await generateManifest();
-
-  console.log('=========== Finished generating manifests ================');
-
   const searchConnectionInfo: SearchClusterConnectionInfo = {
     searchURI: dbEnvVars.ATLAS_SEARCH_URI,
     databaseName: configEnvironment.SEARCH_DB_NAME as SearchDBName,
@@ -49,10 +46,12 @@ export const generateAndUploadManifests = async ({
   };
 
   const {
+    active,
     url,
     searchProperty,
     includeInGlobalSearch,
   }: {
+    active: boolean;
     url: string;
     searchProperty: string;
     includeInGlobalSearch: boolean;
@@ -60,19 +59,31 @@ export const generateAndUploadManifests = async ({
     branchEntry: configEnvironment.BRANCH_ENTRY as BranchEntry,
     docsetEntry: configEnvironment.DOCSET_ENTRY as DocsetsDocument,
     repoEntry: configEnvironment.REPO_ENTRY as ReposBranchesDocument,
-    connectionInfo: searchConnectionInfo,
   });
+
+  if (!active) {
+    console.log(
+      `Version is inactive, search manifest should not be generated for ${searchProperty}. Removing all associated manifests from database`,
+    );
+    await deleteStaleProperties(searchProperty, searchConnectionInfo);
+    return;
+  }
+
+  const manifest = await generateManifest({ url, includeInGlobalSearch });
+
+  console.log('=========== Finished generating manifests ================');
+
+  console.log('=========== Uploading Manifests to S3=================');
 
   const projectName = configEnvironment.REPO_ENTRY?.project;
 
-  console.log('=========== Uploading Manifests to S3=================');
   const s3Prefix =
     configEnvironment.ENV === 'dotcomprd'
       ? '/search-indexes/prd'
       : '/search-indexes/preprd';
   const uploadParams: S3UploadParams = {
-    // TODO: make into constants?
-    bucket: 'docs-search-indexes-test',
+    // We upload all search manifest to a single search bucket and separate environments by path
+    bucket: dbEnvVars.S3_SEARCH_BUCKET,
     prefix: s3Prefix,
     fileName: `${projectName}-${branchName}.json`,
     obj: manifest.export(),
@@ -86,7 +97,7 @@ export const generateAndUploadManifests = async ({
 
   console.log(`S3 upload status: ${s3Status.$metadata.httpStatusCode}`);
   console.log(
-    `=========== Finished Uploading to S3 docs-search-indexes-test${s3Prefix} ================`,
+    `=========== Finished Uploading to S3 ${dbEnvVars.S3_SEARCH_BUCKET}${s3Prefix} ================`,
   );
 
   try {

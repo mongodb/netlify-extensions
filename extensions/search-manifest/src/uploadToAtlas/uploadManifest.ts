@@ -8,12 +8,12 @@ import type {
   SearchDocument,
 } from 'util/databaseConnection/types';
 
+// TODO: implement elapsedMS: number;
 type RefreshInfo = {
   deleted: number;
   upserted: number;
   modified: number;
   dateStarted: Date;
-  elapsedMS: number;
 };
 
 const composeUpserts = async (
@@ -35,7 +35,7 @@ const composeUpserts = async (
       url: joinUrl({ base: manifest.url, path: document.slug }),
       manifestRevisionId: hash,
       searchProperty: [searchProperty],
-      includeInGlobalSearch: manifest.global ?? false,
+      includeInGlobalSearch: manifest.includeInGlobalSearch ?? false,
     };
 
     return {
@@ -72,8 +72,6 @@ export const uploadManifest = async ({
     upserted: 0,
     modified: 0,
     dateStarted: new Date(),
-    //TODO: set elapsed ms ?
-    elapsedMS: 0,
   };
 
   const hash = await generateHash(manifest.toString());
@@ -91,7 +89,7 @@ export const uploadManifest = async ({
   //TODO: make sure url of manifest doesn't have excess leading slashes(as done in getManifests)
 
   // Assert property types
-  assert.strictEqual(typeof manifest.global, 'boolean');
+  assert.strictEqual(typeof manifest.includeInGlobalSearch, 'boolean');
   assert.strictEqual(typeof hash, 'string');
   assert.ok(hash);
   console.info('Starting transaction');
