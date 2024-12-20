@@ -1,8 +1,9 @@
-import type { NetlifyPluginUtils } from '@netlify/build';
+import type { NetlifyConfig, NetlifyPluginUtils } from '@netlify/build';
 import type { OASPageMetadata } from '.';
 import { getAtlasSpecUrl } from './atlas';
 import { db } from './utils/db';
 import { writeFileAsync } from './utils/fs-async';
+import type { EnvironmentConfig } from 'util/databaseConnection/types';
 
 export interface RedocVersionOptions {
   active: {
@@ -176,6 +177,7 @@ export async function buildOpenAPIPages(
   entries: [string, OASPageMetadata][],
   { siteUrl, siteTitle }: PageBuilderOptions,
   run: NetlifyPluginUtils['run'],
+  env: string,
 ) {
   for (const [pageSlug, data] of entries) {
     const {
@@ -186,7 +188,12 @@ export async function buildOpenAPIPages(
     } = data;
 
     let isSuccessfulBuild = true;
+    const outputPath = `${process.cwd()}${env === 'prd' ? '/snooty' : ''}/public`;
 
+    console.log('printing cwd \n', process.cwd());
+    await run.command('ls redoc');
+    console.log('ls for  /opt/build/repo');
+    await run.command('ls  /opt/build/repo');
     if (resourceVersions) {
       const isRunSuccessfulArray = await Promise.all(
         resourceVersions.map(async (resourceVersion) => {
@@ -196,7 +203,7 @@ export async function buildOpenAPIPages(
             const command = await getBuildOasSpecCommand({
               source,
               sourceType,
-              output: `${process.cwd()}/snooty/public`,
+              output: outputPath,
               pageSlug,
               siteUrl,
               siteTitle,
@@ -205,7 +212,7 @@ export async function buildOpenAPIPages(
               resourceVersion,
             });
 
-            await run.command(command);
+            await run.command(command, { cwd: siteTitle });
 
             return true;
           } catch (e) {
@@ -224,13 +231,13 @@ export async function buildOpenAPIPages(
       const command = await getBuildOasSpecCommand({
         source,
         sourceType,
-        output: `${process.cwd()}/snooty/public`,
+        output: outputPath,
         pageSlug,
         siteUrl,
         siteTitle,
         apiVersion,
       });
-      await run.command(command);
+      await run.command(command, { cwd: siteTitle });
 
       isSuccessfulBuild = true;
     } catch (e) {
