@@ -86,7 +86,7 @@ export const generateAndUploadManifests = async ({
 
   console.log(`S3 upload status: ${s3Status.$metadata.httpStatusCode}`);
   console.log(
-    `=========== Finished Uploading to S3 docs-search-indexes-test/${s3Prefix} ================`,
+    `=========== Finished Uploading to S3 docs-search-indexes-test${s3Prefix} ================`,
   );
 
   try {

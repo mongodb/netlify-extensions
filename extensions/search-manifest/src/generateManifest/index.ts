@@ -4,6 +4,9 @@ import BSON from 'bson';
 import { Document } from './document';
 import { Manifest } from './manifest';
 
+// The directory in the Parser-outputted bundle.zip that contains the AST
+const DOCUMENTS_DIR = 'documents';
+
 const readdirAsync = promisify(readdir);
 const readFileAsync = promisify(readFile);
 
@@ -12,7 +15,7 @@ export const generateManifest = async () => {
   console.log('=========== generating manifests ================');
 
   // Get list of file entries in documents dir
-  const entries = await readdirAsync('documents', { recursive: true });
+  const entries = await readdirAsync(DOCUMENTS_DIR, { recursive: true });
   const mappedEntries = entries.filter((fileName) => {
     return (
       fileName.includes('.bson') &&

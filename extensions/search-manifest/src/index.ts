@@ -11,7 +11,7 @@ extension.addBuildEventHandler(
   async ({ utils: { run }, netlifyConfig, dbEnvVars }) => {
     if (process.env.ENV !== 'dotcomstg') {
       console.log(
-        `shouldn't generate manifest for ${process.env.ENV}, returning`,
+        `Shouldn't generate manifest for ${process.env.ENV}, returning`,
       );
       return;
     }
