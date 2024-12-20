@@ -190,6 +190,7 @@ export async function buildOpenAPIPages(
     let isSuccessfulBuild = true;
     const outputPath = `${process.cwd()}${env === 'prd' ? '/snooty' : ''}/public`;
 
+    console.log('printing cwd \n', process.cwd());
     if (resourceVersions) {
       const isRunSuccessfulArray = await Promise.all(
         resourceVersions.map(async (resourceVersion) => {
@@ -208,7 +209,7 @@ export async function buildOpenAPIPages(
               resourceVersion,
             });
 
-            await run.command(command);
+            await run.command(command, { cwd: siteTitle });
 
             return true;
           } catch (e) {
@@ -233,7 +234,7 @@ export async function buildOpenAPIPages(
         siteTitle,
         apiVersion,
       });
-      await run.command(command);
+      await run.command(command, { cwd: siteTitle });
 
       isSuccessfulBuild = true;
     } catch (e) {
