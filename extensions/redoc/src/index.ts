@@ -74,7 +74,7 @@ extension.addBuildEventHandler(
       openapiPagesEntries,
       { siteTitle, siteUrl },
       run,
-      netlifyConfig.build.environment,
+      netlifyConfig.build.environment.ENV,
     );
 
     console.log('=========== Redoc Integration End ================');
