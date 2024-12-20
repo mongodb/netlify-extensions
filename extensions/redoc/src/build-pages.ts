@@ -191,6 +191,7 @@ export async function buildOpenAPIPages(
     const outputPath = `${process.cwd()}${env === 'prd' ? '/snooty' : ''}/public`;
 
     console.log('printing cwd \n', process.cwd());
+    await run.command('ls');
     if (resourceVersions) {
       const isRunSuccessfulArray = await Promise.all(
         resourceVersions.map(async (resourceVersion) => {
