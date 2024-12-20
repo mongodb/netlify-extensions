@@ -1,6 +1,7 @@
 import { promisify } from 'node:util';
 // Documentation: https://sdk.netlify.com
-import { BSON } from 'bson';
+// @ts-ignore
+import BSON from 'bson';
 import { Document } from './generateManifest/document';
 import { Manifest } from './generateManifest/manifest';
 import { uploadManifest } from './uploadToAtlas/uploadManifest';
