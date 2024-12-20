@@ -27,7 +27,9 @@ export const deleteStaleProperties = async (
   connectionInfo: SearchClusterConnectionInfo,
 ) => {
   const documentsColl = await getDocumentsCollection(connectionInfo);
-  console.info(`Removing all documents with stale property ${searchProperty}`);
+  console.info(
+    `Removing all documents with stale property ${JSON.stringify(searchProperty)}`,
+  );
   const query = { searchProperty: { $regex: searchProperty } };
   try {
     const status = await documentsColl.deleteMany(query);

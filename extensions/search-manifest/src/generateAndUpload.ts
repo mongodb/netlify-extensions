@@ -63,7 +63,7 @@ export const generateAndUploadManifests = async ({
 
   if (!active) {
     console.log(
-      `Version is inactive, search manifest should not be generated for ${searchProperty}. Removing all associated manifests from database`,
+      `Version is inactive, search manifest should not be generated for ${JSON.stringify(searchProperty)}. Removing all associated manifests from database`,
     );
     await deleteStaleProperties(searchProperty, searchConnectionInfo);
     return;

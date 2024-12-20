@@ -19,6 +19,7 @@ export const getSearchProperties = async ({
     Object.values(docsetEntry.url)[0] + Object.values(docsetEntry.prefix)[0],
   );
 
+  console.log('url slug', !!branchEntry.urlSlug);
   const version = branchEntry.urlSlug ?? branchEntry.gitBranchName;
   const searchProperty = `${repoEntry.search?.categoryName ?? repoEntry}-${version}`;
   const includeInGlobalSearch = branchEntry.isStableBranch;
