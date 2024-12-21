@@ -12,7 +12,10 @@ import type {
 import type { S3UploadParams } from 'util/s3Connection/types';
 import { generateManifest } from './generateManifest';
 import { uploadManifest } from './uploadToAtlas/uploadManifest';
-import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
+import {
+  uploadManifestToS3,
+  type S3UploadInfo,
+} from './uploadToS3/uploadManifest';
 import { deleteStaleProperties } from './uploadToAtlas/deleteStale';
 
 const EXTENSION_NAME = 'search-manifest';
@@ -81,19 +84,18 @@ export const generateAndUploadManifests = async ({
     configEnvironment.ENV === 'dotcomprd'
       ? '/search-indexes/prd'
       : '/search-indexes/preprd';
-  const uploadParams: S3UploadParams = {
+
+  const uploadParams: S3UploadInfo = {
     // We upload all search manifest to a single search bucket and separate environments by path
     bucket: dbEnvVars.S3_SEARCH_BUCKET,
     prefix: s3Prefix,
     fileName: `${projectName}-${branchName}.json`,
-    obj: manifest.export(),
-  };
-
-  const s3Status = await uploadManifestToS3({
-    uploadParams,
+    body: manifest.export(),
     AWS_S3_ACCESS_KEY_ID: dbEnvVars.AWS_S3_ACCESS_KEY_ID,
     AWS_S3_SECRET_ACCESS_KEY: dbEnvVars.AWS_S3_SECRET_ACCESS_KEY,
-  });
+  };
+
+  const s3Status = await uploadManifestToS3(uploadParams);
 
   console.log(`S3 upload status: ${s3Status.$metadata.httpStatusCode}`);
   console.log(
