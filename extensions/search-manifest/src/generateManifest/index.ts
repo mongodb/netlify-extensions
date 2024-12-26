@@ -17,19 +17,14 @@ export const generateManifest = async ({
   // Get list of file entries in documents dir
   const entries = await fsPromises.readdir(DOCUMENTS_DIR, { recursive: true });
   const mappedEntries = entries.filter((fileName) => {
-    return (
-      fileName.includes('.bson') &&
-      !fileName.includes('images/') &&
-      !fileName.includes('includes/') &&
-      !fileName.includes('sharedinclude/')
-    );
+    return fileName.includes('.bson');
   });
 
   await Promise.all(
     mappedEntries.map(async (entry) => {
       // Read and decode each entry
       const decoded = BSON.deserialize(
-        await fsPromises.readFile(`documents/${entry}`),
+        await fsPromises.readFile(`${DOCUMENTS_DIR}/${entry}`),
       );
 
       // Parse data into a document and format it as a Manifest document

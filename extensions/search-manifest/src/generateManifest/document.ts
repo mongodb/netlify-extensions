@@ -12,7 +12,7 @@ export type ManifestEntry = {
   paragraphs: string;
   code: Array<{ lang: string | null; value: string }>;
   preview?: string | null;
-  tags: string | null;
+  tags?: string | null;
   facets: ManifestFacets;
 };
 
@@ -85,7 +85,7 @@ export class Document {
     if (results.length) {
       if (results.length > 1)
         console.log(
-          `length of results is greater than one, length =  ${results.length}`,
+          `Length of results is greater than one, length =  ${results.length}`,
         );
       const val = results[0];
       //check if robots, set to false if no robots
@@ -156,7 +156,7 @@ export class Document {
         // add a check in case there is no value field found
         heading.push(part);
       }
-      headings.push(heading.join());
+      headings.push(heading.join(''));
     }
 
     title = headings.shift() ?? '';

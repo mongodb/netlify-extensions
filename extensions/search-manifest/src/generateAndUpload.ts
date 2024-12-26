@@ -37,7 +37,7 @@ export const generateAndUploadManifests = async ({
   if (!repoName || !branchName) {
     // Check that an environment variable for repo name was set
     throw new Error(
-      `Repo or branch name was not found, manifest for repo ${repoName} and branch ${branchName} cannot be uploaded to Atlas or S3 `,
+      `Repo or branch name was not found, manifest for repo ${repoName} and branch ${branchName} cannot be generated `,
     );
   }
 
@@ -103,8 +103,6 @@ export const generateAndUploadManifests = async ({
   );
 
   try {
-    manifest.setUrl(url);
-    manifest.setGlobalSearchValue(includeInGlobalSearch);
     console.log(
       `=========== Uploading Manifests to Atlas database ${configEnvironment.SEARCH_DB_NAME} in collection ${dbEnvVars.DOCUMENTS_COLLECTION} =================`,
     );
