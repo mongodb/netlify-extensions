@@ -18,6 +18,7 @@ const extension = new Extension({
 const NEW_SNOOTY_PATH = `${process.cwd()}/snooty-offline`;
 export const PUBLIC_OUTPUT_PATH = `${NEW_SNOOTY_PATH}/snooty/public`;
 const EXTENSION_NAME = 'offline-snooty';
+const ENVS_TO_RUN = ['dotcomprd', 'dotcomstg'];
 
 // run this extension after the build and deploy are successful
 extension.addBuildEventHandler(
@@ -27,6 +28,14 @@ extension.addBuildEventHandler(
       string,
       string | DocsetsDocument | ReposBranchesDocument | BranchEntry
     >;
+    // NOTE: prd and dotcomprd both read from pool.repos_branches
+    // would be an improvement to separate prd and dotcomprd repos_branches
+    // skip this step if step is `prd`
+    // could only test in dotcomstg :(
+    // if (!ENVS_TO_RUN.includes(environment.ENV as string)) {
+    //   console.log('skipping repos branches update');
+    //   return;
+    // }
     const { bucketName, fileName, baseUrl } = readEnvConfigs({
       env: (environment.ENV as keyof EnvironmentConfig) ?? '',
       repoEntry: (environment.REPO_ENTRY as ReposBranchesDocument) ?? {},
