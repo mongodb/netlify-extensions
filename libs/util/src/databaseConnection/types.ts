@@ -32,7 +32,7 @@ export type SearchClusterConnectionInfo = {
 };
 
 export type BranchEntry = {
-  _id?: ObjectId;
+  id?: ObjectId;
   name?: string;
   gitBranchName: string;
   active: boolean;
