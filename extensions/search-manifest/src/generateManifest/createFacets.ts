@@ -5,8 +5,6 @@ export interface Facet {
 }
 
 export const createFacet = (facet: Facet) => {
-  const category = facet.category;
-  const value = facet.value;
   const subFacetsArr = [];
   if (facet.subFacets) {
     for (const subFacet of facet.subFacets) {
@@ -14,14 +12,14 @@ export const createFacet = (facet: Facet) => {
         createFacet({
           category: subFacet.category,
           value: subFacet.value,
-          subFacets: subFacet.subFacets ?? [],
+          subFacets: subFacet.subFacets,
         }),
       );
     }
   }
   const newFacet: Facet = {
-    category: category,
-    value: value,
+    category: facet.category,
+    value: facet.value,
     subFacets: subFacetsArr ?? null,
   };
   return newFacet;

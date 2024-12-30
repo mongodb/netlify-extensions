@@ -255,6 +255,8 @@ export class Document {
 }
 
 const deriveFacets = (tree: BSON.Document) => {
+  const documentFacets: Record<string, Array<string>> = {};
+
   //Format facets for ManifestEntry from bson entry tree['facets'] if it exists
 
   const insertKeyVals = (facet: Facet, prefix = '') => {
@@ -269,13 +271,12 @@ const deriveFacets = (tree: BSON.Document) => {
     }
   };
 
-  const documentFacets: Record<string, Array<string>> = {};
   if (tree.facets) {
     for (const facetEntry of tree.facets) {
       const facet = createFacet({
         category: facetEntry.category,
         value: facetEntry.value,
-        subFacets: [],
+        subFacets: facetEntry.sub_facets,
       });
       insertKeyVals(facet);
     }
