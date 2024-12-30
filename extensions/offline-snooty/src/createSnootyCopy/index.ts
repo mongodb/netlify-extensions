@@ -18,6 +18,10 @@ export const createSnootyCopy = async (
     cwd: offlineSnootyPath,
   });
 
+  await run.command('echo OFFLINE_SNOOTY_ENABLED=TRUE >> ./.env.production', {
+    cwd: offlineSnootyPath,
+  });
+
   await run.command('npm run build:no-prefix', {
     cwd: offlineSnootyPath,
   });
