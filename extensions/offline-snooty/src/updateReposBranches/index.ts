@@ -31,14 +31,17 @@ export const updateReposBranches = async (
     collectionName ?? 'repos_branches',
   );
 
-  const updateFilter = { _id: repoEntry._id, 'branches.id': branchEntry._id };
+  const updateFilter = { _id:repoEntry._id, 'branches.id': branchEntry._id };
 
   const updateParams = {
     $set: { 'branches.$.offlineUrl': getUrl(baseUrl, fileName) },
   };
 
+  console.log('update Filters ', updateFilter)
+  console.log('update params ', updateParams)
+
   console.log(
-    `Updating repos branches collection for collection ${collectionName} for repo id ${repoEntry._id} for branch ${branchEntry.gitBranchName}`,
+    `Updating repos branches collection for collection ${collectionName} for repo id ${repoEntry._id} for branch ${branchEntry._id} ${branchEntry.gitBranchName}`,
   );
 
   return reposBranchesCollection.updateOne(updateFilter, updateParams);
