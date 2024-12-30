@@ -3,18 +3,23 @@ import { teardown, dbClient } from './clusterConnector';
 
 let clusterZeroClient: mongodb.MongoClient;
 
+export type clusterZeroParams = {
+  clusterZeroURI: string;
+  databaseName: string;
+  appName?: string;
+};
+
 export const getClusterZeroDb = async ({
   clusterZeroURI,
   databaseName,
   appName,
-}: {
-  clusterZeroURI: string;
-  databaseName: string;
-  appName: string;
-}): Promise<mongodb.Db> => {
+}: clusterZeroParams): Promise<mongodb.Db> => {
   if (!clusterZeroClient) {
     console.info('Creating new instance of Cluster Zero client');
-    clusterZeroClient = await dbClient({ uri: clusterZeroURI, appName });
+    clusterZeroClient = await dbClient({
+      uri: clusterZeroURI,
+      appName: appName ?? '',
+    });
   }
   return clusterZeroClient.db(databaseName);
 };

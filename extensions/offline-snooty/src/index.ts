@@ -1,37 +1,37 @@
 // Documentation: https://sdk.netlify.com
-import { NetlifyExtension } from '@netlify/sdk';
+import type {
+  DocsetsDocument,
+  ReposBranchesDocument,
+  BranchEntry,
+  EnvironmentConfig,
+} from 'util/databaseConnection/types';
+import { Extension, envVarToBool } from 'util/extension';
 import { convertGatsbyToHtml } from './convertGatsbyToHtml';
 import { createSnootyCopy } from './createSnootyCopy';
+import { updateReposBranches } from './updateReposBranches';
 import { destroyClient, uploadToS3 } from './uploadToS3';
-import {
-  type BranchEntry,
-  type DocsetsDocument,
-  type ReposBranchesDocument,
-  readEnvConfigs,
-} from './uploadToS3/utils';
+import { readEnvConfigs } from './uploadToS3/utils';
 
-const extension = new NetlifyExtension();
+const extension = new Extension({
+  isEnabled: envVarToBool(process.env.OFFLINE_SNOOTY_ENABLED),
+});
 const NEW_SNOOTY_PATH = `${process.cwd()}/snooty-offline`;
 export const PUBLIC_OUTPUT_PATH = `${NEW_SNOOTY_PATH}/snooty/public`;
+const EXTENSION_NAME = 'offline-snooty';
 
 // run this extension after the build and deploy are successful
 extension.addBuildEventHandler(
   'onSuccess',
-  async ({ netlifyConfig, utils: { run } }) => {
-    // If the build event handler is not enabled, return early
-    if (!process.env.OFFLINE_SNOOTY_ENABLED) {
-      return;
-    }
-
+  async ({ netlifyConfig, dbEnvVars, utils: { run } }) => {
     const environment = netlifyConfig.build.environment as Record<
       string,
       string | DocsetsDocument | ReposBranchesDocument | BranchEntry
     >;
-    const { bucketName, fileName } = readEnvConfigs({
-      env: (environment.ENV as string) ?? '',
-      docsetEntry: (environment.DOCSET_ENTRY as DocsetsDocument) ?? {},
+    const { bucketName, fileName, baseUrl } = readEnvConfigs({
+      env: (environment.ENV as keyof EnvironmentConfig) ?? '',
       repoEntry: (environment.REPO_ENTRY as ReposBranchesDocument) ?? {},
       branchEntry: (environment.BRANCH_ENTRY as BranchEntry) ?? {},
+      docsetEntry: (environment.DOCSET_ENTRY as DocsetsDocument) ?? {},
     });
 
     try {
@@ -39,10 +39,28 @@ extension.addBuildEventHandler(
       await createSnootyCopy(run, NEW_SNOOTY_PATH);
       console.log('... converting gatsby to html');
       await convertGatsbyToHtml(PUBLIC_OUTPUT_PATH, fileName);
-      console.log('... uploading to AWS S3 ', bucketName, fileName);
+      console.log(
+        '... uploading to AWS S3 ',
+        bucketName,
+        'docs/offline',
+        fileName,
+      );
       await uploadToS3(`${process.cwd()}/${fileName}`, bucketName, fileName);
       console.log('... uploaded to AWS S3');
-      // TODO: update atlas collection repos_branches to signal offline availability
+      await updateReposBranches(
+        {
+          repoEntry: environment.REPO_ENTRY as ReposBranchesDocument,
+          branchEntry: environment.BRANCH_ENTRY as BranchEntry,
+          collectionName: dbEnvVars.REPOS_BRANCHES_COLLECTION,
+        },
+        {
+          clusterZeroURI: dbEnvVars.ATLAS_CLUSTER0_URI,
+          databaseName: netlifyConfig?.build?.environment.POOL_DB_NAME ?? '',
+          appName: EXTENSION_NAME,
+        },
+        baseUrl,
+        fileName,
+      );
     } catch (e) {
       console.error(e);
       throw e;

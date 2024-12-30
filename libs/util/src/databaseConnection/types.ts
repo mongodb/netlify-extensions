@@ -32,6 +32,7 @@ export type SearchClusterConnectionInfo = {
 };
 
 export type BranchEntry = {
+  _id?: ObjectId;
   name?: string;
   gitBranchName: string;
   active: boolean;
@@ -42,6 +43,7 @@ export type BranchEntry = {
 };
 
 export type ReposBranchesDocument = {
+  _id?: ObjectId;
   repoName: string;
   project: string;
   search?: {

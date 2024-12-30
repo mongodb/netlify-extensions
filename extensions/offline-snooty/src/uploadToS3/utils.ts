@@ -1,52 +1,37 @@
-// TODO: consolidate with populate-metadata extension
-type EnvironmentConfig = {
-  dev?: string;
-  stg: string;
-  dotcomstg: string;
-  prd: string;
-  dotcomprd: string;
-};
-export interface DocsetsDocument {
-  bucket: EnvironmentConfig;
-  project: string;
-  url: EnvironmentConfig;
-  prefix: EnvironmentConfig;
-}
+import type {
+  ReposBranchesDocument,
+  BranchEntry,
+  EnvironmentConfig,
+  DocsetsDocument,
+} from 'util/databaseConnection/types';
 
-export interface BranchEntry {
-  name?: string;
-  gitBranchName: string;
-  urlSlug: string;
-  isStableBranch: boolean;
-  active: boolean;
-}
-
-export interface ReposBranchesDocument {
-  repoName: string;
-  project: string;
-  search?: {
-    categoryTitle: string;
-    categoryName?: string;
-  };
-  branches?: Array<BranchEntry>;
-  prodDeployable: boolean;
-  internalOnly: boolean;
+/**
+ * Returns buckets that are preconfigured to public URL
+ * Some projects are stored in different buckets,
+ * but offline versions are stored in general usage bucket
+ * to route to same URL
+ */
+function getBucketName(env: keyof EnvironmentConfig) {
+  return `docs-mongodb-org-${env}`;
 }
 
 export function readEnvConfigs({
   env,
-  docsetEntry,
   repoEntry,
   branchEntry,
+  docsetEntry,
 }: {
-  env: string;
-  docsetEntry: DocsetsDocument;
+  env: keyof EnvironmentConfig;
   repoEntry: ReposBranchesDocument;
   branchEntry: BranchEntry;
+  docsetEntry: DocsetsDocument;
 }) {
-  const docset: DocsetsDocument = docsetEntry;
-  const bucketName = docset.bucket[env as keyof EnvironmentConfig] ?? '';
+  const bucketName = getBucketName(env);
   const project: string = repoEntry?.project ?? '';
   const version = branchEntry?.gitBranchName ?? '';
-  return { bucketName, fileName: `${project}-${version}.tar.gz` };
+  return {
+    bucketName,
+    fileName: `${project}-${version}.tar.gz`,
+    baseUrl: docsetEntry?.url[env] ?? '',
+  };
 }
