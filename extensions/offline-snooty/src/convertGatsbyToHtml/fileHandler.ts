@@ -77,7 +77,6 @@ export const handleHtmlFile = async (
   filepath: string,
   relativePath: string,
 ) => {
-  console.log('handlehtmlfile ', filepath);
   // update the DOM. change paths for links and images
   // first open the file. as a DOM string.
   const html = (await fsPromises.readFile(filepath)).toString();
@@ -90,8 +89,6 @@ export const handleHtmlFile = async (
   await downloadRemoteImages(document, relativePath);
   updateToRelativePaths([...links, ...images], relativePath ?? './');
   removeScripts(document);
-
-  console.log('writing file html ', filepath);
 
   await fsPromises.writeFile(filepath, document.documentElement.innerHTML);
 
