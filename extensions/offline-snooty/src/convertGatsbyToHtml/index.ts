@@ -73,6 +73,8 @@ async function scanFileTree(directoryPath: string) {
     } else {
       // delete the file
       await fsPromises.rm(filename);
+      console.log('removing file ', filename);
+
       log.removedFiles.push(filename);
     }
   }
