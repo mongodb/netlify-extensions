@@ -32,10 +32,10 @@ extension.addBuildEventHandler(
     // would be an improvement to separate prd and dotcomprd repos_branches
     // skip this step if step is `prd`
     // could only test in dotcomstg :(
-    if (!ENVS_TO_RUN.includes(environment.ENV as string)) {
-      console.log('skipping offline docs for env ', environment.ENV);
-      return;
-    }
+    // if (!ENVS_TO_RUN.includes(environment.ENV as string)) {
+    //   console.log('skipping offline docs for env ', environment.ENV);
+    //   return;
+    // }
     const { bucketName, fileName, baseUrl } = readEnvConfigs({
       env: (environment.ENV as keyof EnvironmentConfig) ?? '',
       repoEntry: (environment.REPO_ENTRY as ReposBranchesDocument) ?? {},
