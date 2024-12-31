@@ -31,6 +31,7 @@ async function saveImageAndUpdateSrc(img: HTMLImageElement, prefix: string) {
   // get the path to save the file to
   const targetFileName = url.pathname;
   const fileNameParts = targetFileName.split('/');
+  console.log('check fileNameParts ', fileNameParts);
 
   // create the directory, at same URL path as original image src
   const targetDir = `${PUBLIC_OUTPUT_PATH}/images/${fileNameParts.slice(0, fileNameParts.length - 1).join('/')}`;

@@ -62,6 +62,7 @@ async function scanFileTree(directoryPath: string) {
     }
     if (extName.endsWith('html')) {
       const allParentPaths = getParentPaths(filename);
+      console.log('parentPaths ', allParentPaths);
       const pathBackToRoot = '../'.repeat(allParentPaths.length);
       await handleHtmlFile(filename, pathBackToRoot || './');
       for (const parentPath of allParentPaths) {
@@ -84,7 +85,12 @@ export const convertGatsbyToHtml = async (
   gatsbyOutputPath: string,
   fileName: string,
 ): Promise<void> => {
-  await scanFileTree(gatsbyOutputPath);
+  try {
+    await scanFileTree(gatsbyOutputPath);
+  } catch (e) {
+    console.error('error while scanning file tree');
+    console.error(e);
+  }
   console.log('>>>>>>>>>> converted gatsby results <<<<<<<<<<<<<');
   console.log(JSON.stringify(log));
 
