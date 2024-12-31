@@ -22,6 +22,9 @@ export const createSnootyCopy = async (
     cwd: offlineSnootyPath,
   });
 
+  // TODO: remove after testing
+  await run.command('cat ./.env.production', { cwd: offlineSnootyPath });
+
   await run.command('npm run build:no-prefix', {
     cwd: offlineSnootyPath,
   });

@@ -73,8 +73,6 @@ async function scanFileTree(directoryPath: string) {
     } else {
       // delete the file
       await fsPromises.rm(filename);
-      console.log('removing file ', filename);
-
       log.removedFiles.push(filename);
     }
   }
@@ -84,25 +82,30 @@ export const convertGatsbyToHtml = async (
   gatsbyOutputPath: string,
   fileName: string,
 ): Promise<void> => {
-  await scanFileTree(gatsbyOutputPath);
-  console.log('>>>>>>>>>> converted gatsby results <<<<<<<<<<<<<');
-  console.log(JSON.stringify(log));
+  try {
+    await scanFileTree(gatsbyOutputPath);
+    console.log('>>>>>>>>>> converted gatsby results <<<<<<<<<<<<<');
+    console.log(JSON.stringify(log));
 
-  // remove empty directories
-  await Promise.all(
-    Object.entries(log.filePathsPerDir).map(async ([path, filenames]) => {
-      if (!filenames.length && path !== PUBLIC_OUTPUT_PATH) {
-        return fsPromises.rm(path, { recursive: true, force: true });
-      }
-    }),
-  );
+    // remove empty directories
+    await Promise.all(
+      Object.entries(log.filePathsPerDir).map(async ([path, filenames]) => {
+        if (!filenames.length && path !== PUBLIC_OUTPUT_PATH) {
+          return fsPromises.rm(path, { recursive: true, force: true });
+        }
+      }),
+    );
 
-  await create(
-    {
-      gzip: true,
-      file: fileName,
-      cwd: gatsbyOutputPath,
-    },
-    ['./'],
-  );
+    await create(
+      {
+        gzip: true,
+        file: fileName,
+        cwd: gatsbyOutputPath,
+      },
+      ['./'],
+    );
+  } catch (e) {
+    console.error('Error while converting gatsby output to html');
+    console.error(e);
+  }
 };
