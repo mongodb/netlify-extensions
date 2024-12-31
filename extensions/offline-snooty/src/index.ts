@@ -33,7 +33,7 @@ extension.addBuildEventHandler(
     // skip this step if step is `prd`
     // could only test in dotcomstg :(
     // if (!ENVS_TO_RUN.includes(environment.ENV as string)) {
-    //   console.log('skipping offline docs for env ', environment.ENV);
+    //   console.log('skipping repos branches update');
     //   return;
     // }
     const { bucketName, fileName, baseUrl } = readEnvConfigs({
