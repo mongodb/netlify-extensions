@@ -18,7 +18,7 @@ const extension = new Extension({
 const NEW_SNOOTY_PATH = `${process.cwd()}/snooty-offline`;
 export const PUBLIC_OUTPUT_PATH = `${NEW_SNOOTY_PATH}/snooty/public`;
 const EXTENSION_NAME = 'offline-snooty';
-const ENVS_TO_RUN = ['dotcomprd', 'dotcomstg'];
+// const ENVS_TO_RUN = ['dotcomprd', 'dotcomstg'];
 
 // run this extension after the build and deploy are successful
 extension.addBuildEventHandler(
