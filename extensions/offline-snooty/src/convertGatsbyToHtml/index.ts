@@ -64,7 +64,12 @@ async function scanFileTree(directoryPath: string) {
       const allParentPaths = getParentPaths(filename);
       console.log('parentPaths ', allParentPaths);
       const pathBackToRoot = '../'.repeat(allParentPaths.length);
-      await handleHtmlFile(filename, pathBackToRoot || './');
+      try {
+        await handleHtmlFile(filename, pathBackToRoot || './');
+      } catch (e) {
+        console.error('Error while handling HTML file');
+        console.error(e);
+      }
       for (const parentPath of allParentPaths) {
         if (!log.filePathsPerDir[parentPath]) {
           log.filePathsPerDir[parentPath] = [];
