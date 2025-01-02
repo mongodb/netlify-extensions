@@ -21,7 +21,7 @@ export const createSnootyCopy = async (
 
   await promises.appendFile(
     `${offlineSnootyPath}/.env.production`,
-    '\nOFFLINE_SNOOTY_ENABLED=TRUE\n',
+    '\nOFFLINE_DOCS=TRUE\n',
   );
 
   await run.command('cat ./.env.production', { cwd: offlineSnootyPath });
