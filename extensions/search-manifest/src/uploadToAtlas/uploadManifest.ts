@@ -92,6 +92,7 @@ export const uploadManifest = async ({
   assert.strictEqual(typeof manifest.includeInGlobalSearch, 'boolean');
   assert.strictEqual(typeof hash, 'string');
   assert.ok(hash);
+  assert.ok(manifest.url);
   console.info('Starting transaction');
 
   try {

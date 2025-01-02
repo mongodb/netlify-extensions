@@ -2,7 +2,6 @@ import type {
   BranchEntry,
   ReposBranchesDocument,
   DocsetsDocument,
-  SearchClusterConnectionInfo,
 } from 'util/databaseConnection/types';
 import { assertTrailingSlash } from '../utils';
 

@@ -5,17 +5,9 @@ export class Manifest {
   includeInGlobalSearch: boolean;
   documents: ManifestEntry[];
 
-  constructor(url = '', includeInGlobalSearch = false) {
+  constructor(url: string, includeInGlobalSearch: boolean) {
     this.url = url;
     this.documents = [];
-    this.includeInGlobalSearch = includeInGlobalSearch;
-  }
-
-  setUrl(url: string) {
-    this.url = url;
-  }
-
-  setGlobalSearchValue(includeInGlobalSearch: boolean) {
     this.includeInGlobalSearch = includeInGlobalSearch;
   }
 
