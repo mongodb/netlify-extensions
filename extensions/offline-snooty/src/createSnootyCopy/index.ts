@@ -5,7 +5,7 @@ export const createSnootyCopy = async (
   targetPath: string,
 ) => {
   await run.command(
-    `rsync -av ${process.cwd()}/snooty ${targetPath} --exclude public --exclude node_modules`,
+    `rsync -a ${process.cwd()}/snooty ${targetPath} --exclude public --exclude node_modules`,
   );
 
   const offlineSnootyPath = `${targetPath}/snooty`;
@@ -15,6 +15,10 @@ export const createSnootyCopy = async (
   });
 
   await run.command('npm run clean', {
+    cwd: offlineSnootyPath,
+  });
+
+  await run.command('echo "OFFLINE_SNOOTY_ENABLED=TRUE" >> ./.env.production', {
     cwd: offlineSnootyPath,
   });
 
