@@ -20,7 +20,7 @@ export const createSnootyCopy = async (
   });
 
   await promises.appendFile(
-    offlineSnootyPath,
+    `${offlineSnootyPath}/.env.production`,
     '\nOFFLINE_SNOOTY_ENABLED=TRUE\n',
   );
 
