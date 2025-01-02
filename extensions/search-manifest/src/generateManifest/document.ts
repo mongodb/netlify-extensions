@@ -1,6 +1,5 @@
 import type BSON from 'bson';
 import { JSONPath } from 'jsonpath-plus';
-import { type Facet, createFacet } from './createFacets';
 
 export type ManifestFacets = Record<string, Array<string> | undefined> | null;
 
@@ -16,6 +15,11 @@ export type ManifestEntry = {
   facets: ManifestFacets;
 };
 
+type Facet = {
+  category: string;
+  value: string;
+  sub_facets: Array<Facet> | null;
+};
 export type Metadata = {
   robots: boolean;
   keywords: string | null;
@@ -256,7 +260,6 @@ export class Document {
 
 const deriveFacets = (tree: BSON.Document) => {
   const documentFacets: Record<string, Array<string>> = {};
-
   //Format facets for ManifestEntry from bson entry tree['facets'] if it exists
 
   const insertKeyVals = (facet: Facet, prefix = '') => {
@@ -264,20 +267,15 @@ const deriveFacets = (tree: BSON.Document) => {
     documentFacets[key] = documentFacets[key] ?? [];
     documentFacets[key].push(facet.value);
 
-    if (!facet.subFacets) return;
-
-    for (const subFacet of facet.subFacets) {
-      insertKeyVals(subFacet, `${key}>${facet.value}>`);
+    if (facet.sub_facets) {
+      for (const subFacet of facet.sub_facets) {
+        insertKeyVals(subFacet, `${key}>${facet.value}>`);
+      }
     }
   };
 
   if (tree.facets) {
-    for (const facetEntry of tree.facets) {
-      const facet = createFacet({
-        category: facetEntry.category,
-        value: facetEntry.value,
-        subFacets: facetEntry.sub_facets,
-      });
+    for (const facet of tree.facets) {
       insertKeyVals(facet);
     }
     return documentFacets;
