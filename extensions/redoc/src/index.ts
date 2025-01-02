@@ -67,7 +67,10 @@ extension.addBuildEventHandler(
 
     const openapiPagesEntries = Object.entries(openapiPages);
     const siteUrl = process.env.DEPLOY_PRIME_URL || '';
-
+    const repoName =
+      netlifyConfig?.build?.environment?.SITE_NAME === 'mongodb-snooty'
+        ? netlifyConfig?.build?.environment?.REPO_NAME
+        : undefined;
     await buildOpenAPIPages(
       openapiPagesEntries,
       { siteTitle, siteUrl },
