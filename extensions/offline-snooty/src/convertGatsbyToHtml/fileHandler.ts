@@ -80,18 +80,25 @@ export const handleHtmlFile = async (
 ) => {
   // update the DOM. change paths for links and images
   // first open the file. as a DOM string.
-  const html = (await fsPromises.readFile(filepath)).toString();
-  const window = new Window();
-  const document = window.document;
-  document.write(html);
+  try {
 
-  const links = document.querySelectorAll('a');
-  const images = document.querySelectorAll('img');
-  await downloadRemoteImages(document, relativePath);
-  updateToRelativePaths([...links, ...images], relativePath ?? './');
-  removeScripts(document);
-
-  await fsPromises.writeFile(filepath, document.documentElement.innerHTML);
-
-  await window.happyDOM.close();
+    const html = (await fsPromises.readFile(filepath)).toString();
+    const window = new Window();
+    const document = window.document;
+    document.write(html);
+  
+    const links = document.querySelectorAll('a');
+    const images = document.querySelectorAll('img');
+    await downloadRemoteImages(document, relativePath);
+    updateToRelativePaths([...links, ...images], relativePath ?? './');
+    removeScripts(document);
+  
+    await fsPromises.writeFile(filepath, document.documentElement.innerHTML);
+  
+    await window.happyDOM.close();
+  } catch (e) {
+    console.error('Error while handling html file')
+    console.error(e);
+    throw e;
+  }
 };
