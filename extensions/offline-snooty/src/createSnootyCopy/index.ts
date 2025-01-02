@@ -1,4 +1,5 @@
 import type { NetlifyPluginUtils } from '@netlify/build';
+import { promises } from 'node:fs';
 
 export const createSnootyCopy = async (
   run: NetlifyPluginUtils['run'],
@@ -18,9 +19,10 @@ export const createSnootyCopy = async (
     cwd: offlineSnootyPath,
   });
 
-  await run.command('echo "OFFLINE_SNOOTY_ENABLED=TRUE" >> ./.env.production', {
-    cwd: offlineSnootyPath,
-  });
+  await promises.appendFile(
+    offlineSnootyPath,
+    '\nOFFLINE_SNOOTY_ENABLED=TRUE\n',
+  );
 
   await run.command('cat ./.env.production', { cwd: offlineSnootyPath });
 
