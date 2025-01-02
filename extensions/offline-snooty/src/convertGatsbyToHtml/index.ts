@@ -62,14 +62,8 @@ async function scanFileTree(directoryPath: string) {
     }
     if (extName.endsWith('html')) {
       const allParentPaths = getParentPaths(filename);
-      console.log('parentPaths ', allParentPaths);
       const pathBackToRoot = '../'.repeat(allParentPaths.length);
-      try {
-        await handleHtmlFile(filename, pathBackToRoot || './');
-      } catch (e) {
-        console.error('Error while handling HTML file');
-        console.error(e);
-      }
+      await handleHtmlFile(filename, pathBackToRoot || './');
       for (const parentPath of allParentPaths) {
         if (!log.filePathsPerDir[parentPath]) {
           log.filePathsPerDir[parentPath] = [];
@@ -79,8 +73,6 @@ async function scanFileTree(directoryPath: string) {
     } else {
       // delete the file
       await fsPromises.rm(filename);
-      console.log('removing file ', filename);
-
       log.removedFiles.push(filename);
     }
   }
@@ -90,12 +82,7 @@ export const convertGatsbyToHtml = async (
   gatsbyOutputPath: string,
   fileName: string,
 ): Promise<void> => {
-  try {
-    await scanFileTree(gatsbyOutputPath);
-  } catch (e) {
-    console.error('error while scanning file tree');
-    console.error(e);
-  }
+  await scanFileTree(gatsbyOutputPath);
   console.log('>>>>>>>>>> converted gatsby results <<<<<<<<<<<<<');
   console.log(JSON.stringify(log));
 

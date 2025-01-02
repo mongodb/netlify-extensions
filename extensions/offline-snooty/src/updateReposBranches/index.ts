@@ -1,4 +1,4 @@
-import { BSON, ObjectId, type UpdateResult } from 'mongodb';
+import { ObjectId, type UpdateResult } from 'mongodb';
 import { join } from 'node:path';
 import type {
   BranchEntry,
@@ -40,17 +40,13 @@ export const updateReposBranches = async (
     $set: { 'branches.$.offlineUrl': getUrl(baseUrl, fileName) },
   };
 
-  console.log('update Filters ', updateFilter);
-  console.log('update params ', updateParams);
-
   console.log(
-    `Updating repos branches collection for collection ${collectionName} for repo id ${repoEntry._id} for branch ${branchEntry.id} ${branchEntry.gitBranchName}`,
+    `Updating repos branches collection for collection ${collectionName} in db ${connectionParams.databaseName} for repo id ${repoEntry._id} for branch ${branchEntry.id} ${branchEntry.gitBranchName}`,
   );
 
   const updateRes = await reposBranchesCollection.updateOne(
     updateFilter,
     updateParams,
   );
-  console.log(updateRes);
   return updateRes;
 };

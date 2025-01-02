@@ -31,7 +31,6 @@ async function saveImageAndUpdateSrc(img: HTMLImageElement, prefix: string) {
   // get the path to save the file to
   const targetFileName = url.pathname;
   const fileNameParts = targetFileName.split('/');
-  console.log('check fileNameParts ', fileNameParts);
 
   // create the directory, at same URL path as original image src
   const targetDir = `${PUBLIC_OUTPUT_PATH}/images/${fileNameParts.slice(0, fileNameParts.length - 1).join('/')}`;
@@ -80,25 +79,18 @@ export const handleHtmlFile = async (
 ) => {
   // update the DOM. change paths for links and images
   // first open the file. as a DOM string.
-  try {
+  const html = (await fsPromises.readFile(filepath)).toString();
+  const window = new Window();
+  const document = window.document;
+  document.write(html);
 
-    const html = (await fsPromises.readFile(filepath)).toString();
-    const window = new Window();
-    const document = window.document;
-    document.write(html);
-  
-    const links = document.querySelectorAll('a');
-    const images = document.querySelectorAll('img');
-    await downloadRemoteImages(document, relativePath);
-    updateToRelativePaths([...links, ...images], relativePath ?? './');
-    removeScripts(document);
-  
-    await fsPromises.writeFile(filepath, document.documentElement.innerHTML);
-  
-    await window.happyDOM.close();
-  } catch (e) {
-    console.error('Error while handling html file')
-    console.error(e);
-    throw e;
-  }
+  const links = document.querySelectorAll('a');
+  const images = document.querySelectorAll('img');
+  await downloadRemoteImages(document, relativePath);
+  updateToRelativePaths([...links, ...images], relativePath ?? './');
+  removeScripts(document);
+
+  await fsPromises.writeFile(filepath, document.documentElement.innerHTML);
+
+  await window.happyDOM.close();
 };
