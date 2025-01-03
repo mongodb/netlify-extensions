@@ -103,7 +103,7 @@ const cloneContentRepo = async ({
       cwd: repoName,
     });
     await run.command(
-      `cp -r ${repoName === 'docs-laravel' ? 'laravel-mongodb/docs' : 'mongocli/docs/command'} source`,
+      `cp -r ${repoName === 'docs-laravel' ? 'laravel-mongodb/docs' : 'mongocli/docs'} source`,
       {
         cwd: repoName,
       },
