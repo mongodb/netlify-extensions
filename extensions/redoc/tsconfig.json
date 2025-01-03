@@ -3,11 +3,11 @@
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "bundler",
-    "strict": true,
+    "strict": false,
     "paths": {
-      "bson": ["../../node_modules/bson/src/"]
+      "bson": ["../../node_modules/.pnpm/bson@6.9.0/node_modules/bson/lib/"]
     }
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "../../node_modules/"]
 }

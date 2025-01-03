@@ -36,6 +36,7 @@ interface GetOASpecParams {
   resourceVersions?: string[];
   apiVersion?: string;
   resourceVersion?: string;
+  repoName?: string;
 }
 
 export async function getBuildOasSpecCommand({
@@ -45,6 +46,7 @@ export async function getBuildOasSpecCommand({
   output,
   siteUrl,
   siteTitle,
+  repoName,
   apiVersion,
   resourceVersion,
 }: GetOASpecParams) {
@@ -55,7 +57,7 @@ export async function getBuildOasSpecCommand({
     if (sourceType === 'url') {
       spec = source;
     } else if (sourceType === 'local') {
-      const localFilePath = `source${source}`;
+      const localFilePath = `${repoName ? `/${repoName}` : ''}source${source}`;
       spec = localFilePath;
     } else if (sourceType === 'atlas') {
       const { oasFileURL, successfulGitHash } = await getAtlasSpecUrl({
@@ -176,6 +178,7 @@ export async function buildOpenAPIPages(
   entries: [string, OASPageMetadata][],
   { siteUrl, siteTitle }: PageBuilderOptions,
   run: NetlifyPluginUtils['run'],
+  repoName?: string,
 ) {
   for (const [pageSlug, data] of entries) {
     const {
@@ -203,6 +206,7 @@ export async function buildOpenAPIPages(
               apiVersion,
               resourceVersions,
               resourceVersion,
+              repoName,
             });
 
             await run.command(command);

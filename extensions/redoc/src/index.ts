@@ -46,32 +46,41 @@ extension.addBuildEventHandler(
 );
 
 // handle building the redoc pages
-extension.addBuildEventHandler('onPostBuild', async ({ utils: { run } }) => {
-  // TODO: remove this conditional
-  if (!process.env.REDOC_ENABLED) return;
-  console.log('=========== Redoc Extension Begin ================');
-  await run.command('unzip -o -q bundle.zip -d bundle');
+extension.addBuildEventHandler(
+  'onPostBuild',
+  async ({ utils: { run }, netlifyConfig }) => {
+    if (!process.env.REDOC_ENABLED) return;
+    console.log('=========== Redoc Extension Begin ================');
+    await run.command('unzip -o bundle.zip -d bundle');
 
-  const siteBson = await readFileAsync(`${BUNDLE_PATH}/site.bson`);
+    const siteBson = await readFileAsync(`${BUNDLE_PATH}/site.bson`);
 
-  const buildMetadata = deserialize(siteBson);
-  const siteTitle: string = buildMetadata.title;
-  const openapiPages: OASPagesMetadata | undefined =
-    buildMetadata.openapi_pages;
+    const buildMetadata = deserialize(siteBson);
+    const siteTitle: string = buildMetadata.title;
+    const openapiPages: OASPagesMetadata | undefined =
+      buildMetadata.openapi_pages;
 
-  if (!openapiPages) {
-    console.log('No OpenAPI pages found');
-    return;
-  }
+    if (!openapiPages) {
+      console.log('No OpenAPI pages found');
+      return;
+    }
 
-  const openapiPagesEntries = Object.entries(openapiPages);
-  //TODO: set this in netlify.toml or db env vars
-  const siteUrl = process.env.DEPLOY_PRIME_URL || '';
+    const openapiPagesEntries = Object.entries(openapiPages);
+    const siteUrl = process.env.DEPLOY_PRIME_URL || '';
+    const repoName =
+      netlifyConfig?.build?.environment?.SITE_NAME === 'mongodb-snooty'
+        ? netlifyConfig?.build?.environment?.REPO_NAME
+        : undefined;
+    await buildOpenAPIPages(
+      openapiPagesEntries,
+      { siteTitle, siteUrl },
+      run,
+      repoName,
+    );
 
-  await buildOpenAPIPages(openapiPagesEntries, { siteTitle, siteUrl }, run);
-
-  console.log('=========== Redoc Integration End ================');
-});
+    console.log('=========== Redoc Integration End ================');
+  },
+);
 
 // cache redoc
 extension.addBuildEventHandler('onSuccess', async ({ utils: { cache } }) => {
