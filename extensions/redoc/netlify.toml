@@ -1,9 +1,6 @@
 [build]
-command="pnpm build"
-publish=".ntli/site/static"
-
-[functions]
-directory = "src/endpoints"
+command = "pnpm build"
+publish = ".ntli/site/static"
 
 [dev]
 command = "netlify-extension dev"
