@@ -155,14 +155,14 @@ function ensureSavedVersionDataMatches(
   }
 }
 
-function createFetchGitHash(GIT_HASH_URL: string) {
+function createFetchGitHash(gitHashUrl: string) {
   let gitHashCache: string;
   return {
     fetchGitHash: async () => {
       if (gitHashCache) return gitHashCache;
       try {
         const gitHash = await fetchTextData(
-          GIT_HASH_URL,
+          gitHashUrl,
           'Could not find current version or git hash',
         );
         gitHashCache = gitHash;
