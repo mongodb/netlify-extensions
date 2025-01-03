@@ -65,7 +65,7 @@ const getRepoEntry = async ({
   };
   const projection = {
     projection: {
-      _id: 0,
+      _id: 1,
       repoName: 1,
       branches: { $elemMatch: { gitBranchName: branchName.toLowerCase() } },
       project: 1,

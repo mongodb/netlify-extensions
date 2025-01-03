@@ -57,7 +57,9 @@ async function scanFileTree(directoryPath: string) {
     const stat = await fsPromises.stat(filename);
     const extName = filename.split('.').pop() ?? '';
 
-    if (stat.isDirectory() || IMAGE_EXT.has(extName)) {
+    if (filename.endsWith('_gatsby') || filename.endsWith('~partytown')) {
+      fsPromises.rm(filename, { recursive: true, force: true });
+    } else if (stat.isDirectory() || IMAGE_EXT.has(extName)) {
       continue;
     }
     if (extName.endsWith('html')) {
@@ -73,8 +75,6 @@ async function scanFileTree(directoryPath: string) {
     } else {
       // delete the file
       await fsPromises.rm(filename);
-      console.log('removing file ', filename);
-
       log.removedFiles.push(filename);
     }
   }

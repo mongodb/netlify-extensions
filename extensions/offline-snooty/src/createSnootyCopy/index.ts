@@ -1,11 +1,12 @@
 import type { NetlifyPluginUtils } from '@netlify/build';
+import { promises } from 'node:fs';
 
 export const createSnootyCopy = async (
   run: NetlifyPluginUtils['run'],
   targetPath: string,
 ) => {
   await run.command(
-    `rsync -av ${process.cwd()}/snooty ${targetPath} --exclude public --exclude node_modules`,
+    `rsync -a ${process.cwd()}/snooty ${targetPath} --exclude public --exclude node_modules`,
   );
 
   const offlineSnootyPath = `${targetPath}/snooty`;
@@ -17,6 +18,13 @@ export const createSnootyCopy = async (
   await run.command('npm run clean', {
     cwd: offlineSnootyPath,
   });
+
+  await promises.appendFile(
+    `${offlineSnootyPath}/.env.production`,
+    '\nOFFLINE_DOCS=true\n',
+  );
+
+  await run.command('cat ./.env.production', { cwd: offlineSnootyPath });
 
   await run.command('npm run build:no-prefix', {
     cwd: offlineSnootyPath,
