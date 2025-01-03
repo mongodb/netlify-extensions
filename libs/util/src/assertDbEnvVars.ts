@@ -25,6 +25,7 @@ export type StaticEnvVars = {
   REPOS_BRANCHES_COLLECTION: CollectionName;
   SLACK_AUTH_TOKEN: string;
   SLACK_SIGNING_SECRET: string;
+  S3_SEARCH_BUCKET: string;
   UPDATED_DOCUMENTS_COLLECTION: string;
 };
 
@@ -63,6 +64,8 @@ export const getDbConfig = (): StaticEnvVars => {
       'repos_branches',
     SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET as string,
     SLACK_AUTH_TOKEN: process.env.SLACK_AUTH_TOKEN as string,
+    S3_SEARCH_BUCKET:
+      (process.env.S3_SEARCH_BUCKET as string) ?? 'docs-search-indexes-test',
     UPDATED_DOCUMENTS_COLLECTION:
       (process.env.UPDATED_DOCUMENTS as CollectionName) ?? 'updated_documents',
   });

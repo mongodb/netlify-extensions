@@ -1,6 +1,5 @@
 export type S3UploadParams = {
   bucket: string;
-  prefix: string;
-  fileName: string;
-  manifest: string;
+  key: string;
+  body: string;
 };

@@ -1,22 +1,14 @@
-import type { ManifestEntry } from '../types';
+import type { ManifestEntry } from './document';
 
 export class Manifest {
   url: string;
-  global: boolean;
+  includeInGlobalSearch: boolean;
   documents: ManifestEntry[];
 
-  constructor(url = '', includeInGlobalSearch = false) {
+  constructor(url: string, includeInGlobalSearch: boolean) {
     this.url = url;
     this.documents = [];
-    this.global = includeInGlobalSearch;
-  }
-
-  setUrl(url: string) {
-    this.url = url;
-  }
-
-  setGlobalSearchValue(global: boolean) {
-    this.global = global;
+    this.includeInGlobalSearch = includeInGlobalSearch;
   }
 
   // Adds a document to a manifest
@@ -26,12 +18,6 @@ export class Manifest {
 
   // Returns the manifest as JSON formatted string
   export() {
-    const manifest = {
-      url: this.url,
-      includeInGlobalSearch: this.global,
-      documents: this.documents,
-    };
-
-    return JSON.stringify(manifest);
+    return JSON.stringify(this);
   }
 }

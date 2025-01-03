@@ -1,8 +1,30 @@
-import type { BSON } from 'bson';
+import type BSON from 'bson';
 import { JSONPath } from 'jsonpath-plus';
-import type { ManifestEntry, ManifestFacets, Metadata } from '../types';
-import { type Facet, createFacet } from './createFacets';
 
+export type ManifestFacets = Record<string, Array<string> | undefined> | null;
+
+export type ManifestEntry = {
+  slug: string;
+  strippedSlug?: string;
+  title: string;
+  headings?: Array<string>;
+  paragraphs: string;
+  code: Array<{ lang: string | null; value: string }>;
+  preview?: string | null;
+  tags?: string | null;
+  facets: ManifestFacets;
+};
+
+type Facet = {
+  category: string;
+  value: string;
+  sub_facets: Array<Facet> | null;
+};
+export type Metadata = {
+  robots: boolean;
+  keywords: string | null;
+  description?: string;
+};
 export class Document {
   //Return indexing data from a page's JSON-formatted AST for search purposes
 
@@ -67,7 +89,7 @@ export class Document {
     if (results.length) {
       if (results.length > 1)
         console.log(
-          `length of results is greater than one, length =  ${results.length}`,
+          `Length of results is greater than one, length =  ${results.length}`,
         );
       const val = results[0];
       //check if robots, set to false if no robots
@@ -138,7 +160,7 @@ export class Document {
         // add a check in case there is no value field found
         heading.push(part);
       }
-      headings.push(heading.join());
+      headings.push(heading.join(''));
     }
 
     title = headings.shift() ?? '';
@@ -237,6 +259,7 @@ export class Document {
 }
 
 const deriveFacets = (tree: BSON.Document) => {
+  const documentFacets: Record<string, Array<string>> = {};
   //Format facets for ManifestEntry from bson entry tree['facets'] if it exists
 
   const insertKeyVals = (facet: Facet, prefix = '') => {
@@ -244,21 +267,15 @@ const deriveFacets = (tree: BSON.Document) => {
     documentFacets[key] = documentFacets[key] ?? [];
     documentFacets[key].push(facet.value);
 
-    if (!facet.subFacets) return;
-
-    for (const subFacet of facet.subFacets) {
-      insertKeyVals(subFacet, `${key}>${facet.value}>`);
+    if (facet.sub_facets) {
+      for (const subFacet of facet.sub_facets) {
+        insertKeyVals(subFacet, `${key}>${facet.value}>`);
+      }
     }
   };
 
-  const documentFacets: Record<string, Array<string>> = {};
   if (tree.facets) {
-    for (const facetEntry of tree.facets) {
-      const facet = createFacet({
-        category: facetEntry.category,
-        value: facetEntry.value,
-        subFacets: [],
-      });
+    for (const facet of tree.facets) {
       insertKeyVals(facet);
     }
     return documentFacets;

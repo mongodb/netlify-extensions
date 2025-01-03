@@ -1,4 +1,6 @@
-import { getDocumentsCollection } from './searchConnector';
+import { closeSearchDb } from 'util/databaseConnection/searchClusterConnector';
+import { getDocumentsCollection } from 'util/databaseConnection/fetchSearchData';
+import type { SearchClusterConnectionInfo } from 'util/databaseConnection/types';
 
 export const deleteStaleDocuments = async ({
   searchProperty,
@@ -20,10 +22,23 @@ export const deleteStaleDocuments = async ({
   };
 };
 
-export const deleteStaleProperties = async (searchProperty: string) => {
-  const documentsColl = await getDocumentsCollection();
-  console.debug(`Removing all documents with stale property ${searchProperty}`);
+export const deleteStaleProperties = async (
+  searchProperty: string,
+  connectionInfo: SearchClusterConnectionInfo,
+) => {
+  const documentsColl = await getDocumentsCollection(connectionInfo);
+  console.info(
+    `Removing all documents with stale property ${JSON.stringify(searchProperty)}`,
+  );
   const query = { searchProperty: { $regex: searchProperty } };
-  const status = await documentsColl?.deleteMany(query);
-  return status;
+  try {
+    const status = await documentsColl.deleteMany(query);
+    return status;
+  } catch (e) {
+    console.info(
+      `Error removing stale property ${searchProperty} in database ${connectionInfo.databaseName}, collection ${connectionInfo.collectionName}: ${e}`,
+    );
+  } finally {
+    await closeSearchDb();
+  }
 };

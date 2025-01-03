@@ -1,17 +1,22 @@
 import type { NetlifyPluginUtils } from '@netlify/build';
 import type { StaticEnvVars } from 'util/assertDbEnvVars';
 import type { ConfigEnvironmentVariables } from 'util/extension';
-import { getSearchProperties } from './uploadToAtlas/getProperties';
+import { getSearchProperties } from './uploadToAtlas/getSearchProperties';
 import type {
   SearchDBName,
   BranchEntry,
   DocsetsDocument,
   ReposBranchesDocument,
-  S3UploadParams,
+  SearchClusterConnectionInfo,
 } from 'util/databaseConnection/types';
+import type { S3UploadParams } from 'util/s3Connection/types';
 import { generateManifest } from './generateManifest';
 import { uploadManifest } from './uploadToAtlas/uploadManifest';
-import { uploadManifestToS3 } from './uploadToS3/uploadManifest';
+import {
+  uploadManifestToS3,
+  type S3UploadInfo,
+} from './uploadToS3/uploadManifest';
+import { deleteStaleProperties } from './uploadToAtlas/deleteStale';
 
 const EXTENSION_NAME = 'search-manifest';
 
@@ -25,23 +30,18 @@ export const generateAndUploadManifests = async ({
   dbEnvVars: StaticEnvVars;
 }) => {
   // Get content repo zipfile as AST representation
-  await run.command('unzip -o bundle.zip');
+  await run.command('unzip -o -q bundle.zip');
 
-  const branchName = configEnvironment.BRANCH;
-  const repoName = configEnvironment.SITE_NAME;
+  const branchName = configEnvironment.BRANCH_NAME;
+  const repoName = configEnvironment.REPO_NAME;
   if (!repoName || !branchName) {
     // Check that an environment variable for repo name was set
     throw new Error(
-      'Repo or branch name was not found, manifest cannot be uploaded to Atlas or S3 ',
+      `Repo or branch name was not found, manifest for repo ${repoName} and branch ${branchName} cannot be generated `,
     );
   }
 
-  const manifest = await generateManifest();
-
-  console.log('=========== Finished generating manifests ================');
-
-  // TODO:  this should be made into its own type
-  const searchConnectionInfo = {
+  const searchConnectionInfo: SearchClusterConnectionInfo = {
     searchURI: dbEnvVars.ATLAS_SEARCH_URI,
     databaseName: configEnvironment.SEARCH_DB_NAME as SearchDBName,
     collectionName: dbEnvVars.DOCUMENTS_COLLECTION,
@@ -49,10 +49,12 @@ export const generateAndUploadManifests = async ({
   };
 
   const {
+    active,
     url,
     searchProperty,
     includeInGlobalSearch,
   }: {
+    active: boolean;
     url: string;
     searchProperty: string;
     includeInGlobalSearch: boolean;
@@ -60,36 +62,50 @@ export const generateAndUploadManifests = async ({
     branchEntry: configEnvironment.BRANCH_ENTRY as BranchEntry,
     docsetEntry: configEnvironment.DOCSET_ENTRY as DocsetsDocument,
     repoEntry: configEnvironment.REPO_ENTRY as ReposBranchesDocument,
-    connectionInfo: searchConnectionInfo,
   });
+
+  if (!active) {
+    console.log(
+      `Version is inactive, search manifest should not be generated for ${JSON.stringify(searchProperty)}. Removing all associated manifests from database`,
+    );
+    await deleteStaleProperties(searchProperty, searchConnectionInfo);
+    return;
+  }
+
+  const manifest = await generateManifest({ url, includeInGlobalSearch });
+
+  console.log('=========== Finished generating manifests ================');
+
+  console.log('=========== Uploading Manifests to S3=================');
 
   const projectName = configEnvironment.REPO_ENTRY?.project;
 
-  console.log('=========== Uploading Manifests to S3=================');
-  const uploadParams: S3UploadParams = {
-    //TODO: change based on environments
-    bucket:
-      configEnvironment.ENV === 'dotcomstg'
-        ? 'docs-search-indexes-test/preprd'
-        : 'docs-search-indexes-test/prd',
-    prefix: 'search-indexes/',
-    fileName: `${projectName}-${branchName}.json`,
-    manifest: manifest.export(),
-  };
+  const s3Prefix =
+    configEnvironment.ENV === 'dotcomprd'
+      ? '/search-indexes/prd'
+      : '/search-indexes/preprd';
 
-  const s3Status = await uploadManifestToS3({
-    uploadParams,
+  const uploadParams: S3UploadInfo = {
+    // We upload all search manifest to a single search bucket and separate environments by path
+    bucket: dbEnvVars.S3_SEARCH_BUCKET,
+    prefix: s3Prefix,
+    fileName: `${projectName}-${branchName}.json`,
+    body: manifest.export(),
     AWS_S3_ACCESS_KEY_ID: dbEnvVars.AWS_S3_ACCESS_KEY_ID,
     AWS_S3_SECRET_ACCESS_KEY: dbEnvVars.AWS_S3_SECRET_ACCESS_KEY,
-  });
+  };
 
-  console.log(`S3 upload status: ${JSON.stringify(s3Status)}`);
-  console.log('=========== Finished Uploading to S3  ================');
+  const s3Status = await uploadManifestToS3(uploadParams);
+
+  console.log(`S3 upload status: ${s3Status.$metadata.httpStatusCode}`);
+  console.log(
+    `=========== Finished Uploading to S3 ${dbEnvVars.S3_SEARCH_BUCKET}${s3Prefix} ================`,
+  );
 
   try {
-    manifest.setUrl(url);
-    manifest.setGlobalSearchValue(includeInGlobalSearch);
-    console.log('=========== Uploading Manifests to Atlas =================');
+    console.log(
+      `=========== Uploading Manifests to Atlas database ${configEnvironment.SEARCH_DB_NAME} in collection ${dbEnvVars.DOCUMENTS_COLLECTION} =================`,
+    );
     const status = await uploadManifest({
       manifest,
       searchProperty,

@@ -1,7 +1,6 @@
 import { PutObjectCommand, type S3Client } from '@aws-sdk/client-s3';
-import type { S3UploadParams } from '../types';
-import { assertTrailingSlash } from '../utils';
 import { connectToS3 } from './connectToS3';
+import { normalize } from 'node:path';
 
 const upload = async (
   client: S3Client,
@@ -16,20 +15,28 @@ const upload = async (
   }
 };
 
+export interface S3UploadInfo {
+  prefix: string;
+  fileName: string;
+  bucket: string;
+  body: string;
+  AWS_S3_ACCESS_KEY_ID: string;
+  AWS_S3_SECRET_ACCESS_KEY: string;
+}
 export const uploadManifestToS3 = async ({
-  bucket,
   prefix,
   fileName,
-  manifest,
-}: S3UploadParams) => {
-  //TODO: maybe also ensure there isn't a double trailing slash here to begin with ?? (altho idk y there would be)
-  prefix = assertTrailingSlash(prefix);
-  const key = prefix + fileName;
-  const client = connectToS3();
+  bucket,
+  body,
+  AWS_S3_ACCESS_KEY_ID,
+  AWS_S3_SECRET_ACCESS_KEY,
+}: S3UploadInfo) => {
+  const key = normalize(`/${prefix}/${fileName}`);
+  const client = connectToS3(AWS_S3_ACCESS_KEY_ID, AWS_S3_SECRET_ACCESS_KEY);
   const uploadStatus = await upload(client, {
     Bucket: bucket,
     Key: key,
-    Body: manifest,
+    Body: body,
   });
   return uploadStatus;
 };

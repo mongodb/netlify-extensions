@@ -50,7 +50,7 @@ extension.addBuildEventHandler('onPostBuild', async ({ utils: { run } }) => {
   // TODO: remove this conditional
   if (!process.env.REDOC_ENABLED) return;
   console.log('=========== Redoc Extension Begin ================');
-  await run.command('unzip -o bundle.zip -d bundle');
+  await run.command('unzip -o -q bundle.zip -d bundle');
 
   const siteBson = await readFileAsync(`${BUNDLE_PATH}/site.bson`);
 
