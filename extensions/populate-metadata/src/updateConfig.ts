@@ -98,14 +98,18 @@ const cloneContentRepo = async ({
   }
 
   // Docs-laravel requires a submodule to build
-  if (repoName === 'docs-laravel') {
+  if (repoName === 'docs-laravel' || repoName === 'docs-mongocli') {
     await run.command('git submodule update --init --recursive', {
       cwd: repoName,
     });
-    await run.command('cp -r laravel-mongodb/docs source', {
-      cwd: repoName,
-    });
-    console.log('docs-laravel submodule updated successfully');
+    await run.command(
+      `cp -r ${repoName === 'docs-laravel' ? 'laravel-mongodb/docs' : 'mongocli/docs'} source`,
+      {
+        cwd: repoName,
+      },
+    );
+
+    console.log(`${repoName} submodule updated successfully`);
   }
 };
 
