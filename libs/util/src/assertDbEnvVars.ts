@@ -15,6 +15,7 @@ export type StaticEnvVars = {
   ATLAS_SEARCH_URI: string;
   AWS_S3_ACCESS_KEY_ID: string;
   AWS_S3_SECRET_ACCESS_KEY: string;
+  GATSBY_PARSER_USER: string;
   DOCSETS_COLLECTION: CollectionName;
   DOCUMENTS_COLLECTION: string;
   GIT_HASH_URL: string;
@@ -29,7 +30,7 @@ export type StaticEnvVars = {
   UPDATED_DOCUMENTS_COLLECTION: string;
 };
 
-const assertEnvVars = (vars: StaticEnvVars) => {
+export const assertEnvVars = (vars: Record<string, string>) => {
   const missingVars = Object.entries(vars)
     .filter(([, value]) => !value)
     .map(([key]) => `- ${key}`)
@@ -49,6 +50,7 @@ export const getDbConfig = (): StaticEnvVars => {
       (process.env.DOCSETS_COLLECTION as CollectionName) ?? 'docsets',
     DOCUMENTS_COLLECTION:
       (process.env.DOCUMENTS_COLLECTION as CollectionName) ?? 'documents',
+    GATSBY_PARSER_USER: (process.env.PARSER_USER as string) ?? 'buildbot',
     GIT_HASH_URL:
       (process.env.GIT_HASH_URL as string) ??
       'https://cloud-dev.mongodb.com/version',
@@ -68,7 +70,7 @@ export const getDbConfig = (): StaticEnvVars => {
       (process.env.S3_SEARCH_BUCKET as string) ?? 'docs-search-indexes-test',
     UPDATED_DOCUMENTS_COLLECTION:
       (process.env.UPDATED_DOCUMENTS as CollectionName) ?? 'updated_documents',
-  });
+  }) as StaticEnvVars;
 
   return environmentVariables;
 };

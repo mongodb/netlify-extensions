@@ -17,7 +17,7 @@ interface GitHubCommitResponse {
 /**
  * This function returns the latest commit for the netlify-poc branch which is used
  * to compare the commit of the frontend currently stored in the worker.
- * TODO: Refactor this to get the latest release once we've merged the netlify-poc branch to main
+ * TODO: DOP-4866, Refactor this to get the latest release once we've merged the netlify-poc branch to main
  * @returns latest commit hash of the netlify-poc branch
  */
 async function getLatestSnootyCommit(): Promise<string | undefined> {
@@ -57,36 +57,42 @@ async function getPackageLockHash(): Promise<string> {
  * @param run the exec util provided by Netlify
  */
 export async function checkForNewSnootyVersion(run: NetlifyPluginUtils['run']) {
-  console.log('Checking Snooty frontend version');
+  console.log('Checking for existence of Snooty frontend version');
   const snootyDirExists = existsSync(`${process.cwd()}/snooty`);
 
-  if (snootyDirExists) {
-    const latestSha = await getLatestSnootyCommit();
-
-    const { stdout: currentSha } = await run.command('git rev-parse HEAD', {
-      cwd: `${process.cwd()}/snooty`,
-    });
-
-    if (currentSha === latestSha) {
-      console.log('No changes to the frontend. No update needed.');
-      return;
-    }
-    console.log(
-      'Current commit does not match the latest commit. Updating the snooty frontend repo',
-    );
-    const prevPackageLockHash = await getPackageLockHash();
-    await run.command('git pull --rebase', { cwd: `${process.cwd()}/snooty` });
-
-    const updatedPackageLockHash = await getPackageLockHash();
-
-    if (prevPackageLockHash === updatedPackageLockHash) {
-      console.log(
-        'Package-lock.json is unchanged. Not installing any additional dependencies',
-      );
-      return;
-    }
-    console.log('Dependencies updating. Installing updates.');
-    await run.command('npm ci', { cwd: `${process.cwd()}/snooty` });
-    console.log('Updates for the frontend completed!');
+  if (!snootyDirExists) {
+    console.log('Snooty frontend directory does not exist in cache');
+    return;
   }
+
+  const latestSha = await getLatestSnootyCommit();
+
+  const { stdout: currentSha } = await run.command('git rev-parse HEAD', {
+    cwd: `${process.cwd()}/snooty`,
+  });
+
+  if (currentSha === latestSha) {
+    console.log('No changes to the frontend. No update needed.');
+    return;
+  }
+
+  console.log(
+    'Current commit does not match the latest commit. Updating the snooty frontend repo',
+  );
+
+  const prevPackageLockHash = await getPackageLockHash();
+  await run.command('git pull --rebase', { cwd: `${process.cwd()}/snooty` });
+
+  const updatedPackageLockHash = await getPackageLockHash();
+
+  if (prevPackageLockHash === updatedPackageLockHash) {
+    console.log(
+      'Package-lock.json is unchanged. Not installing any additional dependencies',
+    );
+    return;
+  }
+
+  console.log('Dependencies updating. Installing updates.');
+  await run.command('npm ci', { cwd: `${process.cwd()}/snooty` });
+  console.log('Updates for the frontend complete!');
 }

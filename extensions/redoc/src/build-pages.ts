@@ -1,4 +1,5 @@
 import type { NetlifyPluginUtils } from '@netlify/build';
+import type { ConfigEnvironmentVariables } from 'util/extension';
 import type { OASPageMetadata } from '.';
 import { getAtlasSpecUrl } from './atlas';
 import { db } from './utils/db';
@@ -36,6 +37,7 @@ interface GetOASpecParams {
   resourceVersions?: string[];
   apiVersion?: string;
   resourceVersion?: string;
+  configEnvironment: ConfigEnvironmentVariables;
 }
 
 export async function getBuildOasSpecCommand({
@@ -47,6 +49,7 @@ export async function getBuildOasSpecCommand({
   siteTitle,
   apiVersion,
   resourceVersion,
+  configEnvironment,
 }: GetOASpecParams) {
   try {
     let spec = '';
@@ -62,6 +65,7 @@ export async function getBuildOasSpecCommand({
         apiKeyword: source,
         apiVersion,
         resourceVersion,
+        configEnvironment,
       });
 
       spec = oasFileURL;
@@ -143,9 +147,9 @@ export const saveSuccessfulBuildVersionData = async (
   apiKeyword: string,
   gitHash: string,
   versionData: Record<string, string>,
+  configEnvironment: ConfigEnvironmentVariables,
 ) => {
-  // TODO: Remove this dbsession creation
-  const dbSession = await db();
+  const dbSession = await db(configEnvironment);
   try {
     const query = {
       api: apiKeyword,
@@ -176,6 +180,7 @@ export async function buildOpenAPIPages(
   entries: [string, OASPageMetadata][],
   { siteUrl, siteTitle }: PageBuilderOptions,
   run: NetlifyPluginUtils['run'],
+  configEnvironment: ConfigEnvironmentVariables,
 ) {
   for (const [pageSlug, data] of entries) {
     const {
@@ -203,6 +208,7 @@ export async function buildOpenAPIPages(
               apiVersion,
               resourceVersions,
               resourceVersion,
+              configEnvironment,
             });
 
             await run.command(command);
@@ -229,6 +235,7 @@ export async function buildOpenAPIPages(
         siteUrl,
         siteTitle,
         apiVersion,
+        configEnvironment,
       });
       await run.command(command);
 
@@ -244,7 +251,12 @@ export async function buildOpenAPIPages(
       try {
         const gitHash = await fetchGitHash();
         const versions = await fetchVersionData(gitHash, OAS_FILE_SERVER);
-        await saveSuccessfulBuildVersionData(source, gitHash, versions);
+        await saveSuccessfulBuildVersionData(
+          source,
+          gitHash,
+          versions,
+          configEnvironment,
+        );
       } catch (e) {
         console.error(e);
       }
